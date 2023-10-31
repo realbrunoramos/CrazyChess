@@ -132,9 +132,8 @@ public class GameManager {
             pieceInfo[4] = piece.getStatus();
             pieceInfo[5] = piece.getX();
             pieceInfo[6] = piece.getY();
-            return pieceInfo;
         }
-        return new String[0];
+        return pieceInfo;
     }
 
     public String getPieceInfoAsString(int id) {
