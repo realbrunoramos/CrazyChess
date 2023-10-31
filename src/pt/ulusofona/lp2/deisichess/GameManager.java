@@ -124,7 +124,7 @@ public class GameManager {
     public String[] getPieceInfo(int id) {
         String[] pieceInfo = new String[7];
         PieceInfo piece = theBoard.allPieces.get(id+"");
-        if (piece!=null){
+        if (piece!=null && piece.isInGame()){
             pieceInfo[0] = piece.getId();
             pieceInfo[1] = piece.getTypeChessPiece();
             pieceInfo[2] = piece.getTeam();
@@ -132,8 +132,9 @@ public class GameManager {
             pieceInfo[4] = piece.getStatus();
             pieceInfo[5] = piece.getX();
             pieceInfo[6] = piece.getY();
+            return pieceInfo;
         }
-        return pieceInfo;
+        return new String[0];
     }
 
     public String getPieceInfoAsString(int id) {
@@ -156,8 +157,7 @@ public class GameManager {
         if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
             return true;
         }
-        return (teamStatistics[0].getCaptures() > 0 || teamStatistics[1].getCaptures() > 0)
-                && blacksInGame == whitesInGame && consecutivePlays == 10;
+        return blacksInGame == whitesInGame && consecutivePlays == 10;
     }
 
     public ArrayList<String> getGameResults() {
