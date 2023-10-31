@@ -3,6 +3,7 @@ package pt.ulusofona.lp2.deisichess;
 public class TeamStatistic {
     String team;
     int validMoves;
+
     int invalidMoves;
     int captures;
 

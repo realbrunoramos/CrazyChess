@@ -2,6 +2,7 @@ package pt.ulusofona.lp2.deisichess;
 
 public class PieceInfo {
     String id;
+
     String typeChessPiece;
     String team;
     String name;

@@ -28,6 +28,7 @@
 //                assertEquals(expected[y][x], boardMap[y][x]);
 //            }
 //        }
+
 //        assertEquals(expTeamStaticsStr, blackTeam);
 //    }
 //    @Test

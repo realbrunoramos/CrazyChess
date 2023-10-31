@@ -9,6 +9,7 @@ public class Board {
     public Board() {
         this.boardMap = new ArrayList<>();
         this.allPieces = new HashMap<>();
+
     }
     void putAllPieces(String pieceId, PieceInfo piece){
         this.allPieces.put(pieceId, piece);
