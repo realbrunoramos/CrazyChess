@@ -146,10 +146,10 @@ public class TestGameManager {
     public void test7() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("test-files/4x4.txt"));
+        gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
         gm.move(2, 1, 1, 2);
         String pieceInfoStr = gm.getPieceInfoAsString(6);
-        String expected = "6 | 0 | 1 | O Beberolas @ (1, 2)";
+        String expected = "6 | 0 | 1 | O Beberolas @ (n/a)";
         assertEquals(expected, pieceInfoStr);
     }
 

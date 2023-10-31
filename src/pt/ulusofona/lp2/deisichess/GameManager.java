@@ -16,6 +16,7 @@ public class GameManager {
     int consecutivePlays;
     TeamStatistic[] teamStatistics = new TeamStatistic[2];
     Board theBoard;
+    boolean empate;
 
     public void resetAll(){
         currentTeam = 0;
@@ -141,8 +142,14 @@ public class GameManager {
 
     public String getPieceInfoAsString(int id) {
         PieceInfo piece = theBoard.allPieces.get(id+"");
+        String coord = " @ (" + piece.getX() + ", " + piece.getY() + ")";
         if (piece!=null){
-            return piece.toString();
+            if (gameOver()){
+                return piece + " @ (n/a)";
+            } else {
+                return piece + coord;
+            }
+
         }
         return null;
     }
@@ -152,6 +159,7 @@ public class GameManager {
     }
 
     public boolean gameOver() {
+        empate = false;
 
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
@@ -159,6 +167,7 @@ public class GameManager {
         if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
             return true;
         }
+        empate = true;
         return consecutivePlays == 10;
     }
 
@@ -173,11 +182,11 @@ public class GameManager {
         int whiteInvalidMoves = teamStatistics[1].getInvalidMoves();
 
         String result = "EMPATE";
-        if (blackCaptures!=whiteCaptures){
+        if (blackCaptures!=whiteCaptures && !empate){
             result = blackCaptures>whiteCaptures? "VENCERAM AS PRETAS" : "VENCERAM AS BRANCAS";
         }
         gameResult.add("JOGO DE CRAZY CHESS");
-        gameResult.add("Resultado: "+result); //TODO - colocar o reultado
+        gameResult.add("Resultado: "+result);
         gameResult.add("---");
 
         gameResult.add("Equipa das Pretas");

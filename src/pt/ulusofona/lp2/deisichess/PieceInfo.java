@@ -78,7 +78,7 @@ public class PieceInfo {
 
     @Override
     public String toString() {
-        return id + " | " + typeChessPiece + " | " + team + " | " + name + " @ (" + coordinatesX + ", " + coordinatesY + ")";
+        return id + " | " + typeChessPiece + " | " + team + " | " + name ;
     }
 
 }
