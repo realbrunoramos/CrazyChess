@@ -2,7 +2,6 @@ package pt.ulusofona.lp2.deisichess;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 public class Board {
     HashMap<String, PieceInfo> allPieces;
     ArrayList<String[]> boardMap;

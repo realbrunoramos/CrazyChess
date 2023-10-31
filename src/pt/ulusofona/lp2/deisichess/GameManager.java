@@ -95,7 +95,6 @@ public class GameManager {
         return null;
     }
 
-
     public int getCurrentTeamID() {
         return currentTeam;
     }
