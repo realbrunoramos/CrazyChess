@@ -157,7 +157,8 @@ public class GameManager {
         if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
             return true;
         }
-        return consecutivePlays == 10;
+        return (teamStatistics[0].getCaptures() > 0 || teamStatistics[1].getCaptures() > 0)
+                && blacksInGame == whitesInGame && consecutivePlays == 10;
     }
 
     public ArrayList<String> getGameResults() {
