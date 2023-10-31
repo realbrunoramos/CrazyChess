@@ -13,7 +13,7 @@ public class TestGameManager {
     public void test1() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("4x4.txt"));
+        gm.loadGame(new File("test-files/4x4.txt"));
         String[][] boardMap = gm.theBoard.getBoard();
 
         String blackTeam = gm.teamStatistics[0].toString();
@@ -36,7 +36,7 @@ public class TestGameManager {
     public void test2() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("4x4.txt"));
+        gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 2, 2);
@@ -60,7 +60,7 @@ public class TestGameManager {
     public void test3() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("4x4.txt"));
+        gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
@@ -84,7 +84,7 @@ public class TestGameManager {
     public void test4() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("4x4.txt"));
+        gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 0, 1);
@@ -108,7 +108,7 @@ public class TestGameManager {
     public void test5() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("4x4-AlmostEnd.txt"));
+        gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
@@ -129,6 +129,28 @@ public class TestGameManager {
         }
         assertTrue(gm.gameOver());
         assertEquals(expTeamStaticsStr, blackTeam);
+    }
+    @Test
+    public void test6() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4.txt"));
+        gm.move(2, 1, 1, 2);
+        String[] pieceInfo = gm.getPieceInfo(6);
+        String[] expected = {"6", "0", "1", "O Beberolas", "capturado", "1", "2"};
+        for (int i = 0; i<7; i++){
+            assertEquals(expected[i], pieceInfo[i]);
+        }
+    }
+    @Test
+    public void test7() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4.txt"));
+        gm.move(2, 1, 1, 2);
+        String pieceInfoStr = gm.getPieceInfoAsString(6);
+        String expected = "6 | 0 | 1 | O Beberolas @ (1, 2)";
+        assertEquals(expected, pieceInfoStr);
     }
 
 

@@ -70,9 +70,11 @@ public class GameManager {
     public int getBoardSize() {
         return boardDimension;
     }
+
     public boolean move(int x0, int y0, int x1, int y1) {
         boolean haveOpponentPiece;
-        if (x1 > boardDimension || y1 > boardDimension || x0 > boardDimension || y0 > boardDimension){
+        if (x1 > boardDimension || x1 < 0 || y1 > boardDimension || y1 < 0 ||
+                x0 > boardDimension || x0 < 0 || y0 > boardDimension || y0 < 0){
             teamStatistics[currentTeam].incInvalidMoves();
             return false;
         }
@@ -124,7 +126,7 @@ public class GameManager {
     public String[] getPieceInfo(int id) {
         String[] pieceInfo = new String[7];
         PieceInfo piece = theBoard.allPieces.get(id+"");
-        if (piece!=null && piece.isInGame()){
+        if (piece!=null){
             pieceInfo[0] = piece.getId();
             pieceInfo[1] = piece.getTypeChessPiece();
             pieceInfo[2] = piece.getTeam();
@@ -139,7 +141,7 @@ public class GameManager {
 
     public String getPieceInfoAsString(int id) {
         PieceInfo piece = theBoard.allPieces.get(id+"");
-        if (piece!=null && piece.isInGame()){
+        if (piece!=null){
             return piece.toString();
         }
         return null;
@@ -157,8 +159,7 @@ public class GameManager {
         if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
             return true;
         }
-        return (teamStatistics[0].getCaptures() > 0 || teamStatistics[1].getCaptures() > 0)
-                && blacksInGame == whitesInGame && consecutivePlays == 10;
+        return consecutivePlays == 10;
     }
 
     public ArrayList<String> getGameResults() {
@@ -180,14 +181,14 @@ public class GameManager {
         gameResult.add("---");
 
         gameResult.add("Equipa das Pretas");
-        gameResult.add(blackCaptures+""); //TODO - nr de capturas das peças pretas
-        gameResult.add(blackValidMoves+""); //TODO - nr de jogadas válidas
-        gameResult.add(blackInvalidMoves+""); //TODO - nr de tentativas invalidas
+        gameResult.add(blackCaptures+"");
+        gameResult.add(blackValidMoves+"");
+        gameResult.add(blackInvalidMoves+"");
 
         gameResult.add("Equipa das Brancas");
-        gameResult.add(whiteCaptures+""); //TODO - nr de capturas das peças brancas
-        gameResult.add(whiteValidMoves+""); //TODO - nr de jogadas válidas
-        gameResult.add(whiteInvalidMoves+""); //TODO - nr de tentativas invalidas
+        gameResult.add(whiteCaptures+"");
+        gameResult.add(whiteValidMoves+"");
+        gameResult.add(whiteInvalidMoves+"");
 
         return gameResult;
     }
