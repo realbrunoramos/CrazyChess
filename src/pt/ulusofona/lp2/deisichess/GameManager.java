@@ -132,6 +132,7 @@ public class GameManager {
             pieceInfo[4] = piece.getStatus();
             pieceInfo[5] = piece.getX();
             pieceInfo[6] = piece.getY();
+
         }
         return pieceInfo;
     }
@@ -156,7 +157,7 @@ public class GameManager {
         if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
             return true;
         }
-        return blacksInGame == whitesInGame && consecutivePlays == 10;
+        return consecutivePlays == 10;
     }
 
     public ArrayList<String> getGameResults() {
