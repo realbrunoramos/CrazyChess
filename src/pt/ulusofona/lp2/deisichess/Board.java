@@ -2,6 +2,7 @@ package pt.ulusofona.lp2.deisichess;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 public class Board {
     HashMap<String, PieceInfo> allPieces;
     ArrayList<String[]> boardMap;
@@ -10,6 +11,14 @@ public class Board {
         this.boardMap = new ArrayList<>();
         this.allPieces = new HashMap<>();
 
+    }
+    public void updateStatus(){
+        for (String key : allPieces.keySet()){
+            PieceInfo value = allPieces.get(key);
+            if (!value.isInGame()){
+                value.captured();
+            }
+        }
     }
     void putAllPieces(String pieceId, PieceInfo piece){
         this.allPieces.put(pieceId, piece);

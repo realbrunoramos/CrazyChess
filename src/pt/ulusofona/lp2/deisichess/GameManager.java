@@ -106,6 +106,7 @@ public class GameManager {
     }
 
     public String[] getSquareInfo(int x, int y) {
+        theBoard.updateStatus();
         String[] squares = new String[5];
         if ((boardDimension <= x) || (boardDimension <= y)) {
             return null;
@@ -125,6 +126,7 @@ public class GameManager {
     }
 
     public String[] getPieceInfo(int id) {
+        theBoard.updateStatus();
         String[] pieceInfo = new String[7];
         PieceInfo piece = theBoard.allPieces.get(id+"");
         if (piece!=null){
@@ -141,10 +143,11 @@ public class GameManager {
     }
 
     public String getPieceInfoAsString(int id) {
+        theBoard.updateStatus();
         PieceInfo piece = theBoard.allPieces.get(id+"");
         String coord = " @ (" + piece.getX() + ", " + piece.getY() + ")";
         if (piece!=null){
-            if (gameOver()){
+            if (gameOver() || !piece.isInGame()){
                 return piece + " @ (n/a)";
             } else {
                 return piece + coord;
@@ -167,8 +170,8 @@ public class GameManager {
         if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
             return true;
         }
-        empate = true;
-        return consecutivePlays == 10;
+        empate = teamStatistics[0].getCaptures() > 0 || teamStatistics[1].getCaptures() > 0 || consecutivePlays == 10;
+        return empate;
     }
 
     public ArrayList<String> getGameResults() {
