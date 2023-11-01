@@ -102,6 +102,7 @@ public class TestGameManager {
                 assertEquals(expected[y][x], boardMap[y][x]);
             }
         }
+
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
@@ -137,7 +138,7 @@ public class TestGameManager {
         gm.loadGame(new File("test-files/4x4.txt"));
         gm.move(2, 1, 1, 2);
         String[] pieceInfo = gm.getPieceInfo(6);
-        String[] expected = {"6", "0", "1", "O Beberolas", "capturado", "1", "2"};
+        String[] expected = {"6", "0", "1", "O Beberolas", "capturado", "", ""};
         for (int i = 0; i<7; i++){
             assertEquals(expected[i], pieceInfo[i]);
         }
@@ -150,6 +151,16 @@ public class TestGameManager {
         gm.move(2, 1, 1, 2);
         String pieceInfoStr = gm.getPieceInfoAsString(6);
         String expected = "6 | 0 | 1 | O Beberolas @ (n/a)";
+        assertEquals(expected, pieceInfoStr);
+    }
+    @Test
+    public void test8() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
+        gm.move(2, 1, 1, 2);
+        String pieceInfoStr = gm.getPieceInfo(6)[4];
+        String expected = "capturado";
         assertEquals(expected, pieceInfoStr);
     }
 
