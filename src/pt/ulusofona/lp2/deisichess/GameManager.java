@@ -147,7 +147,7 @@ public class GameManager {
         PieceInfo piece = theBoard.allPieces.get(id+"");
         String coord = " @ (" + piece.getX() + ", " + piece.getY() + ")";
         if (piece!=null){
-            if (gameOver()){
+            if (!piece.isInGame()){
                 return piece + " @ (n/a)";
             } else {
                 return piece + coord;

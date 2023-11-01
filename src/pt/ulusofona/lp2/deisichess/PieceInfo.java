@@ -69,8 +69,6 @@ public class PieceInfo {
     }
     public void captured() {
         status = "capturado";
-        coordinatesX = "";
-        coordinatesY = "";
         inGame = false;
     }
 
