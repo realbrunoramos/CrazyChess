@@ -167,7 +167,7 @@ public class GameManager {
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
 
-        if ((blacksInGame == 0 && whitesInGame > 0) || (whitesInGame == 0 && blacksInGame > 0)){
+        if (blacksInGame == 0 || whitesInGame == 0){
             return true;
         }
         empate = teamStatistics[0].getCaptures() > 0 || teamStatistics[1].getCaptures() > 0 && consecutivePlays >= 10;

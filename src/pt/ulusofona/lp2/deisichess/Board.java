@@ -13,9 +13,19 @@ public class Board {
 
     }
     public void updateStatus(){
+        ArrayList<String> except = new ArrayList<>();
+        int boardSize = boardMap.size();
+        for (int y = 0; y<boardSize; y++){
+            for (int x = 0; x<boardSize; x++){
+                String square = boardMap.get(y)[x];
+                if (!square.equals("0")){
+                    except.add(square);
+                }
+            }
+        }
         for (String key : allPieces.keySet()){
             PieceInfo value = allPieces.get(key);
-            if (!value.isInGame()){
+            if (!except.contains(key)){
                 value.captured();
             }
         }

@@ -163,6 +163,19 @@ public class TestGameManager {
         String expected = "capturado";
         assertEquals(expected, pieceInfoStr);
     }
+    @Test
+    public void test9() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
+        gm.theBoard.updateStatus();
+        String ob1 = gm.getPieceInfo(6)[4];
+        String ob2 = gm.getPieceInfo(2)[4];
+        String expectedOb1 = "em jogo";
+        String expectedOb2 = "capturado";
+        assertEquals(expectedOb1, ob1);
+        assertEquals(expectedOb2, ob2);
+    }
 
 
 }
