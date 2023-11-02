@@ -4,13 +4,13 @@ package pt.ulusofona.lp2.deisichess;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameManager {
     @Test
-    public void test1() {
+    public void boardMapAndTeamStatics_test1() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
@@ -33,7 +33,7 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void test2() {
+    public void boardMapAndTeamStatics_ValidMove_test2() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
@@ -57,7 +57,7 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void test3() {
+    public void boardMapAndTeamStatics_ValidMoveAndCapture_test3() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
@@ -81,7 +81,7 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void test4() {
+    public void boardMapAndTeamStatics_InvalidMove_test4() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
@@ -106,7 +106,7 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void test5() {
+    public void boardMapAndTeamStatistics_CapturingLastPiece_test5() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
@@ -132,7 +132,7 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void test6() {
+    public void getPieceInfo_CapturedPiece_test6() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
@@ -144,7 +144,7 @@ public class TestGameManager {
         }
     }
     @Test
-    public void test7() {
+    public void getPieceInfoAsString_PieceNotInGame_test7() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
@@ -154,7 +154,7 @@ public class TestGameManager {
         assertEquals(expected, pieceInfoStr);
     }
     @Test
-    public void test8() {
+    public void getPieceInfo_CapturedPiece_test8() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
@@ -164,7 +164,7 @@ public class TestGameManager {
         assertEquals(expected, pieceInfoStr);
     }
     @Test
-    public void test9() {
+    public void getPieceInfo_CapturedPiece2_test9() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
@@ -175,6 +175,63 @@ public class TestGameManager {
         String expectedOb2 = "capturado";
         assertEquals(expectedOb1, ob1);
         assertEquals(expectedOb2, ob2);
+    }
+    @Test
+    public void gameOver_ExaustivePlaying_test10() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4-1.txt"));
+        gm.theBoard.updateStatus();
+        assertFalse(gm.gameOver());
+        gm.move(2, 1, 2, 2);
+        gm.move(1, 2, 1, 1);
+        gm.move(2, 2, 2, 1);
+        assertFalse(gm.gameOver());
+        gm.move(1, 1, 1, 2);
+        gm.move(2, 1, 2, 2);
+        gm.move(1, 2, 1, 1);
+        assertFalse(gm.gameOver());
+        gm.move(2, 2, 2, 1);
+        gm.move(1, 1, 1, 2);
+        gm.move(2, 1, 2, 2);
+        gm.move(1, 2, 1, 1);
+        assertTrue(gm.gameOver());
+
+    }
+    @Test
+    public void getGameResult_fileWithWhitesVictory_test11() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4-WhiteVictory.txt"));
+        ArrayList<String> gameResult = new ArrayList<>();
+        gameResult.add("JOGO DE CRAZY CHESS");
+        gameResult.add("Resultado: VENCERAM AS BRANCAS");
+        gameResult.add("---");
+        gameResult.add("Equipa das Pretas");
+        gameResult.add("0");
+        gameResult.add("0");
+        gameResult.add("0");
+        gameResult.add("Equipa das Brancas");
+        gameResult.add("0");
+        gameResult.add("0");
+        gameResult.add("0");
+        ArrayList<String> expected = gm.getGameResults();
+        for (int i = 0; i<11; i++){
+            assertEquals(expected.get(i), gameResult.get(i));
+        }
+    }
+
+    @Test
+    public void getSquareInfo_test12() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4.txt"));
+        String[] result = gm.getSquareInfo(1, 0);
+        String[] expected = {"1","0","0","Chefe", "00.png"};
+        for (int i = 0; i<5; i++){
+            assertEquals(expected[i], result[i]);
+        }
+
     }
 
 

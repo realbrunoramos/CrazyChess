@@ -165,18 +165,21 @@ public class GameManager {
     public boolean gameOver() {
         theBoard.updateStatus();
         empate = false;
-
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
 
         if (blacksInGame == 0 || whitesInGame == 0){
             return true;
         }
-        empate = teamStatistics[0].getCaptures() > 0 || teamStatistics[1].getCaptures() > 0 && consecutivePlays >= 10;
+        empate = ((numPieces/2)-blacksInGame != 0 || (numPieces/2)-whitesInGame != 0)&& consecutivePlays >= 10;
         return empate;
     }
 
     public ArrayList<String> getGameResults() {
+        theBoard.updateStatus();
+        int blacksInGame = theBoard.getNumBlacksInGame();
+        int whitesInGame = theBoard.getNumWhitesInGame();
+
         ArrayList<String> gameResult = new ArrayList<>();
         int blackCaptures = teamStatistics[0].getCaptures();
         int blackValidMoves = teamStatistics[0].getValidMoves();
@@ -187,8 +190,8 @@ public class GameManager {
         int whiteInvalidMoves = teamStatistics[1].getInvalidMoves();
 
         String result = "EMPATE";
-        if (blackCaptures!=whiteCaptures && !empate){
-            result = blackCaptures>whiteCaptures? "VENCERAM AS PRETAS" : "VENCERAM AS BRANCAS";
+        if (blacksInGame!=whitesInGame && !empate){
+            result = blacksInGame>whitesInGame? "VENCERAM AS PRETAS" : "VENCERAM AS BRANCAS";
         }
         gameResult.add("JOGO DE CRAZY CHESS");
         gameResult.add("Resultado: "+result);

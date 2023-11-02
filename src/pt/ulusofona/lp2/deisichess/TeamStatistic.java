@@ -15,7 +15,6 @@ public class TeamStatistic {
     }
 
     void incValidMoves(){
-
         validMoves++;
     }
     void incInvalidMoves(){
