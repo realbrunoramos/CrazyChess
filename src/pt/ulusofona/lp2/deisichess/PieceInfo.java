@@ -2,27 +2,28 @@ package pt.ulusofona.lp2.deisichess;
 
 public class PieceInfo {
     String id;
-
     String typeChessPiece;
     String team;
     String name;
-    String png;
+    String imagePath;
     String coordinatesX;
     String coordinatesY;
     String status;
     boolean inGame;
+    MoveOfTypePiece moveOfTypePiece;
 
 
-    PieceInfo(String id, String typeChessPiece, String team, String name, String png, String coordinatesX, String coordinatesY) {
+    PieceInfo(String id, String typeChessPiece, String team, String name, String imagePath, String coordinatesX, String coordinatesY) {
         this.id = id;
         this.typeChessPiece = typeChessPiece;
         this.team = team;
         this.name = name;
-        this.png = png;
+        this.imagePath = imagePath;
         this.coordinatesX = coordinatesX;
         this.coordinatesY = coordinatesY;
         this.status = "em jogo";
         this.inGame = true;
+        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
     }
 
     public void setCoordinateX(String x) {
@@ -47,7 +48,7 @@ public class PieceInfo {
     boolean validMove(int x1, int y1){
         int x0 = Integer.parseInt(coordinatesX);
         int y0 = Integer.parseInt(coordinatesY);
-        return new MoveOfTypePiece(typeChessPiece, x0, y0, x1, y1).moveValid();
+        return moveOfTypePiece.validMove(x0, y0, x1, y1);
     }
     public String getName() {
         return name;
@@ -64,8 +65,8 @@ public class PieceInfo {
     public String getStatus() {
         return status;
     }
-    public String getPng(){
-        return png;
+    public String getImagePath(){
+        return imagePath;
     }
     public void captured() {
         status = "capturado";

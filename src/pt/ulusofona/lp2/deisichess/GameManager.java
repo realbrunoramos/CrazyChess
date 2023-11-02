@@ -61,7 +61,6 @@ public class GameManager {
                     }
                 }
             }
-
         } catch (IOException e) {
             return false;
         }
@@ -83,10 +82,10 @@ public class GameManager {
         String[][] boardMap = theBoard.getBoard();
 
         PieceInfo pieceOrigin = theBoard.allPieces.get(boardMap[y0][x0]);
-        String originSquare = pieceOrigin==null?"empty":pieceOrigin.getTeam();//retorna "empty" se o quadrado estiver vazio
+        String originSquare = pieceOrigin==null?"":pieceOrigin.getTeam();//retorna "" se o quadrado estiver vazio
 
         PieceInfo pieceDestin = theBoard.allPieces.get(boardMap[y1][x1]);
-        String destinSquare = pieceDestin==null?"empty":pieceDestin.getTeam();
+        String destinSquare = pieceDestin==null?"":pieceDestin.getTeam();
 
         if (originSquare.equals(currentTeam+"") && !destinSquare.equals(currentTeam+"") && pieceOrigin.validMove(x1, y1)){
             haveOpponentPiece = theBoard.stepOnOpponentPiece(x0, y0, x1, y1);
@@ -117,7 +116,7 @@ public class GameManager {
             squares[1] = piece.getTypeChessPiece();
             squares[2] = piece.getTeam();
             squares[3] = piece.getName();
-            squares[4] = piece.getPng();
+            squares[4] = piece.getImagePath();
         } else {
             return new String [0];
         }
