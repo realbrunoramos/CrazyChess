@@ -73,6 +73,7 @@ public class GameManager {
     }
 
     public boolean move(int x0, int y0, int x1, int y1) {
+
         boolean haveOpponentPiece;
         if (x1 > boardDimension || x1 < 0 || y1 > boardDimension || y1 < 0 ||
                 x0 > boardDimension || x0 < 0 || y0 > boardDimension || y0 < 0){
@@ -86,7 +87,7 @@ public class GameManager {
 
         PieceInfo pieceDestin = theBoard.allPieces.get(boardMap[y1][x1]);
         String destinSquare = pieceDestin==null?"empty":pieceDestin.getTeam();
-        assert pieceOrigin != null;
+
         if (originSquare.equals(currentTeam+"") && !destinSquare.equals(currentTeam+"") && pieceOrigin.validMove(x1, y1)){
 
             haveOpponentPiece = theBoard.stepOnOpponentPiece(x0, y0, x1, y1);
@@ -162,6 +163,7 @@ public class GameManager {
     }
 
     public boolean gameOver() {
+        theBoard.updateStatus();
         empate = false;
 
         int blacksInGame = theBoard.getNumBlacksInGame();
@@ -210,7 +212,7 @@ public class GameManager {
         JPanel panel = new JPanel();
 
         try {
-            BufferedImage image = ImageIO.read(new File("src/images/Foto_Burro.jpg"));
+            BufferedImage image = ImageIO.read(new File("src/images/crazy_Chess_credits.png"));
             JLabel label = new JLabel(new ImageIcon(image));
             panel.add(label);
 
