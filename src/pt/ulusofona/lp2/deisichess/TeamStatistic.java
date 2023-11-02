@@ -3,7 +3,6 @@ package pt.ulusofona.lp2.deisichess;
 public class TeamStatistic {
     String team;
     int validMoves;
-
     int invalidMoves;
     int captures;
 
@@ -32,7 +31,6 @@ public class TeamStatistic {
     int getCaptures(){
         return captures;
     }
-
     @Override
     public String toString() {
         return "team= " + team + "\n" +

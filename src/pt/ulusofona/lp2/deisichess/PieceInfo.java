@@ -78,7 +78,13 @@ public class PieceInfo {
 
     @Override
     public String toString() {
-        return id + " | " + typeChessPiece + " | " + team + " | " + name ;
+        String base = id + " | " + typeChessPiece + " | " + team + " | " + name;
+        if (inGame){
+            return  base + " @ (" + coordinatesX + ", " + coordinatesY + ")";
+        } else {
+            return base + " @ (n/a)";
+        }
+
     }
 
 }

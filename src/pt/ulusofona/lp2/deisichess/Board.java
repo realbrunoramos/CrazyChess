@@ -10,7 +10,6 @@ public class Board {
     public Board() {
         this.boardMap = new ArrayList<>();
         this.allPieces = new HashMap<>();
-
     }
     public void updateStatus(){
         ArrayList<String> except = new ArrayList<>();
@@ -91,5 +90,9 @@ public class Board {
         boardMap.get(y1)[x1] = boardMap.get(y0)[x0];
         boardMap.get(y0)[x0] = "0";
         return result;
+    }
+    boolean captureOccurred(int numPieces){
+        int piecesPerTeam = numPieces/2;
+        return (piecesPerTeam-getNumBlacksInGame() != 0) || (piecesPerTeam-getNumWhitesInGame() != 0);
     }
 }

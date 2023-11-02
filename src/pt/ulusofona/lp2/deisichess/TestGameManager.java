@@ -61,7 +61,6 @@ public class TestGameManager {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
-
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
         boardMap = gm.theBoard.getBoard();
@@ -181,7 +180,6 @@ public class TestGameManager {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4-1.txt"));
-        gm.theBoard.updateStatus();
         assertFalse(gm.gameOver());
         gm.move(2, 1, 2, 2);
         gm.move(1, 2, 1, 1);
@@ -199,13 +197,13 @@ public class TestGameManager {
 
     }
     @Test
-    public void getGameResult_fileWithWhitesVictory_test11() {
+    public void getGameResult_fileWithBlacksVictory_test11() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("test-files/4x4-WhiteVictory.txt"));
+        gm.loadGame(new File("test-files/4x4-BlacksVictory.txt"));
         ArrayList<String> gameResult = new ArrayList<>();
         gameResult.add("JOGO DE CRAZY CHESS");
-        gameResult.add("Resultado: VENCERAM AS BRANCAS");
+        gameResult.add("Resultado: VENCERAM AS PRETAS");
         gameResult.add("---");
         gameResult.add("Equipa das Pretas");
         gameResult.add("0");
@@ -232,6 +230,29 @@ public class TestGameManager {
             assertEquals(expected[i], result[i]);
         }
 
+    }
+    @Test
+    public void getGameResult_fileWithDraw_test13() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4-Draw.txt"));
+        gm.gameOver();
+        ArrayList<String> gameResult = new ArrayList<>();
+        gameResult.add("JOGO DE CRAZY CHESS");
+        gameResult.add("Resultado: EMPATE");
+        gameResult.add("---");
+        gameResult.add("Equipa das Pretas");
+        gameResult.add("0");
+        gameResult.add("0");
+        gameResult.add("0");
+        gameResult.add("Equipa das Brancas");
+        gameResult.add("0");
+        gameResult.add("0");
+        gameResult.add("0");
+        ArrayList<String> expected = gm.getGameResults();
+        for (int i = 0; i<11; i++){
+            assertEquals(expected.get(i), gameResult.get(i));
+        }
     }
 
 

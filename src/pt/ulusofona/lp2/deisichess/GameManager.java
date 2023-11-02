@@ -65,6 +65,7 @@ public class GameManager {
         } catch (IOException e) {
             return false;
         }
+        theBoard.updateStatus();
         return true;
     }
 
@@ -73,7 +74,6 @@ public class GameManager {
     }
 
     public boolean move(int x0, int y0, int x1, int y1) {
-
         boolean haveOpponentPiece;
         if (x1 > boardDimension || x1 < 0 || y1 > boardDimension || y1 < 0 ||
                 x0 > boardDimension || x0 < 0 || y0 > boardDimension || y0 < 0){
@@ -89,7 +89,6 @@ public class GameManager {
         String destinSquare = pieceDestin==null?"empty":pieceDestin.getTeam();
 
         if (originSquare.equals(currentTeam+"") && !destinSquare.equals(currentTeam+"") && pieceOrigin.validMove(x1, y1)){
-
             haveOpponentPiece = theBoard.stepOnOpponentPiece(x0, y0, x1, y1);
             if (haveOpponentPiece) {
                 teamStatistics[currentTeam].incCaptures();
@@ -107,7 +106,6 @@ public class GameManager {
     }
 
     public String[] getSquareInfo(int x, int y) {
-        theBoard.updateStatus();
         String[] squares = new String[5];
         if ((boardDimension <= x) || (boardDimension <= y)) {
             return null;
@@ -127,7 +125,6 @@ public class GameManager {
     }
 
     public String[] getPieceInfo(int id) {
-        theBoard.updateStatus();
         String[] pieceInfo = new String[7];
         PieceInfo piece = theBoard.allPieces.get(id+"");
         if (piece!=null){
@@ -138,24 +135,16 @@ public class GameManager {
             pieceInfo[4] = piece.getStatus();
             pieceInfo[5] = piece.isInGame()?piece.getX():"";
             pieceInfo[6] = piece.isInGame()?piece.getY():"";
-
         }
         return pieceInfo;
     }
 
     public String getPieceInfoAsString(int id) {
-        theBoard.updateStatus();
         PieceInfo piece = theBoard.allPieces.get(id+"");
-        String coord = " @ (" + piece.getX() + ", " + piece.getY() + ")";
-        if (piece!=null){
-            if (!piece.isInGame()){
-                return piece + " @ (n/a)";
-            } else {
-                return piece + coord;
-            }
-
+        if (piece==null){
+            return null;
         }
-        return null;
+        return piece+"";
     }
 
     public int getCurrentTeamID() {
@@ -163,24 +152,17 @@ public class GameManager {
     }
 
     public boolean gameOver() {
-        theBoard.updateStatus();
         empate = false;
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
-
-        if (blacksInGame==1 && whitesInGame==1){
-            empate = true;
-            return true;
-        }
         if (blacksInGame == 0 || whitesInGame == 0){
             return true;
         }
-        empate = ((numPieces/2)-blacksInGame != 0 || (numPieces/2)-whitesInGame != 0)&& consecutivePlays == 10;
+        empate = (theBoard.captureOccurred(numPieces) && consecutivePlays == 10) || (blacksInGame==1 && whitesInGame==1);
         return empate;
     }
 
     public ArrayList<String> getGameResults() {
-        theBoard.updateStatus();
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
 
@@ -194,7 +176,7 @@ public class GameManager {
         int whiteInvalidMoves = teamStatistics[1].getInvalidMoves();
 
         String result = "EMPATE";
-        if (blacksInGame!=whitesInGame && !empate){
+        if (!empate){
             result = blacksInGame>whitesInGame? "VENCERAM AS PRETAS" : "VENCERAM AS BRANCAS";
         }
         gameResult.add("JOGO DE CRAZY CHESS");
