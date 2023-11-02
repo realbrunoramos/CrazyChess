@@ -177,7 +177,7 @@ public class TestGameManager {
         assertEquals(expectedOb2, ob2);
     }
     @Test
-    public void gameOver_ExaustivePlaying_test10() {
+    public void gameOver_ExhaustivePlaying_test10() {
         GameManager gm = new GameManager();
         gm.resetAll();
         gm.loadGame(new File("test-files/4x4-1.txt"));

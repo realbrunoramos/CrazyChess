@@ -167,11 +167,14 @@ public class GameManager {
         empate = false;
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
-
+        if (blacksInGame==1 && whitesInGame==1){
+            empate = true;
+            return true;
+        }
         if (blacksInGame == 0 || whitesInGame == 0){
             return true;
         }
-        empate = ((numPieces/2)-blacksInGame != 0 || (numPieces/2)-whitesInGame != 0)&& consecutivePlays >= 10;
+        empate = ((numPieces/2)-blacksInGame != 0 || (numPieces/2)-whitesInGame != 0)&& consecutivePlays == 10;
         return empate;
     }
 
