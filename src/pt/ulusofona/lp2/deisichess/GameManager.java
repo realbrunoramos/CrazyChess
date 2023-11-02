@@ -167,6 +167,7 @@ public class GameManager {
         empate = false;
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
+
         if (blacksInGame==1 && whitesInGame==1){
             empate = true;
             return true;
