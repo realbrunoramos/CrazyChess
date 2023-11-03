@@ -146,7 +146,7 @@ public class GameManager {
         return piece+"";
     }
 
-    public int getCurrenTeamID() {
+    public int getCurrentTeamID() {
         return currentTeam;
     }
 
