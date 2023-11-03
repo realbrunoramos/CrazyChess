@@ -1,2 +1,2 @@
 # CrazyChess
-![](diagrama.pdf?raw=true "Diagrama UML")
+[Diagrama.pdf](Diagrama.pdf)
