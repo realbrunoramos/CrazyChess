@@ -179,7 +179,7 @@ public class TestGameManager {
     public void gameOver_ExhaustivePlaying_test10() {
         GameManager gm = new GameManager();
         gm.resetAll();
-        gm.loadGame(new File("test-files/4x4-1.txt"));
+        gm.loadGame(new File("test-files/4x4-CaptureOccurred.txt"));
         assertFalse(gm.gameOver());
         gm.move(2, 1, 2, 2);
         gm.move(1, 2, 1, 1);
