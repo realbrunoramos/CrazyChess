@@ -1,5 +1,6 @@
 package pt.ulusofona.lp2.deisichess;
 
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -8,6 +9,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+
+import javax.sound.sampled.*;
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
 
 public class GameManager {
     int currentTeam;
@@ -198,9 +205,12 @@ public class GameManager {
 
     public JPanel getAuthorsPanel() {
         JPanel panel = new JPanel();
-
         try {
-            BufferedImage image = ImageIO.read(new File("src/images/crazy_Chess_credits.png"));
+
+            Random random = new Random();
+            int rand = random.nextInt(2) + 1;
+
+            BufferedImage image = ImageIO.read(new File("src/images/crazy_Chess_credits"+rand+".png"));
             JLabel label = new JLabel(new ImageIcon(image));
             panel.add(label);
 
