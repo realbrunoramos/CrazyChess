@@ -207,10 +207,7 @@ public class GameManager {
         JPanel panel = new JPanel();
         try {
 
-            Random random = new Random();
-            int rand = random.nextInt(2) + 1;
-
-            BufferedImage image = ImageIO.read(new File("src/images/crazy_Chess_credits"+rand+".png"));
+            BufferedImage image = ImageIO.read(new File("src/images/crazy_Chess_credits.png"));
             JLabel label = new JLabel(new ImageIcon(image));
             panel.add(label);
 
