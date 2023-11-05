@@ -12,7 +12,6 @@ public class TestGameManager {
     @Test
     public void boardMapAndTeamStatics_test1() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
         String[][] boardMap = gm.theBoard.getBoard();
 
@@ -35,7 +34,6 @@ public class TestGameManager {
     @Test
     public void boardMapAndTeamStatics_ValidMove_test2() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
@@ -59,7 +57,6 @@ public class TestGameManager {
     @Test
     public void boardMapAndTeamStatics_ValidMoveAndCapture_test3() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
@@ -82,7 +79,6 @@ public class TestGameManager {
     @Test
     public void boardMapAndTeamStatics_InvalidMove_test4() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
@@ -107,7 +103,6 @@ public class TestGameManager {
     @Test
     public void boardMapAndTeamStatistics_CapturingLastPiece_test5() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
 
         String[][] boardMap;
@@ -133,7 +128,6 @@ public class TestGameManager {
     @Test
     public void getPieceInfo_CapturedPiece_test6() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
         gm.move(2, 1, 1, 2);
         String[] pieceInfo = gm.getPieceInfo(6);
@@ -145,7 +139,6 @@ public class TestGameManager {
     @Test
     public void getPieceInfoAsString_PieceNotInGame_test7() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
         gm.move(2, 1, 1, 2);
         String pieceInfoStr = gm.getPieceInfoAsString(6);
@@ -155,7 +148,6 @@ public class TestGameManager {
     @Test
     public void getPieceInfo_CapturedPiece_test8() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
         gm.move(2, 1, 1, 2);
         String pieceInfoStr = gm.getPieceInfo(6)[4];
@@ -165,7 +157,6 @@ public class TestGameManager {
     @Test
     public void getPieceInfo_CapturedPiece2_test9() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
         gm.theBoard.updateStatus();
         String ob1 = gm.getPieceInfo(6)[4];
@@ -178,7 +169,6 @@ public class TestGameManager {
     @Test
     public void gameOver_ExhaustivePlaying_test10() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-1.txt"));
         assertFalse(gm.gameOver());
         gm.move(2, 1, 2, 2);
@@ -199,7 +189,6 @@ public class TestGameManager {
     @Test
     public void getGameResult_fileWithBlacksVictory_test11() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-BlacksVictory.txt"));
         ArrayList<String> gameResult = new ArrayList<>();
         gameResult.add("JOGO DE CRAZY CHESS");
@@ -222,7 +211,6 @@ public class TestGameManager {
     @Test
     public void getSquareInfo_test12() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
         String[] result = gm.getSquareInfo(1, 0);
         String[] expected = {"1","0","0","Chefe", "00.png"};
@@ -234,7 +222,6 @@ public class TestGameManager {
     @Test
     public void getGameResult_fileWithDraw_test13() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4-Draw.txt"));
         gm.gameOver();
         ArrayList<String> gameResult = new ArrayList<>();
@@ -257,7 +244,6 @@ public class TestGameManager {
     @Test
     public void getCurrentTeamID_theCurrentTeam_test14() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
         assertEquals(0, gm.getCurrentTeamID());
         gm.move(2,1, 2,2);
@@ -268,10 +254,8 @@ public class TestGameManager {
     @Test
     public void getBoardSize_filesWithDifferentSizes_test15() {
         GameManager gm = new GameManager();
-        gm.resetAll();
         gm.loadGame(new File("test-files/4x4.txt"));
         assertEquals(4, gm.getBoardSize());
-        gm.resetAll();
         gm.loadGame(new File("test-files/8x8.txt"));
         assertEquals(8, gm.getBoardSize());
     }
