@@ -254,6 +254,27 @@ public class TestGameManager {
             assertEquals(expected.get(i), gameResult.get(i));
         }
     }
+    @Test
+    public void getCurrentTeamID_theCurrentTeam_test14() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4.txt"));
+        assertEquals(0, gm.getCurrentTeamID());
+        gm.move(2,1, 2,2);
+        assertEquals(1, gm.getCurrentTeamID());
+        gm.move(1,2, 1,1);
+        assertEquals(0, gm.getCurrentTeamID());
+    }
+    @Test
+    public void getBoardSize_filesWithDifferentSizes_test15() {
+        GameManager gm = new GameManager();
+        gm.resetAll();
+        gm.loadGame(new File("test-files/4x4.txt"));
+        assertEquals(4, gm.getBoardSize());
+        gm.resetAll();
+        gm.loadGame(new File("test-files/8x8.txt"));
+        assertEquals(8, gm.getBoardSize());
+    }
 
 
 }

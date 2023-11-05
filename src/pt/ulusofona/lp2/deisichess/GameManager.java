@@ -1,6 +1,5 @@
 package pt.ulusofona.lp2.deisichess;
 
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
@@ -9,12 +8,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-
-
-import javax.sound.sampled.*;
-import java.io.File;
-import java.io.IOException;
-import java.util.Random;
 
 public class GameManager {
     int currentTeam;
@@ -34,7 +27,6 @@ public class GameManager {
         consecutivePlays = 0;
         theBoard = new Board();
     }
-
 
     //- - - Construtores - - -
     public GameManager() {
