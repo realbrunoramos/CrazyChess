@@ -19,7 +19,7 @@ public class GameManager {
     int consecutivePlays;
     GameStatus gameStatus;
     public int turn;
-    int indexNameTypePieces;
+    public int turnCounter;
     public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
 
     Board theBoard;
@@ -31,7 +31,7 @@ public class GameManager {
         numPieces = 0;
         consecutivePlays = 0;
         theBoard = new Board();
-        turn = 1;
+        turnCounter = 0;
     }
 
     public GameManager() {
@@ -80,8 +80,9 @@ public class GameManager {
                         break;
                     case "7" :{
                         Joker piece = new Joker(id, typeChessPiece, team, name, imagePath, 0, 0);
-                        piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePieces]);
-                        piece.setFakeTypePiece(indexNameTypePieces+1+"");
+                        int indexNameTypePiece = turnCounter % 6;
+                        piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
+                        piece.sendFakeTypePiece(indexNameTypePiece+1+"");
                         theBoard.putAllPieces(id, piece);
                     }
                 }
@@ -139,22 +140,22 @@ public class GameManager {
 
         if (originSquare.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
             haveOpponentPiece = theBoard.stepOnOpponentPiece(currentTeam, x0, y0, x1, y1);
-            if (haveOpponentPiece == MoveAction.TO_OPP_TEAM_SQUARE) {
+            if (haveOpponentPiece == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
                 consecutivePlays = 0;
-            } else if (haveOpponentPiece == MoveAction.TO_SAME_TEAM_SQUARE) {
+            } else if (haveOpponentPiece == MoveAction.TO_SAME_PIECE_SQUARE) {
                 teamStatistics[current].incInvalidMoves();
                 return false;
-            } else {
-                consecutivePlays++;
             }
+            turnCounter++;
+            consecutivePlays++;
             teamStatistics[current].incValidMoves();
-            turn = turn == 3? 0 : turn+1;
-            indexNameTypePieces = indexNameTypePieces == 5? 0 : indexNameTypePieces+1;
             for (Piece piece : theBoard.allPieces.values()){
+                int indexNameTypePiece = turnCounter % 6;
+
                 if (piece.getPieceNameType().split("/")[0].equals("Joker")){
-                    piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePieces]);
-                    ((Joker)piece).setFakeTypePiece(indexNameTypePieces+1+"");
+                    piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
+                    ((Joker)piece).sendFakeTypePiece(indexNameTypePiece+1+"");
                 }
             }
             currentTeam = current == 1?10:20;
@@ -207,7 +208,7 @@ public class GameManager {
             return null;
         }
         if (piece.typeChessPiece.equals("6")){
-            return (turn != 3? "Doh! zzzzzz" : piece.toString());
+            return (turnCounter % 3 == 0? "Doh! zzzzzz" : piece.toString());
         } else {
             String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
             if (piece.isInGame()){

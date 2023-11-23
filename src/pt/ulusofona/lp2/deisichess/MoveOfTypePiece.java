@@ -33,7 +33,6 @@ public class MoveOfTypePiece {
             case "6" : {
                 return (vertical == horizontal && vertical==1);
             }
-
         }
         return false;
     }

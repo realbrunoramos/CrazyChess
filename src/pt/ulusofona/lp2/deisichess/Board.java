@@ -98,9 +98,9 @@ public class Board {
             return TO_FREE_SQUARE;
         } else {
             if (piece.getTeam() == currentTeam){
-                return TO_SAME_TEAM_SQUARE;
+                return TO_SAME_PIECE_SQUARE;
             } else {
-                return TO_OPP_TEAM_SQUARE;
+                return TO_OPPONENT_PIECE_SQUARE;
             }
         }
     }

@@ -3,8 +3,8 @@ package pt.ulusofona.lp2.deisichess;
 public abstract class Piece {
     protected int points;
     protected String pieceNameType;
-    final String captured_txt = "capturado";
-    final String inGame_txt = "em jogo";
+    final String capturedMsg = "capturado";
+    final String inGameMsg = "em jogo";
     String id;
     String typeChessPiece;
     int team;
@@ -25,7 +25,7 @@ public abstract class Piece {
         this.imagePath = imagePath;
         this.coordinatesX = coordinatesX;
         this.coordinatesY = coordinatesY;
-        this.status = captured_txt;
+        this.status = capturedMsg;
         this.inGame = true;
     }
 
@@ -39,7 +39,7 @@ public abstract class Piece {
         return points;
     }
     public void setInGame(){
-        status = inGame_txt;
+        status = inGameMsg;
     }
     public void setCoordinateX(int x) {
         this.coordinatesX = x;
@@ -82,7 +82,7 @@ public abstract class Piece {
         return imagePath;
     }
     public void captured() {
-        status = captured_txt;
+        status = capturedMsg;
         inGame = false;
     }
 
