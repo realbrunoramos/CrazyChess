@@ -14,8 +14,14 @@ public class Board {
         this.allPieces = new HashMap<>();
         draw = false;
     }
-    public String getBoardMapStr(){
+
+    public void setBoardMap(ArrayList<String[]> boardMap) {
+        this.boardMap = boardMap;
+    }
+
+    public ArrayList<String> getBoardMapStr(){
         StringBuilder sb = new StringBuilder();
+        ArrayList<String> result = new ArrayList<>();
         for (int y = 0; y <boardMap.size(); y++){
             for (int x = 0; x<boardMap.size(); x++){
                 sb.append(boardMap.get(y)[x]);
@@ -23,9 +29,10 @@ public class Board {
                     sb.append(":");
                 }
             }
-            sb.append("\n");
+            result.add(sb+"");
+            sb = new StringBuilder();
         }
-        return sb.toString();
+        return result;
     }
     void putAllPieces(String pieceId, Piece piece){
         this.allPieces.put(pieceId, piece);

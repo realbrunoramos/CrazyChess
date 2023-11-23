@@ -3,10 +3,7 @@ package pt.ulusofona.lp2.deisichess;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,31 +16,72 @@ public class GameManager {
     int consecutivePlays;
     GameStatus gameStatus;
     public int turn;
-    public int turnCounter;
+    public int roundCounter;
     public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
-
+    public ArrayList<String> fileLinesContent;
     Board theBoard;
 
-    public void resetAll(){
-        currentTeam = 10;
-        gameStatus = new GameStatus();
+    public void getStarted(){
         boardDimension = 0;
         numPieces = 0;
+        currentTeam = 10;
         consecutivePlays = 0;
+        roundCounter = 0;
+        gameStatus = new GameStatus();
         theBoard = new Board();
-        turnCounter = 0;
+        fileLinesContent = new ArrayList<>();
     }
 
     public GameManager() {
+    }
+
+    public void recoverStatus(String lastStatus){
+        String[] parts = lastStatus.split("@");
+        TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
+        String[] roundCounterConsecutivePlays = parts[0].split("\\|");
+        roundCounter = Integer.parseInt(roundCounterConsecutivePlays[0]);
+        consecutivePlays = Integer.parseInt(roundCounterConsecutivePlays[1]);
+        String[] blackStatistics = parts[1].split("\\|");
+        String[] whiteStatistics = parts[2].split("\\|");
+        for (int i = 0; i < 5; i++) {
+            String white = whiteStatistics[i];
+            String black = blackStatistics[i];
+            switch (i) {
+                case 0 : {
+                    teamStatistics[1].setTeam(white);
+                    teamStatistics[0].setTeam(black);
+                }
+                break;
+                case 1 : {
+                    teamStatistics[1].setValidMoves(Integer.parseInt(white));
+                    teamStatistics[0].setValidMoves(Integer.parseInt(black));
+                }
+                break;
+                case 2 : {
+                    teamStatistics[1].setInvalidMoves(Integer.parseInt(white));
+                    teamStatistics[0].setInvalidMoves(Integer.parseInt(black));
+                }
+                break;
+                case 3 : {
+                    teamStatistics[1].setTotalPoints(Integer.parseInt(white));
+                    teamStatistics[0].setTotalPoints(Integer.parseInt(black));
+                }
+                break;
+                case 4 : {
+                    teamStatistics[1].setCaptures(Integer.parseInt(white));
+                    teamStatistics[0].setCaptures(Integer.parseInt(black));
+                }
+            }
+        }
     }
     public Map<String,String> customizeBoard(){
         return new HashMap<>();
     }
     public void loadGame(File file) throws InvalidGameInputException, IOException{
-        resetAll();
+        getStarted();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String lineContent;
-            ArrayList<String> fileLinesContent = new ArrayList<>();
+
             while ((lineContent = br.readLine()) != null) {
                 fileLinesContent.add(lineContent);
             }
@@ -80,7 +118,7 @@ public class GameManager {
                         break;
                     case "7" :{
                         Joker piece = new Joker(id, typeChessPiece, team, name, imagePath, 0, 0);
-                        int indexNameTypePiece = turnCounter % 6;
+                        int indexNameTypePiece = roundCounter % 6;
                         piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
                         piece.sendFakeTypePiece(indexNameTypePiece+1+"");
                         theBoard.putAllPieces(id, piece);
@@ -89,7 +127,8 @@ public class GameManager {
             }
 
             int y = 0;
-            for (int line = numPieces+2; line<fileLinesContent.size(); line++){
+            int lineOfBoardSection = numPieces+2;
+            for (int line = lineOfBoardSection; line<lineOfBoardSection+boardDimension; line++){
                 String[] array = fileLinesContent.get(line).split(":");
                 theBoard.addBoardMap(array);
                 for (int x = 0 ; x<array.length; x++){
@@ -107,21 +146,50 @@ public class GameManager {
                 }
                 y++;
             }
+            if (fileLinesContent.size() > lineOfBoardSection+boardDimension){
+                recoverStatus(fileLinesContent.get(lineOfBoardSection+boardDimension));
+            }
         }
     }
     public void saveGame(File file) throws IOException{
+        TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
+
+        ArrayList<String> atualBoard = theBoard.getBoardMapStr();
+        int pos = 0;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
+            for (int i = 0; i< fileLinesContent.size(); i++) {
+                writer.newLine();
+                if(i<numPieces+2){
+                    writer.write(fileLinesContent.get(i));
+                }else{
+                    pos = i-numPieces+2;
+                    writer.write(atualBoard.get(pos));
+                }
+            }
+            writer.newLine();
+            writer.write(roundCounter+"|"+consecutivePlays+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
+
+        } catch (IOException e) {
+            System.err.println("Error adding content to file: " + e.getMessage());
+        }
 
     }
     public int getBoardSize() {
         return boardDimension;
     }
     public void undo(){
-        System.out.println(gameStatus.getUndoMove());
+        String[] boardLines = gameStatus.getUndoPlayAndSetTeamStatics().split("-");
+        ArrayList<String[]> boardMap = new ArrayList<>();
+        for (String s : boardLines){
+            String[] horizontalLine = s.split(":");
+            boardMap.add(horizontalLine);
+        }
+        theBoard.setBoardMap(boardMap);
+
     }
     public List<Comparable> getHints(int x, int y){
         return new ArrayList<>();
     }
-
     public boolean move(int x0, int y0, int x1, int y1) {
         gameStatus.addHistoricMoves(theBoard.getBoardMapStr());
         int current = (currentTeam/10)-1;
@@ -147,11 +215,11 @@ public class GameManager {
                 teamStatistics[current].incInvalidMoves();
                 return false;
             }
-            turnCounter++;
+            roundCounter++;
             consecutivePlays++;
             teamStatistics[current].incValidMoves();
             for (Piece piece : theBoard.allPieces.values()){
-                int indexNameTypePiece = turnCounter % 6;
+                int indexNameTypePiece = roundCounter % 6;
 
                 if (piece.getPieceNameType().split("/")[0].equals("Joker")){
                     piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
@@ -208,7 +276,7 @@ public class GameManager {
             return null;
         }
         if (piece.typeChessPiece.equals("6")){
-            return (turnCounter % 3 == 0? "Doh! zzzzzz" : piece.toString());
+            return (roundCounter % 3 == 0? "Doh! zzzzzz" : piece.toString());
         } else {
             String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
             if (piece.isInGame()){

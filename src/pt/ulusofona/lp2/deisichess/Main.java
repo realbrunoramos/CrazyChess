@@ -9,8 +9,7 @@ public class Main {
         historicMoves.add("2");
         historicMoves.add("3");
         int last = historicMoves.size()-1;
-        historicMoves.remove(last--);
-        System.out.println(historicMoves.get(last));
+        System.out.println(historicMoves);
     }
 
 }

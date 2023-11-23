@@ -16,10 +16,11 @@ public class GameStatus {
         turnCounter = 0;
     }
 
-    public void addHistoricMoves(String boardMapStr){
+    public void addHistoricMoves(ArrayList<String> boardMap){
+        String boardMapStr = boardMap.toString().replaceAll(", ", "-").replaceAll("\\[|]|", "");
         historicMoves.add(boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
     }
-    public String getUndoMove(){
+    public String getUndoPlayAndSetTeamStatics(){
         int last = Math.max(0, historicMoves.size()-1);
 
         if (last > 0){
