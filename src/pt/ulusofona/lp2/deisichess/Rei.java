@@ -7,4 +7,5 @@ public class Rei extends Piece {
         this.pieceNameType = "Rei";
         this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
     }
+
 }

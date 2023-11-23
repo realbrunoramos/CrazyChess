@@ -49,14 +49,14 @@ public class GameManager {
             }
             boardDimension = Integer.parseInt(fileLinesContent.get(0));
             numPieces = Integer.parseInt(fileLinesContent.get(1));
-            String inicialMsgMais = "DADOS A MAIS (Esperava ";
-            String inicialMsgMenos = "DADOS A MENOS (Esperava ";
+            String inicialMsgMais = "DADOS A MAIS (Esperava: ";
+            String inicialMsgMenos = "DADOS A MENOS (Esperava: ";
             for (int line = 2; line<numPieces+2; line++){
                 String[] array = fileLinesContent.get(line).split(":");
                 if (array.length>4){
-                    throw new InvalidGameInputException(line+1, inicialMsgMais+"4 ; Obtive "+array.length+")");
+                    throw new InvalidGameInputException(line+1, inicialMsgMais+"4 ; Obtive: "+array.length+")");
                 } else if(array.length<4){
-                    throw new InvalidGameInputException(line+1, inicialMsgMenos+"4 ; Obtive "+array.length+")");
+                    throw new InvalidGameInputException(line+1, inicialMsgMenos+"4 ; Obtive: "+array.length+")");
                 }
                 String imagePath = array[1]+array[2]+".png";
                 String id = array[0];
@@ -93,9 +93,9 @@ public class GameManager {
                 theBoard.addBoardMap(array);
                 for (int x = 0 ; x<array.length; x++){
                     if (array.length>boardDimension){
-                        throw new InvalidGameInputException(line+1, inicialMsgMais+boardDimension+" ; Obtive "+array.length+")");
+                        throw new InvalidGameInputException(line+1, inicialMsgMais+boardDimension+" ; Obtive: "+array.length+")");
                     } else if(array.length<boardDimension){
-                        throw new InvalidGameInputException(line+1, inicialMsgMais+boardDimension+" ; Obtive "+array.length+")");
+                        throw new InvalidGameInputException(line+1, inicialMsgMenos+boardDimension+" ; Obtive: "+array.length+")");
                     }
                     Piece piece = theBoard.allPieces.get(array[x]);
                     if (piece!=null){
@@ -209,7 +209,7 @@ public class GameManager {
         if (piece.typeChessPiece.equals("6")){
             return (turn != 3? "Doh! zzzzzz" : piece.toString());
         } else {
-            String base = id + " | " + piece.getPieceNameType() + " | "  + piece.getTypeChessPiece() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
+            String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
             if (piece.isInGame()){
                 return  base + " @ (" + piece.getX() + ", " + piece.getY() + ")";
             } else {
