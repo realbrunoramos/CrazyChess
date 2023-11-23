@@ -2,22 +2,22 @@ package pt.ulusofona.lp2.deisichess;
 
 
 import org.junit.jupiter.api.Test;
-
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameManager {
     @Test
-    public void boardMapAndTeamStatics_test1() {
+    public void boardMapAndTeamStatics() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
         String[][] boardMap = gm.theBoard.getBoard();
-
-        String blackTeam = gm.teamStatistics[0].toString();
-        String expTeamStaticsStr = "team= Pretas\nvalidMoves= 0\ninvalidMoves= 0\ncaptures= 0";
-
+        TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
+        String blackTeam = teamStatistics[0].toString();
+        //team: Pretas | validMoves: 0 | invalidMoves: 0 | totalPoints: 0 | captures: 0
+        String expTeamStaticsStr = "Pretas|0|0|0|0";
         String[][] expected = {
                 {"0", "1", "0", "2"},
                 {"0", "0", "3", "0"},
@@ -32,15 +32,16 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void boardMapAndTeamStatics_ValidMove_test2() {
+    public void boardMapAndTeamStatics_ValidMove_test2() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 2, 2);
         boardMap = gm.theBoard.getBoard();
-        String blackTeam = gm.teamStatistics[0].toString();
-        String expTeamStaticsStr = "team= Pretas\nvalidMoves= 1\ninvalidMoves= 0\ncaptures= 0";
+        TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
+        String blackTeam = teamStatistics[0].toString();
+        String expTeamStaticsStr = "team: Pretas | validMoves: 1 | invalidMoves: 0 | captures: 0";
         String[][] expected = {
                 {"0", "1", "0", "2"},
                 {"0", "0", "0", "0"},
@@ -55,14 +56,15 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void boardMapAndTeamStatics_ValidMoveAndCapture_test3() {
+    public void boardMapAndTeamStatics_ValidMoveAndCapture_test3() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
         boardMap = gm.theBoard.getBoard();
-        String blackTeam = gm.teamStatistics[0].toString();
-        String expTeamStaticsStr = "team= Pretas\nvalidMoves= 1\ninvalidMoves= 0\ncaptures= 1";
+        TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
+        String blackTeam = teamStatistics[0].toString();
+        String expTeamStaticsStr = "team: Pretas | validMoves: 1 | invalidMoves: 0 | captures: 1";
         String[][] expected = {
                 {"0", "1", "0", "2"},
                 {"0", "0", "0", "0"},
@@ -77,15 +79,27 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void boardMapAndTeamStatics_InvalidMove_test4() {
+    public void moveAndUndo_00() throws IOException, InvalidGameInputException {
+        GameManager gm = new GameManager();
+        gm.loadGame(new File("test-files/8x8.txt"));
+        gm.move(0, 0, 0, 1);
+        assertEquals("Pretas|1|0|0|0", gm.gameStatus.getTeamStatistics()[0].toString());
+        assertEquals("Brancas|0|0|0|0", gm.gameStatus.getTeamStatistics()[1].toString());
+        gm.undo();
+        assertEquals("Pretas|0|0|0|0", gm.gameStatus.getTeamStatistics()[0].toString());
+        assertEquals("Brancas|0|0|0|0", gm.gameStatus.getTeamStatistics()[1].toString());
+    }
+    @Test
+    public void boardMapAndTeamStatics_InvalidMove_test4() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 0, 1);
         boardMap = gm.theBoard.getBoard();
-        String blackTeam = gm.teamStatistics[0].toString();
-        String expTeamStaticsStr = "team= Pretas\nvalidMoves= 0\ninvalidMoves= 1\ncaptures= 0";
+        TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
+        String blackTeam = teamStatistics[0].toString();
+        String expTeamStaticsStr = "team: Pretas | validMoves: 0 | invalidMoves: 1 | captures: 0";
         String[][] expected = {
                 {"0", "1", "0", "2"},
                 {"0", "0", "3", "0"},
@@ -101,16 +115,17 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void boardMapAndTeamStatistics_CapturingLastPiece_test5() {
+    public void boardMapAndTeamStatistics_CapturingLastPiece_test5() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
 
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
         boardMap = gm.theBoard.getBoard();
+        TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
 
-        String blackTeam = gm.teamStatistics[0].toString();
-        String expTeamStaticsStr = "team= Pretas\nvalidMoves= 1\ninvalidMoves= 0\ncaptures= 1";
+        String blackTeam = teamStatistics[0].toString();
+        String expTeamStaticsStr = "team: Pretas | validMoves: 1 | invalidMoves: 0 | captures: 1";
         String[][] expected = {
                 {"0", "0", "0", "0"},
                 {"0", "0", "0", "0"},
@@ -126,7 +141,7 @@ public class TestGameManager {
         assertEquals(expTeamStaticsStr, blackTeam);
     }
     @Test
-    public void getPieceInfo_CapturedPiece_test6() {
+    public void getPieceInfo_CapturedPiece_test6() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
         gm.move(2, 1, 1, 2);
@@ -137,7 +152,7 @@ public class TestGameManager {
         }
     }
     @Test
-    public void getPieceInfoAsString_PieceNotInGame_test7() {
+    public void getPieceInfoAsString_PieceNotInGame_test7() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
         gm.move(2, 1, 1, 2);
@@ -146,7 +161,7 @@ public class TestGameManager {
         assertEquals(expected, pieceInfoStr);
     }
     @Test
-    public void getPieceInfo_CapturedPiece_test8() {
+    public void getPieceInfo_CapturedPiece_test8() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
         gm.move(2, 1, 1, 2);
@@ -155,10 +170,9 @@ public class TestGameManager {
         assertEquals(expected, pieceInfoStr);
     }
     @Test
-    public void getPieceInfo_CapturedPiece2_test9() {
+    public void getPieceInfo_CapturedPiece2_test9() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-AlmostEnd.txt"));
-        gm.theBoard.updateStatus();
         String ob1 = gm.getPieceInfo(6)[4];
         String ob2 = gm.getPieceInfo(2)[4];
         String expectedOb1 = "em jogo";
@@ -167,7 +181,7 @@ public class TestGameManager {
         assertEquals(expectedOb2, ob2);
     }
     @Test
-    public void gameOver_ExhaustivePlaying_test10() {
+    public void gameOver_ExhaustivePlaying_test10() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-1.txt"));
         assertFalse(gm.gameOver());
@@ -187,7 +201,7 @@ public class TestGameManager {
 
     }
     @Test
-    public void getGameResult_fileWithBlacksVictory_test11() {
+    public void getGameResult_fileWithBlacksVictory_test11() throws InvalidGameInputException, IOException{
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-BlacksVictory.txt"));
         ArrayList<String> gameResult = new ArrayList<>();
@@ -209,7 +223,7 @@ public class TestGameManager {
     }
 
     @Test
-    public void getSquareInfo_test12() {
+    public void getSquareInfo_test12() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
         String[] result = gm.getSquareInfo(1, 0);
@@ -220,7 +234,7 @@ public class TestGameManager {
 
     }
     @Test
-    public void getGameResult_fileWithDraw_test13() {
+    public void getGameResult_fileWithDraw_test13() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4-Draw.txt"));
         gm.gameOver();
@@ -242,7 +256,7 @@ public class TestGameManager {
         }
     }
     @Test
-    public void getCurrentTeamID_theCurrentTeam_test14() {
+    public void getCurrentTeamID_theCurrentTeam_test14() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
         assertEquals(0, gm.getCurrentTeamID());
@@ -252,7 +266,7 @@ public class TestGameManager {
         assertEquals(0, gm.getCurrentTeamID());
     }
     @Test
-    public void getBoardSize_filesWithDifferentSizes_test15() {
+    public void getBoardSize_filesWithDifferentSizes_test15() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/4x4.txt"));
         assertEquals(4, gm.getBoardSize());

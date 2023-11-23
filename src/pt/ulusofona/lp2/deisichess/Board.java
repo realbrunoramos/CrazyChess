@@ -3,38 +3,42 @@ package pt.ulusofona.lp2.deisichess;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Board {
-    HashMap<String, PieceInfo> allPieces;
-    ArrayList<String[]> boardMap;
+import static pt.ulusofona.lp2.deisichess.MoveAction.*;
 
+public class Board {
+    HashMap<String, Piece> allPieces;
+    ArrayList<String[]> boardMap;
+    boolean draw;
     public Board() {
         this.boardMap = new ArrayList<>();
         this.allPieces = new HashMap<>();
+        draw = false;
     }
-    public void updateStatus(){
-        ArrayList<String> except = new ArrayList<>();
-        int boardSize = boardMap.size();
-        for (int y = 0; y<boardSize; y++){
-            for (int x = 0; x<boardSize; x++){
-                String square = boardMap.get(y)[x];
-                if (!square.equals("0")){
-                    except.add(square);
+    public String getBoardMapStr(){
+        StringBuilder sb = new StringBuilder();
+        for (int y = 0; y <boardMap.size(); y++){
+            for (int x = 0; x<boardMap.size(); x++){
+                sb.append(boardMap.get(y)[x]);
+                if(x<boardMap.size()-1){
+                    sb.append(":");
                 }
             }
+            sb.append("\n");
         }
-        for (String key : allPieces.keySet()){
-            PieceInfo value = allPieces.get(key);
-            if (!except.contains(key)){
-                value.captured();
-            }
-        }
+        return sb.toString();
     }
-    void putAllPieces(String pieceId, PieceInfo piece){
+    void putAllPieces(String pieceId, Piece piece){
         this.allPieces.put(pieceId, piece);
     }
     void setCoordinates(String pieceId, int y, int x){
-        this.allPieces.get(pieceId).setCoordinateX(x+"");
-        this.allPieces.get(pieceId).setCoordinateY(y+"");
+        this.allPieces.get(pieceId).setCoordinateX(x);
+        this.allPieces.get(pieceId).setCoordinateY(y);
+    }
+    void setDraw(boolean condition){
+        draw = condition;
+    }
+    boolean isDraw(){
+        return draw;
     }
     void addBoardMap(String[] boardLine){
         this.boardMap.add(boardLine);
@@ -51,9 +55,9 @@ public class Board {
         int count = 0;
         for (int y = 0; y<sizeBoard; y++){
             for (int x = 0; x<sizeBoard; x++){
-                PieceInfo piece = allPieces.get(boardMap.get(y)[x]);
+                Piece piece = allPieces.get(boardMap.get(y)[x]);
                 if (piece!=null){
-                    if (piece.getTeam().equals("0")) {
+                    if (piece.getTeam() == 0) {
                         count++;
                     }
                 }
@@ -66,9 +70,9 @@ public class Board {
         int count = 0;
         for (int y = 0; y<sizeBoard; y++){
             for (int x = 0; x<sizeBoard; x++){
-                PieceInfo piece = allPieces.get(boardMap.get(y)[x]);
+                Piece piece = allPieces.get(boardMap.get(y)[x]);
                 if (piece!=null){
-                    if (piece.getTeam().equals("1")) {
+                    if (piece.getTeam() == 1) {
                         count++;
                     }
                 }
@@ -76,20 +80,29 @@ public class Board {
         }
         return count;
     }
-    boolean stepOnOpponentPiece(int x0, int y0, int x1, int y1){
-        //Retorna true se tiver peça adversária na casa que moveu
-        //Retorna false se não tiver nada
+    MoveAction stepOnOpponentPiece(int currentTeam, int x0, int y0, int x1, int y1){
         String steppedSquare = boardMap.get(y1)[x1];
+        Piece piece = allPieces.get(steppedSquare);
+
         boolean result = !steppedSquare.equals("0"); //tem uma peça adversária
         if (result){
             allPieces.get(steppedSquare).captured();
         }
-        allPieces.get(boardMap.get(y0)[x0]).setCoordinateX(x1+"");
-        allPieces.get(boardMap.get(y0)[x0]).setCoordinateY(y1+"");
+        allPieces.get(boardMap.get(y0)[x0]).setCoordinateX(x1);
+        allPieces.get(boardMap.get(y0)[x0]).setCoordinateY(y1);
 
         boardMap.get(y1)[x1] = boardMap.get(y0)[x0];
         boardMap.get(y0)[x0] = "0";
-        return result;
+
+        if (piece == null){
+            return TO_FREE_SQUARE;
+        } else {
+            if (piece.getTeam() == currentTeam){
+                return TO_SAME_TEAM_SQUARE;
+            } else {
+                return TO_OPP_TEAM_SQUARE;
+            }
+        }
     }
     boolean captureOccurred(int numPieces){
         int piecesPerTeam = numPieces/2;

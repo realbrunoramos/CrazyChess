@@ -1,19 +1,23 @@
 package pt.ulusofona.lp2.deisichess;
 
-public class PieceInfo {
+public abstract class Piece {
+    protected int points;
+    protected String pieceNameType;
+    final String captured_txt = "capturado";
+    final String inGame_txt = "em jogo";
     String id;
     String typeChessPiece;
-    String team;
+    int team;
     String name;
     String imagePath;
-    String coordinatesX;
-    String coordinatesY;
+    int coordinatesX;
+    int coordinatesY;
     String status;
     boolean inGame;
     MoveOfTypePiece moveOfTypePiece;
 
 
-    PieceInfo(String id, String typeChessPiece, String team, String name, String imagePath, String coordinatesX, String coordinatesY) {
+    Piece(String id, String typeChessPiece, int team, String name, String imagePath, int coordinatesX, int coordinatesY) {
         this.id = id;
         this.typeChessPiece = typeChessPiece;
         this.team = team;
@@ -21,16 +25,27 @@ public class PieceInfo {
         this.imagePath = imagePath;
         this.coordinatesX = coordinatesX;
         this.coordinatesY = coordinatesY;
-        this.status = "em jogo";
+        this.status = captured_txt;
         this.inGame = true;
-        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
     }
 
-    public void setCoordinateX(String x) {
+    public String getPieceNameType() {
+        return pieceNameType;
+    }
+    public void setPieceNameType(String pieceNameType) {
+        this.pieceNameType = pieceNameType;
+    }
+    public int getPoints() {
+        return points;
+    }
+    public void setInGame(){
+        status = inGame_txt;
+    }
+    public void setCoordinateX(int x) {
         this.coordinatesX = x;
     }
 
-    public void setCoordinateY(String y) {
+    public void setCoordinateY(int y) {
         this.coordinatesY = y;
     }
 
@@ -42,23 +57,21 @@ public class PieceInfo {
         return typeChessPiece;
     }
 
-    public String getTeam() {
+    public int getTeam() {
         return team;
     }
     boolean validMove(int x1, int y1){
-        int x0 = Integer.parseInt(coordinatesX);
-        int y0 = Integer.parseInt(coordinatesY);
-        return moveOfTypePiece.validMove(x0, y0, x1, y1);
+        return moveOfTypePiece.validMove(coordinatesX, coordinatesY, x1, y1);
     }
     public String getName() {
         return name;
     }
 
-    public String getX() {
+    public int getX() {
         return coordinatesX;
     }
 
-    public String getY() {
+    public int getY() {
         return coordinatesY;
     }
 
@@ -69,23 +82,12 @@ public class PieceInfo {
         return imagePath;
     }
     public void captured() {
-        status = "capturado";
+        status = captured_txt;
         inGame = false;
     }
 
     public boolean isInGame() {
         return inGame;
-    }
-
-    @Override
-    public String toString() {
-        String base = id + " | " + typeChessPiece + " | " + team + " | " + name;
-        if (inGame){
-            return  base + " @ (" + coordinatesX + ", " + coordinatesY + ")";
-        } else {
-            return base + " @ (n/a)";
-        }
-
     }
 
 }
