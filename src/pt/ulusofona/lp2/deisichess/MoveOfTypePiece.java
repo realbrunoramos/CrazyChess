@@ -16,7 +16,7 @@ public class MoveOfTypePiece {
                 return horizontal < 2 && vertical < 2;
             }
             case "1" : {
-                return (x0 == x1 && vertical <= 5) || (y0 == y1 && horizontal <= 5);
+                return (horizontal==0 && vertical <= 5) || (vertical==0 && horizontal <= 5) || (horizontal==vertical && vertical<=5);
             }
             case "2" : {
                 return (vertical == 2 && horizontal == 2);

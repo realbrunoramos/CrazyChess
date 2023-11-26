@@ -66,11 +66,9 @@ public abstract class Piece {
     public String getName() {
         return name;
     }
-
     public int getX() {
         return coordinatesX;
     }
-
     public int getY() {
         return coordinatesY;
     }

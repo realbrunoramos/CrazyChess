@@ -19,6 +19,10 @@ public class Board {
         this.boardMap = boardMap;
     }
 
+    public HashMap<String, Piece> getAllPieces() {
+        return allPieces;
+    }
+
     public ArrayList<String> getBoardMapStr(){
         StringBuilder sb = new StringBuilder();
         ArrayList<String> result = new ArrayList<>();
@@ -87,30 +91,7 @@ public class Board {
         }
         return count;
     }
-    MoveAction stepOnOpponentPiece(int currentTeam, int x0, int y0, int x1, int y1){
-        String steppedSquare = boardMap.get(y1)[x1];
-        Piece piece = allPieces.get(steppedSquare);
 
-        boolean result = !steppedSquare.equals("0"); //tem uma peça adversária
-        if (result){
-            allPieces.get(steppedSquare).captured();
-        }
-        allPieces.get(boardMap.get(y0)[x0]).setCoordinateX(x1);
-        allPieces.get(boardMap.get(y0)[x0]).setCoordinateY(y1);
-
-        boardMap.get(y1)[x1] = boardMap.get(y0)[x0];
-        boardMap.get(y0)[x0] = "0";
-
-        if (piece == null){
-            return TO_FREE_SQUARE;
-        } else {
-            if (piece.getTeam() == currentTeam){
-                return TO_SAME_PIECE_SQUARE;
-            } else {
-                return TO_OPPONENT_PIECE_SQUARE;
-            }
-        }
-    }
     boolean captureOccurred(int numPieces){
         int piecesPerTeam = numPieces/2;
         return (piecesPerTeam-getNumBlacksInGame() != 0) || (piecesPerTeam-getNumWhitesInGame() != 0);

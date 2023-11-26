@@ -1,8 +1,10 @@
 package pt.ulusofona.lp2.deisichess;
 
 public enum MoveAction {
-    TO_SAME_PIECE_SQUARE,
+    TO_OWN_TEAM_PIECE_SQUARE,
     TO_FREE_SQUARE,
     TO_OPPONENT_PIECE_SQUARE,
-    OVER_PIECE
+    PIECE_ON_THE_WAY,
+    QUEEN_KILLS_QUEEN
+
 }

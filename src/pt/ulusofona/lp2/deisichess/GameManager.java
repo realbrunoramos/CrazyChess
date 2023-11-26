@@ -10,86 +10,63 @@ import java.util.List;
 import java.util.Map;
 
 public class GameManager {
-    int currentTeam;
     int boardDimension;
     int numPieces;
-    int consecutivePlays;
     GameStatus gameStatus;
-    public int turn;
-    public int roundCounter;
     public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
     public ArrayList<String> fileLinesContent;
-    Board theBoard;
 
     public void getStarted(){
         boardDimension = 0;
         numPieces = 0;
-        currentTeam = 10;
-        consecutivePlays = 0;
-        roundCounter = 0;
         gameStatus = new GameStatus();
-        theBoard = new Board();
         fileLinesContent = new ArrayList<>();
     }
-
+//TODO alterar o mapa do ficheiro
     public GameManager() {
     }
 
-    public void recoverStatus(String lastStatus){
-        String[] parts = lastStatus.split("@");
+    public void saveGame(File file) throws IOException{
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
-        String[] roundCounterConsecutivePlays = parts[0].split("\\|");
-        roundCounter = Integer.parseInt(roundCounterConsecutivePlays[0]);
-        consecutivePlays = Integer.parseInt(roundCounterConsecutivePlays[1]);
-        String[] blackStatistics = parts[1].split("\\|");
-        String[] whiteStatistics = parts[2].split("\\|");
-        for (int i = 0; i < 5; i++) {
-            String white = whiteStatistics[i];
-            String black = blackStatistics[i];
-            switch (i) {
-                case 0 : {
-                    teamStatistics[1].setTeam(white);
-                    teamStatistics[0].setTeam(black);
+        fileLinesContent.subList(numPieces+2, fileLinesContent.size()).clear();
+        ArrayList<String> atualBoard = gameStatus.getTheBoard().getBoardMapStr();
+        int pos = 0;
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
+            for (int i = 0; i< numPieces+boardDimension+2; i++) {
+                if(i<numPieces+2){
+                    writer.write(fileLinesContent.get(i));
+                }else{
+                    writer.write(atualBoard.get(pos));
+                    pos++;
                 }
-                break;
-                case 1 : {
-                    teamStatistics[1].setValidMoves(Integer.parseInt(white));
-                    teamStatistics[0].setValidMoves(Integer.parseInt(black));
-                }
-                break;
-                case 2 : {
-                    teamStatistics[1].setInvalidMoves(Integer.parseInt(white));
-                    teamStatistics[0].setInvalidMoves(Integer.parseInt(black));
-                }
-                break;
-                case 3 : {
-                    teamStatistics[1].setTotalPoints(Integer.parseInt(white));
-                    teamStatistics[0].setTotalPoints(Integer.parseInt(black));
-                }
-                break;
-                case 4 : {
-                    teamStatistics[1].setCaptures(Integer.parseInt(white));
-                    teamStatistics[0].setCaptures(Integer.parseInt(black));
+                writer.newLine();
+            }
+            ArrayList<String> historic = gameStatus.getRoundDetails();
+            for (int i = 0; i<historic.size(); i++){
+                writer.write(historic.get(i));
+                if (i<historic.size()-1){
+                    writer.newLine();
                 }
             }
+        } catch (IOException e) {
+            System.err.println("Error adding content to file: " + e.getMessage());
         }
-    }
-    public Map<String,String> customizeBoard(){
-        return new HashMap<>();
-    }
-    public void loadGame(File file) throws InvalidGameInputException, IOException{
-        getStarted();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String lineContent;
 
-            while ((lineContent = br.readLine()) != null) {
-                fileLinesContent.add(lineContent);
-            }
-            boardDimension = Integer.parseInt(fileLinesContent.get(0));
-            numPieces = Integer.parseInt(fileLinesContent.get(1));
-            String inicialMsgMais = "DADOS A MAIS (Esperava: ";
-            String inicialMsgMenos = "DADOS A MENOS (Esperava: ";
-            for (int line = 2; line<numPieces+2; line++){
+    }
+
+    public void attributingPieces() throws InvalidGameInputException {
+        String inicialMsgMais = "DADOS A MAIS (Esperava: ";
+        String inicialMsgMenos = "DADOS A MENOS (Esperava: ";
+
+        int startPieceInfos = 2;
+        int startBoardSection = numPieces+2;
+        int endBoardSection = startBoardSection+boardDimension;
+
+        Board theBoard = gameStatus.getTheBoard();
+        int roundCounter = gameStatus.getRoundCounter();
+        int y = 0;
+        for (int line = startPieceInfos; line<endBoardSection; line++){
+            if (line<startBoardSection){
                 String[] array = fileLinesContent.get(line).split(":");
                 if (array.length>4){
                     throw new InvalidGameInputException(line+1, inicialMsgMais+"4 ; Obtive: "+array.length+")");
@@ -124,11 +101,7 @@ public class GameManager {
                         theBoard.putAllPieces(id, piece);
                     }
                 }
-            }
-
-            int y = 0;
-            int lineOfBoardSection = numPieces+2;
-            for (int line = lineOfBoardSection; line<lineOfBoardSection+boardDimension; line++){
+            } else {
                 String[] array = fileLinesContent.get(line).split(":");
                 theBoard.addBoardMap(array);
                 for (int x = 0 ; x<array.length; x++){
@@ -146,55 +119,62 @@ public class GameManager {
                 }
                 y++;
             }
-            if (fileLinesContent.size() > lineOfBoardSection+boardDimension){
-                recoverStatus(fileLinesContent.get(lineOfBoardSection+boardDimension));
-            }
         }
-    }
-    public void saveGame(File file) throws IOException{
-        TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
 
-        ArrayList<String> atualBoard = theBoard.getBoardMapStr();
-        int pos = 0;
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))) {
-            for (int i = 0; i< fileLinesContent.size(); i++) {
-                writer.newLine();
-                if(i<numPieces+2){
-                    writer.write(fileLinesContent.get(i));
-                }else{
-                    pos = i-numPieces+2;
-                    writer.write(atualBoard.get(pos));
+
+    }
+    public Map<String,String> customizeBoard(){
+        return new HashMap<>();
+    }
+    public void loadGame(File file) throws InvalidGameInputException, IOException{
+        getStarted();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String lineContent;
+
+            while ((lineContent = br.readLine()) != null) {
+                fileLinesContent.add(lineContent);
+            }
+            boardDimension = Integer.parseInt(fileLinesContent.get(0));
+            numPieces = Integer.parseInt(fileLinesContent.get(1));
+
+            attributingPieces();
+
+            int startBoardSection = numPieces+2;
+            int endBoardSection = startBoardSection+boardDimension;
+
+            boolean haveBackUp = fileLinesContent.size() > endBoardSection;
+
+            if (haveBackUp){
+                for (int i = endBoardSection; i<fileLinesContent.size(); i++){
+                    String moveDetails = fileLinesContent.get(i);
+                    gameStatus.addAllRoundDetailsFromTxt(moveDetails);
+                    if (i==fileLinesContent.size()-1){
+                        gameStatus.upDateStatus(moveDetails);
+                    }
                 }
             }
-            writer.newLine();
-            writer.write(roundCounter+"|"+consecutivePlays+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
-
-        } catch (IOException e) {
-            System.err.println("Error adding content to file: " + e.getMessage());
+            gameStatus.addRoundDetails();
         }
-
     }
     public int getBoardSize() {
         return boardDimension;
     }
     public void undo(){
-        String[] boardLines = gameStatus.getUndoPlayAndSetTeamStatics().split("-");
-        ArrayList<String[]> boardMap = new ArrayList<>();
-        for (String s : boardLines){
-            String[] horizontalLine = s.split(":");
-            boardMap.add(horizontalLine);
+        try {
+            attributingPieces();
+        } catch (InvalidGameInputException e) {
+            throw new RuntimeException(e);
         }
-        theBoard.setBoardMap(boardMap);
-
+        gameStatus.undoMove();
     }
     public List<Comparable> getHints(int x, int y){
         return new ArrayList<>();
     }
     public boolean move(int x0, int y0, int x1, int y1) {
-        gameStatus.addHistoricMoves(theBoard.getBoardMapStr());
-        int current = (currentTeam/10)-1;
+        Board theBoard = gameStatus.getTheBoard();
+        int current = (gameStatus.getCurrentTeam()/10)-1;
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
-        MoveAction haveOpponentPiece;
+        MoveAction moveSituation;
         if (x1 > boardDimension || x1 < 0 || y1 > boardDimension || y1 < 0 ||
                 x0 > boardDimension || x0 < 0 || y0 > boardDimension || y0 < 0){
             teamStatistics[current].incInvalidMoves();
@@ -204,37 +184,53 @@ public class GameManager {
         String[][] boardMap = theBoard.getBoard();
 
         Piece pieceOrigin = theBoard.allPieces.get(boardMap[y0][x0]);
-        String originSquare = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
-        if (originSquare.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
-            haveOpponentPiece = theBoard.stepOnOpponentPiece(currentTeam, x0, y0, x1, y1);
-            if (haveOpponentPiece == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
-                teamStatistics[current].incCaptures();
-                consecutivePlays = 0;
-            } else if (haveOpponentPiece == MoveAction.TO_SAME_PIECE_SQUARE) {
+        if (pieceOrigin!=null){
+            if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
                 teamStatistics[current].incInvalidMoves();
                 return false;
             }
-            roundCounter++;
-            consecutivePlays++;
+        }
+        String originSquare = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
+
+        if (originSquare.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
+            moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
+            if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
+                teamStatistics[current].incCaptures();
+                gameStatus.setConsecutivePlays(0);
+            } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
+                     || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
+                teamStatistics[current].incInvalidMoves();
+                return false;
+            }
+            gameStatus.incConsecutivePlays();
+            gameStatus.incRoundCounter();
+
             teamStatistics[current].incValidMoves();
             for (Piece piece : theBoard.allPieces.values()){
-                int indexNameTypePiece = roundCounter % 6;
+                int indexNameTypePiece = gameStatus.getRoundCounter() % 6;
 
                 if (piece.getPieceNameType().split("/")[0].equals("Joker")){
                     piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
                     ((Joker)piece).sendFakeTypePiece(indexNameTypePiece+1+"");
                 }
             }
-            currentTeam = current == 1?10:20;
-        }else {
+            if(current == 1){
+                gameStatus.setCurrentTeam(10);
+            }else{
+                gameStatus.setCurrentTeam(20);
+            }
+            gameStatus.addRoundDetails();
+            return true;
+        }
+        else {
             teamStatistics[current].incInvalidMoves();
             return false;
         }
-        return true;
     }
 
     public String[] getSquareInfo(int x, int y) {
+        Board theBoard = gameStatus.getTheBoard();
         String[] squares = new String[5];
         if ((boardDimension <= x) || (boardDimension <= y)) {
             return null;
@@ -254,6 +250,7 @@ public class GameManager {
     }
 
     public String[] getPieceInfo(int id) {
+        Board theBoard = gameStatus.getTheBoard();
         String[] pieceInfo = new String[7];
         Piece piece = theBoard.allPieces.get(id+"");
 
@@ -270,38 +267,44 @@ public class GameManager {
     }
 
     public String getPieceInfoAsString(int id) {
+        Board theBoard = gameStatus.getTheBoard();
         Piece piece = theBoard.allPieces.get(id+"");
 
         if (piece==null){
             return null;
         }
-        if (piece.typeChessPiece.equals("6")){
-            return (roundCounter % 3 == 0? "Doh! zzzzzz" : piece.toString());
+
+        if (piece.typeChessPiece.equals("6") && gameStatus.getRoundCounter() % 3 == 0){
+            return "Doh! zzzzzz";
+        }
+        String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
+        if (piece.isInGame()){
+            return  base + " @ (" + piece.getX() + ", " + piece.getY() + ")";
         } else {
-            String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
-            if (piece.isInGame()){
-                return  base + " @ (" + piece.getX() + ", " + piece.getY() + ")";
-            } else {
-                return base + " @ (n/a)";
-            }
+            return base + " @ (n/a)";
         }
     }
 
     public int getCurrentTeamID() {
-        return currentTeam;
+        return gameStatus.getCurrentTeam();
     }
 
     public boolean gameOver() {
+        return false;
+        /*
+        Board theBoard = gameStatus.getTheBoard();
         int blacksInGame = theBoard.getNumBlacksInGame();
         int whitesInGame = theBoard.getNumWhitesInGame();
         if (blacksInGame == 0 || whitesInGame == 0){
             return true;
         }
-        theBoard.setDraw((theBoard.captureOccurred(numPieces) && consecutivePlays == 10) || (blacksInGame==1 && whitesInGame==1));
+        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || (blacksInGame==1 && whitesInGame==1));
         return theBoard.isDraw();
+        */
     }
 
     public ArrayList<String> getGameResults() {
+        Board theBoard = gameStatus.getTheBoard();
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
 
         int blacksInGame = theBoard.getNumBlacksInGame();

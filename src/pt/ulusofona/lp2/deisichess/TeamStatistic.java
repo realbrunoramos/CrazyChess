@@ -14,6 +14,9 @@ public class TeamStatistic {
         totalPoints = 0;
         this.team = team;
     }
+    public void addPoints(int points){
+        totalPoints += points;
+    }
 
     public void setTeam(String team) {
         this.team = team;

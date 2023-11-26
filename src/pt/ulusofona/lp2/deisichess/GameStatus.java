@@ -1,35 +1,96 @@
 package pt.ulusofona.lp2.deisichess;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import static pt.ulusofona.lp2.deisichess.MoveAction.*;
 
 public class GameStatus {
-    public ArrayList<String> historicMoves ;
+
+    public ArrayList<String> roundDetails;
     public TeamStatistic[] teamStatistics;
-    int turnCounter;
+    Board theBoard;
+    int currentTeam;
+    int consecutivePlays;
+    int roundCounter;
 
 
     public GameStatus() {
         teamStatistics = new TeamStatistic[2];
-        teamStatistics[0] = new TeamStatistic("Pretas");
-        teamStatistics[1] = new TeamStatistic("Brancas");
-        historicMoves = new ArrayList<>();
-        turnCounter = 0;
+        teamStatistics[0] = new TeamStatistic("10");
+        teamStatistics[1] = new TeamStatistic("20");
+        roundDetails = new ArrayList<>();
+        currentTeam = 10;
+        roundCounter = 0;
+        consecutivePlays = 0;
+        theBoard = new Board();
     }
 
-    public void addHistoricMoves(ArrayList<String> boardMap){
-        String boardMapStr = boardMap.toString().replaceAll(", ", "-").replaceAll("\\[|]|", "");
-        historicMoves.add(boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
+    public void incConsecutivePlays() {
+        this.consecutivePlays++;
     }
-    public String getUndoPlayAndSetTeamStatics(){
-        int last = Math.max(0, historicMoves.size()-1);
+    public void incRoundCounter() {
+        this.roundCounter++;
+    }
 
-        if (last > 0){
-            historicMoves.remove(last--);
+    public void setCurrentTeam(int currentTeam) {
+        this.currentTeam = currentTeam;
+    }
+
+    public void setConsecutivePlays(int consecutivePlays) {
+        this.consecutivePlays = consecutivePlays;
+    }
+
+    public void setRoundCounter(int roundCounter) {
+        this.roundCounter = roundCounter;
+    }
+
+    public Board getTheBoard() {
+        return theBoard;
+    }
+
+    public int getCurrentTeam() {
+        return currentTeam;
+    }
+
+    public int getConsecutivePlays() {
+        return consecutivePlays;
+    }
+
+    public int getRoundCounter() {
+        return roundCounter;
+    }
+
+
+    public void addRoundDetails(){
+        String boardMapStr = theBoard.getBoardMapStr().toString().replaceAll(", ", "-").replaceAll("\\[|]|", "");
+        roundDetails.add(currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
+    }
+    public void addAllRoundDetailsFromTxt(String moveDetails){
+        roundDetails.add(moveDetails);
+    }
+
+    public void upDateStatus(String status) {
+//currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]
+        String[] parts = status.split("@");
+        String[] subParts = parts[0].split("\\|");
+        currentTeam = Integer.parseInt(subParts[0]);
+        roundCounter = Integer.parseInt(subParts[1]);
+        consecutivePlays = Integer.parseInt(subParts[2]);
+
+        //---------------------
+        String[] boardLines = parts[1].split("-");
+        ArrayList<String[]> boardMap = new ArrayList<>();
+        for (String s : boardLines){
+            String[] horizontalLine = s.split(":");
+            boardMap.add(horizontalLine);
         }
-        String lastMove = historicMoves.get(last);
-        String[] parts = lastMove.split("@");
-        String[] whiteStatistics = parts[2].split("\\|");
-        String[] blackStatistics = parts[1].split("\\|");
+        theBoard.setBoardMap(boardMap);
+        //------------------------
+
+        String[] blackStatistics = parts[2].split("\\|");
+        String[] whiteStatistics = parts[3].split("\\|");
+
         for (int i = 0; i < 5; i++) {
             String white = whiteStatistics[i];
             String black = blackStatistics[i];
@@ -38,36 +99,147 @@ public class GameStatus {
                     teamStatistics[1].setTeam(white);
                     teamStatistics[0].setTeam(black);
                 }
-                    break;
+                break;
                 case 1 : {
                     teamStatistics[1].setValidMoves(Integer.parseInt(white));
                     teamStatistics[0].setValidMoves(Integer.parseInt(black));
                 }
-                    break;
+                break;
                 case 2 : {
                     teamStatistics[1].setInvalidMoves(Integer.parseInt(white));
                     teamStatistics[0].setInvalidMoves(Integer.parseInt(black));
                 }
-                    break;
+                break;
                 case 3 : {
                     teamStatistics[1].setTotalPoints(Integer.parseInt(white));
                     teamStatistics[0].setTotalPoints(Integer.parseInt(black));
                 }
-                    break;
+                break;
                 case 4 : {
                     teamStatistics[1].setCaptures(Integer.parseInt(white));
                     teamStatistics[0].setCaptures(Integer.parseInt(black));
                 }
             }
         }
-        return parts[0];
+    }
+    public void undoMove(){
+        int size = roundDetails.size();
+        int indLast = size-1;
+        if (size!=0) {
+            if (indLast > 0) {
+                roundDetails.remove(indLast--);
+            }
+            String pastMove = roundDetails.get(indLast);
+            upDateStatus(pastMove);
+        }
+    }
+
+    private boolean pieceOnTheWay(String typePiece, int x0, int y0, int x1, int y1){
+        int vertical = Math.abs(y0 - y1);
+        int horizontal = Math.abs(x0 - x1);
+        int minX = Math.min(x0, x1);
+        int maxX = Math.max(x0, x1);
+        int minY = Math.min(y0, y1);
+        int maxY = Math.max(y0, y1);
+        String[][] boardMap = theBoard.getBoard();
+        switch (typePiece){
+            case "1" : {
+                if (horizontal==0){
+                    for (int y = minY+1; y<maxY; y++){
+                        if(!boardMap[y][x0].equals("0")){
+                            return true;
+                        }
+                    }
+                } else if(vertical==0){
+                    for (int x = minX+1; x<maxX; x++){
+                        if(!boardMap[y0][x].equals("0")){
+                            return true;
+                        }
+                    }
+                } else if (horizontal==vertical){
+                    while (x0!=x1&&y0!=y1){
+                        x0 = x0>x1-1?x0-1:x0+1;
+                        y0 = y0>y1-1?y0-1:y0+1;
+                        if(!boardMap[y0][x0].equals("0")){
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            case "2" : {
+                int cx = x0>x1?x0-1:x0+1;
+                int cy = y0>y1?y0-1:y0+1;
+                boolean way1 = !boardMap[cx-1][cy].equals("0") || !boardMap[cx-1][cy-1].equals("0") || !boardMap[cx][cy-1].equals("0");
+                boolean way2 = !boardMap[cx+1][cy].equals("0") || !boardMap[cx+1][cy+1].equals("0") || !boardMap[cx][cy+1].equals("0");
+                return way1 && way2;
+            }
+            case "3" : {
+                while (x0!=x1&&y0!=y1){
+                    x0 = x0>x1-1?x0-1:x0+1;
+                    y0 = y0>y1-1?y0-1:y0+1;
+                    if(!boardMap[y0][x0].equals("0")){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            case "4" : {
+                for (int x = minX+1; x<maxX; x++){
+                    if(!boardMap[y0][x].equals("0")){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            case "5" : {
+                for (int y = minY+1; y<maxY; y++){
+                    if(!boardMap[y][x0].equals("0")){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            default: return false;
+        }
+    }
+    MoveAction moveSituation(int x0, int y0, int x1, int y1){
+        String[][] boardMap = theBoard.getBoard();
+        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
+
+        String originSquare = boardMap[y0][x0];
+        String destinSquare = boardMap[y1][x1];
+        Piece movingPiece = allPieces.get(originSquare);
+        Piece steppedPiece = allPieces.get(destinSquare);
+
+        if (pieceOnTheWay(movingPiece.getTypeChessPiece(), x0, y0, x1, y1)){
+            return PIECE_ON_THE_WAY;
+        }
+        if (steppedPiece == null){
+            boardMap[y1][x1] = originSquare;
+            boardMap[y0][x0] = "0";
+            return TO_FREE_SQUARE;
+        } else {
+            if (steppedPiece.getTeam() == currentTeam){
+                return TO_OWN_TEAM_PIECE_SQUARE;
+            } else {
+                if (steppedPiece.getTypeChessPiece().equals("1") && movingPiece.getTypeChessPiece().equals("1")){
+                    return QUEEN_KILLS_QUEEN;
+                }
+                boardMap[y1][x1] = originSquare;
+                boardMap[y0][x0] = "0";
+                allPieces.get(destinSquare).captured();
+                teamStatistics[currentTeam/10-1].addPoints(steppedPiece.getPoints());
+                return TO_OPPONENT_PIECE_SQUARE;
+            }
+        }
     }
 
 
 
 
-    public ArrayList<String> getHistoricMoves() {
-        return historicMoves;
+    public ArrayList<String> getRoundDetails() {
+        return roundDetails;
     }
 
     public TeamStatistic[] getTeamStatistics() {

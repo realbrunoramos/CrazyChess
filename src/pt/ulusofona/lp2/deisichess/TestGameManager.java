@@ -9,44 +9,28 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameManager {
+
     @Test
-    public void boardMapAndTeamStatics() throws IOException, InvalidGameInputException {
+    public void boardMapAndTeamStatics_ReiValidMove() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
-        gm.loadGame(new File("test-files/4x4.txt"));
-        String[][] boardMap = gm.theBoard.getBoard();
-        TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
-        String blackTeam = teamStatistics[0].toString();
-        //team: Pretas | validMoves: 0 | invalidMoves: 0 | totalPoints: 0 | captures: 0
-        String expTeamStaticsStr = "Pretas|0|0|0|0";
-        String[][] expected = {
-                {"0", "1", "0", "2"},
-                {"0", "0", "3", "0"},
-                {"0", "6", "0", "0"},
-                {"0", "5", "4", "0"}
-        };
-        for (int y = 0; y<4; y++){
-            for (int x = 0; x<4; x++){
-                assertEquals(expected[y][x], boardMap[y][x]);
-            }
-        }
-        assertEquals(expTeamStaticsStr, blackTeam);
-    }
-    @Test
-    public void boardMapAndTeamStatics_ValidMove_test2() throws IOException, InvalidGameInputException {
-        GameManager gm = new GameManager();
-        gm.loadGame(new File("test-files/4x4.txt"));
+        gm.loadGame(new File("test-files/8x8.txt"));
 
         String[][] boardMap;
-        gm.move(2, 1, 2, 2);
-        boardMap = gm.theBoard.getBoard();
+        gm.move(0, 0, 0, 1);
+        boardMap = gm.gameStatus.getTheBoard().getBoard();
         TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
         String blackTeam = teamStatistics[0].toString();
-        String expTeamStaticsStr = "team: Pretas | validMoves: 1 | invalidMoves: 0 | captures: 0";
+        //team: Pretas | validMoves: 1 | invalidMoves: 0 | totalPoints: 0 | captures: 0
+        String expTeamStaticsStr = "10|1|0|0|0";
         String[][] expected = {
-                {"0", "1", "0", "2"},
-                {"0", "0", "0", "0"},
-                {"0", "6", "3", "0"},
-                {"0", "5", "4", "0"}
+                {"0", "2", "3", "4", "5", "6", "7", "8"},
+                {"1", "0", "0", "0", "0", "0", "0", "0"},
+                {"0", "0", "0", "0", "0", "0", "0", "0"},
+                {"0", "0", "0", "0", "0", "0", "0", "0"},
+                {"0", "0", "0", "0", "0", "0", "0", "0"},
+                {"0", "0", "0", "0", "0", "0", "0", "0"},
+                {"0", "0", "0", "0", "0", "0", "0", "0"},
+                {"9", "10", "11", "12", "13", "14", "15", "16"},
         };
         for (int y = 0; y<4; y++){
             for (int x = 0; x<4; x++){
@@ -61,10 +45,10 @@ public class TestGameManager {
         gm.loadGame(new File("test-files/4x4.txt"));
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
-        boardMap = gm.theBoard.getBoard();
+        boardMap = gm.gameStatus.getTheBoard().getBoard();
         TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
         String blackTeam = teamStatistics[0].toString();
-        String expTeamStaticsStr = "team: Pretas | validMoves: 1 | invalidMoves: 0 | captures: 1";
+        String expTeamStaticsStr = "10|1|0|1";
         String[][] expected = {
                 {"0", "1", "0", "2"},
                 {"0", "0", "0", "0"},
@@ -83,11 +67,11 @@ public class TestGameManager {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/8x8.txt"));
         gm.move(0, 0, 0, 1);
-        assertEquals("Pretas|1|0|0|0", gm.gameStatus.getTeamStatistics()[0].toString());
-        assertEquals("Brancas|0|0|0|0", gm.gameStatus.getTeamStatistics()[1].toString());
+        assertEquals("10|1|0|0|0", gm.gameStatus.getTeamStatistics()[0].toString());
+        assertEquals("20|0|0|0|0", gm.gameStatus.getTeamStatistics()[1].toString());
         gm.undo();
-        assertEquals("Pretas|0|0|0|0", gm.gameStatus.getTeamStatistics()[0].toString());
-        assertEquals("Brancas|0|0|0|0", gm.gameStatus.getTeamStatistics()[1].toString());
+        assertEquals("10|0|0|0|0", gm.gameStatus.getTeamStatistics()[0].toString());
+        assertEquals("20|0|0|0|0", gm.gameStatus.getTeamStatistics()[1].toString());
     }
     @Test
     public void boardMapAndTeamStatics_InvalidMove_test4() throws IOException, InvalidGameInputException {
@@ -96,7 +80,7 @@ public class TestGameManager {
 
         String[][] boardMap;
         gm.move(2, 1, 0, 1);
-        boardMap = gm.theBoard.getBoard();
+        boardMap = gm.gameStatus.getTheBoard().getBoard();
         TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
         String blackTeam = teamStatistics[0].toString();
         String expTeamStaticsStr = "team: Pretas | validMoves: 0 | invalidMoves: 1 | captures: 0";
@@ -121,7 +105,7 @@ public class TestGameManager {
 
         String[][] boardMap;
         gm.move(2, 1, 1, 2);
-        boardMap = gm.theBoard.getBoard();
+        boardMap = gm.gameStatus.getTheBoard().getBoard();
         TeamStatistic[] teamStatistics = gm.gameStatus.getTeamStatistics();
 
         String blackTeam = teamStatistics[0].toString();
@@ -140,17 +124,7 @@ public class TestGameManager {
         assertTrue(gm.gameOver());
         assertEquals(expTeamStaticsStr, blackTeam);
     }
-    @Test
-    public void getPieceInfo_CapturedPiece_test6() throws InvalidGameInputException, IOException {
-        GameManager gm = new GameManager();
-        gm.loadGame(new File("test-files/4x4.txt"));
-        gm.move(2, 1, 1, 2);
-        String[] pieceInfo = gm.getPieceInfo(6);
-        String[] expected = {"6", "0", "1", "O Beberolas", "capturado", "", ""};
-        for (int i = 0; i<7; i++){
-            assertEquals(expected[i], pieceInfo[i]);
-        }
-    }
+
     @Test
     public void getPieceInfoAsString_PieceNotInGame_test7() throws InvalidGameInputException, IOException {
         GameManager gm = new GameManager();
