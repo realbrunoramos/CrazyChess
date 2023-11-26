@@ -1,9 +1,8 @@
 package pt.ulusofona.lp2.deisichess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-
-import static pt.ulusofona.lp2.deisichess.MoveAction.*;
 
 public class Board {
     HashMap<String, Piece> allPieces;
@@ -15,8 +14,8 @@ public class Board {
         draw = false;
     }
 
-    public void setBoardMap(ArrayList<String[]> boardMap) {
-        this.boardMap = boardMap;
+    public ArrayList<String[]> getBoardMap() {
+        return boardMap;
     }
 
     public HashMap<String, Piece> getAllPieces() {
@@ -24,26 +23,38 @@ public class Board {
     }
 
     public ArrayList<String> getBoardMapStr(){
+        int size = boardMap.size();
+        System.out.println(size + " size");
         StringBuilder sb = new StringBuilder();
         ArrayList<String> result = new ArrayList<>();
-        for (int y = 0; y <boardMap.size(); y++){
-            for (int x = 0; x<boardMap.size(); x++){
+        for (int y = 0; y <size; y++){
+            for (int x = 0; x<size; x++){
                 sb.append(boardMap.get(y)[x]);
-                if(x<boardMap.size()-1){
+                if(x<size-1){
                     sb.append(":");
                 }
             }
             result.add(sb+"");
-            sb = new StringBuilder();
+            sb.delete(0, sb.length());
+        }
+        for (String[] s : boardMap){
+            System.out.println(Arrays.toString(s));
         }
         return result;
     }
     void putAllPieces(String pieceId, Piece piece){
         this.allPieces.put(pieceId, piece);
     }
-    void setCoordinates(String pieceId, int y, int x){
-        this.allPieces.get(pieceId).setCoordinateX(x);
-        this.allPieces.get(pieceId).setCoordinateY(y);
+    void setAllCoordinates(){
+        for (int y = 0; y< boardMap.size(); y++){
+            for (int x = 0; x< boardMap.size(); x++){
+                String pieceId = boardMap.get(y)[x];
+                if (!pieceId.equals("0")){
+                    this.allPieces.get(pieceId).setCoordinateX(x);
+                    this.allPieces.get(pieceId).setCoordinateY(y);
+                }
+            }
+        }
     }
     void setDraw(boolean condition){
         draw = condition;
@@ -51,15 +62,8 @@ public class Board {
     boolean isDraw(){
         return draw;
     }
-    void addBoardMap(String[] boardLine){
+    void addBoardMapLine(String[] boardLine){
         this.boardMap.add(boardLine);
-    }
-    String[][] getBoard(){
-        String[][] result = new String[boardMap.size()][];
-        for (int i = 0; i < boardMap.size(); i++) {
-            result[i] = boardMap.get(i);
-        }
-        return result;
     }
     int getNumBlacksInGame(){
         int sizeBoard = boardMap.size();
@@ -68,7 +72,7 @@ public class Board {
             for (int x = 0; x<sizeBoard; x++){
                 Piece piece = allPieces.get(boardMap.get(y)[x]);
                 if (piece!=null){
-                    if (piece.getTeam() == 0) {
+                    if (piece.getTeam() == 10) {
                         count++;
                     }
                 }
@@ -83,13 +87,41 @@ public class Board {
             for (int x = 0; x<sizeBoard; x++){
                 Piece piece = allPieces.get(boardMap.get(y)[x]);
                 if (piece!=null){
-                    if (piece.getTeam() == 1) {
+                    if (piece.getTeam() == 20) {
                         count++;
                     }
                 }
             }
         }
         return count;
+    }
+    boolean blackKingInGame(){
+        int sizeBoard = boardMap.size();
+        for (String[] strings : boardMap) {
+            for (int x = 0; x < sizeBoard; x++) {
+                Piece piece = allPieces.get(strings[x]);
+                if (piece != null) {
+                    if (piece.getTeam() == 10 && piece.isInGame() && piece.getTypeChessPiece().equals("0")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    boolean whiteKingInGame(){
+        int sizeBoard = boardMap.size();
+        for (String[] strings : boardMap) {
+            for (int x = 0; x < sizeBoard; x++) {
+                Piece piece = allPieces.get(strings[x]);
+                if (piece != null) {
+                    if (piece.getTeam() == 20 && piece.isInGame() && piece.getTypeChessPiece().equals("0")) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     boolean captureOccurred(int numPieces){

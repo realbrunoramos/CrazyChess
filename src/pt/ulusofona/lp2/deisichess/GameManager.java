@@ -4,23 +4,24 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GameManager {
+    boolean haveBackUp;
     int boardDimension;
     int numPieces;
     GameStatus gameStatus;
     public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
-    public ArrayList<String> fileLinesContent;
+    public ArrayList<String> pieceInfoSectionLines;
+    public ArrayList<String> boardSectionLines;
 
     public void getStarted(){
         boardDimension = 0;
         numPieces = 0;
+        haveBackUp = false;
         gameStatus = new GameStatus();
-        fileLinesContent = new ArrayList<>();
+        pieceInfoSectionLines = new ArrayList<>();
+        boardSectionLines = new ArrayList<>();
     }
 //TODO alterar o mapa do ficheiro
     public GameManager() {
@@ -28,20 +29,20 @@ public class GameManager {
 
     public void saveGame(File file) throws IOException{
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
-        fileLinesContent.subList(numPieces+2, fileLinesContent.size()).clear();
+        pieceInfoSectionLines.subList(numPieces+2, pieceInfoSectionLines.size()).clear();
         ArrayList<String> atualBoard = gameStatus.getTheBoard().getBoardMapStr();
         int pos = 0;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
             for (int i = 0; i< numPieces+boardDimension+2; i++) {
                 if(i<numPieces+2){
-                    writer.write(fileLinesContent.get(i));
+                    writer.write(pieceInfoSectionLines.get(i));
                 }else{
                     writer.write(atualBoard.get(pos));
                     pos++;
                 }
                 writer.newLine();
             }
-            ArrayList<String> historic = gameStatus.getRoundDetails();
+            ArrayList<String> historic = gameStatus.getHistoricRoundDetails();
             for (int i = 0; i<historic.size(); i++){
                 writer.write(historic.get(i));
                 if (i<historic.size()-1){
@@ -67,7 +68,7 @@ public class GameManager {
         int y = 0;
         for (int line = startPieceInfos; line<endBoardSection; line++){
             if (line<startBoardSection){
-                String[] array = fileLinesContent.get(line).split(":");
+                String[] array = pieceInfoSectionLines.get(line).split(":");
                 if (array.length>4){
                     throw new InvalidGameInputException(line+1, inicialMsgMais+"4 ; Obtive: "+array.length+")");
                 } else if(array.length<4){
@@ -101,9 +102,10 @@ public class GameManager {
                         theBoard.putAllPieces(id, piece);
                     }
                 }
-            } else {
-                String[] array = fileLinesContent.get(line).split(":");
-                theBoard.addBoardMap(array);
+            } else if (!haveBackUp){
+                String[] array = boardSectionLines.get(y).split(":");
+                //TODO
+                theBoard.addBoardMapLine(array);
                 for (int x = 0 ; x<array.length; x++){
                     if (array.length>boardDimension){
                         throw new InvalidGameInputException(line+1, inicialMsgMais+boardDimension+" ; Obtive: "+array.length+")");
@@ -118,6 +120,24 @@ public class GameManager {
                     }
                 }
                 y++;
+            } else {
+                break;
+            }
+
+        }
+        if (haveBackUp){
+            theBoard.getBoardMap().clear();
+            for (int y2 = 0; y2<boardDimension; y2++){
+                String[] array = boardSectionLines.get(y2).split(":");
+                theBoard.addBoardMapLine(array);
+                for (int x = 0 ; x<array.length; x++){
+                    Piece piece = theBoard.allPieces.get(array[x]);
+                    if (piece!=null){
+                        piece.setInGame();
+                        piece.setCoordinateX(x);
+                        piece.setCoordinateY(y2);
+                    }
+                }
             }
         }
 
@@ -128,31 +148,42 @@ public class GameManager {
     }
     public void loadGame(File file) throws InvalidGameInputException, IOException{
         getStarted();
+        ArrayList<String> allDataLines = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String lineContent;
 
             while ((lineContent = br.readLine()) != null) {
-                fileLinesContent.add(lineContent);
+                allDataLines.add(lineContent);
             }
-            boardDimension = Integer.parseInt(fileLinesContent.get(0));
-            numPieces = Integer.parseInt(fileLinesContent.get(1));
-
-            attributingPieces();
+            boardDimension = Integer.parseInt(allDataLines.get(0));
+            numPieces = Integer.parseInt(allDataLines.get(1));
 
             int startBoardSection = numPieces+2;
             int endBoardSection = startBoardSection+boardDimension;
 
-            boolean haveBackUp = fileLinesContent.size() > endBoardSection;
+            for (int l = 0; l<startBoardSection; l++){
+                pieceInfoSectionLines.add(allDataLines.get(l));
+            }
+
+            haveBackUp = allDataLines.size() > endBoardSection;
 
             if (haveBackUp){
-                for (int i = endBoardSection; i<fileLinesContent.size(); i++){
-                    String moveDetails = fileLinesContent.get(i);
+                String moveDetails = "";
+                for (int i = endBoardSection; i < allDataLines.size(); i++){
+                    moveDetails = allDataLines.get(i);
                     gameStatus.addAllRoundDetailsFromTxt(moveDetails);
-                    if (i==fileLinesContent.size()-1){
-                        gameStatus.upDateStatus(moveDetails);
-                    }
+                }
+                gameStatus.upDateStatus(moveDetails);
+                String[] parts = moveDetails.split("@");
+                String[] map = parts[1].split("-");
+                boardSectionLines.addAll(Arrays.asList(map));
+            } else {
+                for (int l = startBoardSection; l<endBoardSection; l++){
+                    boardSectionLines.add(allDataLines.get(l));
                 }
             }
+
+            attributingPieces();
             gameStatus.addRoundDetails();
         }
     }
@@ -160,15 +191,33 @@ public class GameManager {
         return boardDimension;
     }
     public void undo(){
+        gameStatus.undoMove();
         try {
             attributingPieces();
         } catch (InvalidGameInputException e) {
             throw new RuntimeException(e);
         }
-        gameStatus.undoMove();
     }
     public List<Comparable> getHints(int x, int y){
-        return new ArrayList<>();
+        ArrayList<Comparable> cmp = new ArrayList<>();
+        Board boardMap = gameStatus.getTheBoard();
+        Piece movingPiece = boardMap.getAllPieces().get(boardMap.getBoardMap().get(y)[x]);
+        //TODO
+        if (movingPiece!=null){
+            for (int y1 = 0; y1 < boardDimension; y1++) {
+                for (int x1 = 0; x1 < boardDimension; x1++) {
+
+                    if (movingPiece.validMove(x1, y1)){
+                        int points = gameStatus.movePointsSimulation(x, y, x1, y1);
+                        if (points >= 0) {
+                            cmp.add(points);
+                        }
+                    }
+                }
+            }
+            return cmp;
+        }
+        return null;
     }
     public boolean move(int x0, int y0, int x1, int y1) {
         Board theBoard = gameStatus.getTheBoard();
@@ -181,9 +230,7 @@ public class GameManager {
             return false;
         }
 
-        String[][] boardMap = theBoard.getBoard();
-
-        Piece pieceOrigin = theBoard.allPieces.get(boardMap[y0][x0]);
+        Piece pieceOrigin = theBoard.allPieces.get(theBoard.getBoardMap().get(y0)[x0]);
 
         if (pieceOrigin!=null){
             if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
@@ -191,9 +238,9 @@ public class GameManager {
                 return false;
             }
         }
-        String originSquare = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
+        String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
-        if (originSquare.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
+        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
@@ -235,7 +282,7 @@ public class GameManager {
         if ((boardDimension <= x) || (boardDimension <= y)) {
             return null;
         }
-        String square = theBoard.getBoard()[y][x];
+        String square = theBoard.getBoardMap().get(y)[x];
         if (!square.equals("0")){
             Piece piece = theBoard.allPieces.get(square);
             squares[0] = piece.getId();
@@ -290,26 +337,23 @@ public class GameManager {
     }
 
     public boolean gameOver() {
-        return false;
-        /*
+
         Board theBoard = gameStatus.getTheBoard();
-        int blacksInGame = theBoard.getNumBlacksInGame();
-        int whitesInGame = theBoard.getNumWhitesInGame();
-        if (blacksInGame == 0 || whitesInGame == 0){
+        boolean blackKingInGame = theBoard.blackKingInGame();
+        boolean whiteKingInGame = theBoard.whiteKingInGame();
+        if (!blackKingInGame || !whiteKingInGame){
             return true;
         }
-        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || (blacksInGame==1 && whitesInGame==1));
+        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10));
         return theBoard.isDraw();
-        */
     }
 
     public ArrayList<String> getGameResults() {
         Board theBoard = gameStatus.getTheBoard();
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
 
-        int blacksInGame = theBoard.getNumBlacksInGame();
-        int whitesInGame = theBoard.getNumWhitesInGame();
-
+        boolean blackKingInGame = theBoard.blackKingInGame();
+        boolean whiteKingInGame = theBoard.whiteKingInGame();
         ArrayList<String> gameResult = new ArrayList<>();
         int blackCaptures = teamStatistics[0].getCaptures();
         int blackValidMoves = teamStatistics[0].getValidMoves();
@@ -321,7 +365,7 @@ public class GameManager {
 
         String result = "EMPATE";
         if (!theBoard.isDraw()){
-            result = blacksInGame>whitesInGame? "VENCERAM AS PRETAS" : "VENCERAM AS BRANCAS";
+            result = blackKingInGame && !whiteKingInGame? "VENCERAM AS PRETAS" : "VENCERAM AS BRANCAS";
         }
         gameResult.add("JOGO DE CRAZY CHESS");
         gameResult.add("Resultado: "+result);

@@ -7,7 +7,7 @@ import static pt.ulusofona.lp2.deisichess.MoveAction.*;
 
 public class GameStatus {
 
-    public ArrayList<String> roundDetails;
+    public ArrayList<String> historicRoundDetails;
     public TeamStatistic[] teamStatistics;
     Board theBoard;
     int currentTeam;
@@ -19,7 +19,7 @@ public class GameStatus {
         teamStatistics = new TeamStatistic[2];
         teamStatistics[0] = new TeamStatistic("10");
         teamStatistics[1] = new TeamStatistic("20");
-        roundDetails = new ArrayList<>();
+        historicRoundDetails = new ArrayList<>();
         currentTeam = 10;
         roundCounter = 0;
         consecutivePlays = 0;
@@ -64,28 +64,27 @@ public class GameStatus {
 
     public void addRoundDetails(){
         String boardMapStr = theBoard.getBoardMapStr().toString().replaceAll(", ", "-").replaceAll("\\[|]|", "");
-        roundDetails.add(currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
+        historicRoundDetails.add(currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]);
     }
     public void addAllRoundDetailsFromTxt(String moveDetails){
-        roundDetails.add(moveDetails);
+        historicRoundDetails.add(moveDetails);
     }
 
     public void upDateStatus(String status) {
 //currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+boardMapStr+"@"+teamStatistics[0]+"@"+teamStatistics[1]
         String[] parts = status.split("@");
         String[] subParts = parts[0].split("\\|");
+
         currentTeam = Integer.parseInt(subParts[0]);
         roundCounter = Integer.parseInt(subParts[1]);
         consecutivePlays = Integer.parseInt(subParts[2]);
 
         //---------------------
         String[] boardLines = parts[1].split("-");
-        ArrayList<String[]> boardMap = new ArrayList<>();
         for (String s : boardLines){
             String[] horizontalLine = s.split(":");
-            boardMap.add(horizontalLine);
+            theBoard.addBoardMapLine(horizontalLine);
         }
-        theBoard.setBoardMap(boardMap);
         //------------------------
 
         String[] blackStatistics = parts[2].split("\\|");
@@ -123,14 +122,20 @@ public class GameStatus {
         }
     }
     public void undoMove(){
-        int size = roundDetails.size();
+        int size = historicRoundDetails.size();
         int indLast = size-1;
-        if (size!=0) {
+        if (size>0) {
             if (indLast > 0) {
-                roundDetails.remove(indLast--);
+                historicRoundDetails.remove(indLast--);
+                String pastMove = historicRoundDetails.get(indLast);
+                upDateStatus(pastMove);
+            } else {
+                String pastMove = historicRoundDetails.get(0);
+                if(pastMove!=null){
+                    upDateStatus(pastMove);
+                    historicRoundDetails.remove(0);
+                }
             }
-            String pastMove = roundDetails.get(indLast);
-            upDateStatus(pastMove);
         }
     }
 
@@ -141,26 +146,26 @@ public class GameStatus {
         int maxX = Math.max(x0, x1);
         int minY = Math.min(y0, y1);
         int maxY = Math.max(y0, y1);
-        String[][] boardMap = theBoard.getBoard();
+        ArrayList<String[]> boardMap = theBoard.getBoardMap();
         switch (typePiece){
             case "1" : {
                 if (horizontal==0){
                     for (int y = minY+1; y<maxY; y++){
-                        if(!boardMap[y][x0].equals("0")){
+                        if(!boardMap.get(y)[x0].equals("0")){
                             return true;
                         }
                     }
                 } else if(vertical==0){
                     for (int x = minX+1; x<maxX; x++){
-                        if(!boardMap[y0][x].equals("0")){
+                        if(!boardMap.get(y0)[x].equals("0")){
                             return true;
                         }
                     }
                 } else if (horizontal==vertical){
-                    while (x0!=x1&&y0!=y1){
-                        x0 = x0>x1-1?x0-1:x0+1;
-                        y0 = y0>y1-1?y0-1:y0+1;
-                        if(!boardMap[y0][x0].equals("0")){
+                    while (x0!=x1-1&&y0!=y1-1){
+                        x0 = x0>x1?x0-1:x0+1;
+                        y0 = y0>y1?y0-1:y0+1;
+                        if(!boardMap.get(y0)[x0].equals("0")){
                             return true;
                         }
                     }
@@ -170,15 +175,15 @@ public class GameStatus {
             case "2" : {
                 int cx = x0>x1?x0-1:x0+1;
                 int cy = y0>y1?y0-1:y0+1;
-                boolean way1 = !boardMap[cx-1][cy].equals("0") || !boardMap[cx-1][cy-1].equals("0") || !boardMap[cx][cy-1].equals("0");
-                boolean way2 = !boardMap[cx+1][cy].equals("0") || !boardMap[cx+1][cy+1].equals("0") || !boardMap[cx][cy+1].equals("0");
+                boolean way1 = !boardMap.get(cx-1)[cy].equals("0") || !boardMap.get(cx-1)[cy-1].equals("0") || !boardMap.get(cx)[cy-1].equals("0");
+                boolean way2 = !boardMap.get(cx+1)[cy].equals("0") || !boardMap.get(cx+1)[cy+1].equals("0") || !boardMap.get(cx)[cy+1].equals("0");
                 return way1 && way2;
             }
             case "3" : {
                 while (x0!=x1&&y0!=y1){
                     x0 = x0>x1-1?x0-1:x0+1;
                     y0 = y0>y1-1?y0-1:y0+1;
-                    if(!boardMap[y0][x0].equals("0")){
+                    if(!boardMap.get(y0)[x0].equals("0")){
                         return true;
                     }
                 }
@@ -186,7 +191,7 @@ public class GameStatus {
             }
             case "4" : {
                 for (int x = minX+1; x<maxX; x++){
-                    if(!boardMap[y0][x].equals("0")){
+                    if(!boardMap.get(y0)[x].equals("0")){
                         return true;
                     }
                 }
@@ -194,7 +199,7 @@ public class GameStatus {
             }
             case "5" : {
                 for (int y = minY+1; y<maxY; y++){
-                    if(!boardMap[y][x0].equals("0")){
+                    if(!boardMap.get(y)[x0].equals("0")){
                         return true;
                     }
                 }
@@ -204,11 +209,12 @@ public class GameStatus {
         }
     }
     MoveAction moveSituation(int x0, int y0, int x1, int y1){
-        String[][] boardMap = theBoard.getBoard();
+        ArrayList<String[]> boardMap = theBoard.getBoardMap();
+
         HashMap<String, Piece> allPieces = theBoard.getAllPieces();
 
-        String originSquare = boardMap[y0][x0];
-        String destinSquare = boardMap[y1][x1];
+        String originSquare = boardMap.get(y0)[x0];
+        String destinSquare = boardMap.get(y1)[x1];
         Piece movingPiece = allPieces.get(originSquare);
         Piece steppedPiece = allPieces.get(destinSquare);
 
@@ -216,8 +222,8 @@ public class GameStatus {
             return PIECE_ON_THE_WAY;
         }
         if (steppedPiece == null){
-            boardMap[y1][x1] = originSquare;
-            boardMap[y0][x0] = "0";
+            boardMap.get(y1)[x1] = originSquare;
+            boardMap.get(y0)[x0] = "0";
             return TO_FREE_SQUARE;
         } else {
             if (steppedPiece.getTeam() == currentTeam){
@@ -226,11 +232,36 @@ public class GameStatus {
                 if (steppedPiece.getTypeChessPiece().equals("1") && movingPiece.getTypeChessPiece().equals("1")){
                     return QUEEN_KILLS_QUEEN;
                 }
-                boardMap[y1][x1] = originSquare;
-                boardMap[y0][x0] = "0";
+                boardMap.get(y1)[x1] = originSquare;
+                boardMap.get(y0)[x0] = "0";
                 allPieces.get(destinSquare).captured();
+
                 teamStatistics[currentTeam/10-1].addPoints(steppedPiece.getPoints());
                 return TO_OPPONENT_PIECE_SQUARE;
+            }
+        }
+    }
+    int movePointsSimulation(int x0, int y0, int x1, int y1){
+        ArrayList<String[]> boardMap = theBoard.getBoardMap();
+        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
+        String originSquare = boardMap.get(y0)[x0];
+        String destinSquare = boardMap.get(y1)[x1];
+        Piece movingPiece = allPieces.get(originSquare);
+        Piece steppedPiece = allPieces.get(destinSquare);
+
+        if (pieceOnTheWay(movingPiece.getTypeChessPiece(), x0, y0, x1, y1)){
+            return -1;
+        }
+        if (steppedPiece == null){
+            return 0;
+        } else {
+            if (steppedPiece.getTeam() == currentTeam){
+                return -1;
+            } else {
+                if (steppedPiece.getTypeChessPiece().equals("1") && movingPiece.getTypeChessPiece().equals("1")){
+                    return -1;
+                }
+                return steppedPiece.getPoints();
             }
         }
     }
@@ -238,8 +269,8 @@ public class GameStatus {
 
 
 
-    public ArrayList<String> getRoundDetails() {
-        return roundDetails;
+    public ArrayList<String> getHistoricRoundDetails() {
+        return historicRoundDetails;
     }
 
     public TeamStatistic[] getTeamStatistics() {
