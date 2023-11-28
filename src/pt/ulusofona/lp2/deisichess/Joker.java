@@ -7,7 +7,7 @@ public class Joker extends Piece {
         this.pieceNameType = "Joker";
     }
 
-    public void sendFakeTypePiece(String fakeTypePiece) {
+    public void changeMoveOfTypePiece(String fakeTypePiece) {
         moveOfTypePiece = new MoveOfTypePiece(fakeTypePiece);
     }
 }

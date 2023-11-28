@@ -7,45 +7,42 @@ import java.io.*;
 import java.util.*;
 
 public class GameManager {
-    boolean haveBackUp;
     int boardDimension;
     int numPieces;
     GameStatus gameStatus;
-    public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
     public ArrayList<String> pieceInfoSectionLines;
-    public ArrayList<String> boardSectionLines;
 
     public void getStarted(){
         boardDimension = 0;
         numPieces = 0;
-        haveBackUp = false;
         gameStatus = new GameStatus();
         pieceInfoSectionLines = new ArrayList<>();
-        boardSectionLines = new ArrayList<>();
     }
-//TODO alterar o mapa do ficheiro
+
     public GameManager() {
     }
 
     public void saveGame(File file) throws IOException{
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
+
         pieceInfoSectionLines.subList(numPieces+2, pieceInfoSectionLines.size()).clear();
-        ArrayList<String> atualBoard = gameStatus.getTheBoard().getBoardMapStr();
+
+        ArrayList<String> atualBoard = gameStatus.getTheBoard().getBoardMapForTxt();
+
+        String roundDetails = gameStatus.getLastRoundDetails();
+
         int pos = 0;
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, false))) {
-            for (int i = 0; i< numPieces+boardDimension+2; i++) {
+            for (int i = 0; i< numPieces+boardDimension+3; i++) {
                 if(i<numPieces+2){
                     writer.write(pieceInfoSectionLines.get(i));
-                }else{
+                }else if (i< numPieces+boardDimension+2){
                     writer.write(atualBoard.get(pos));
                     pos++;
+                } else {
+                    writer.write(roundDetails);
                 }
-                writer.newLine();
-            }
-            ArrayList<String> historic = gameStatus.getHistoricRoundDetails();
-            for (int i = 0; i<historic.size(); i++){
-                writer.write(historic.get(i));
-                if (i<historic.size()-1){
+                if (i< numPieces+boardDimension+2){
                     writer.newLine();
                 }
             }
@@ -55,24 +52,37 @@ public class GameManager {
 
     }
 
-    public void attributingPieces() throws InvalidGameInputException {
-        String inicialMsgMais = "DADOS A MAIS (Esperava: ";
-        String inicialMsgMenos = "DADOS A MENOS (Esperava: ";
+    public Map<String,String> customizeBoard(){
+        return new HashMap<>();
+    }
 
-        int startPieceInfos = 2;
-        int startBoardSection = numPieces+2;
-        int endBoardSection = startBoardSection+boardDimension;
-
+    public void loadGame(File file) throws InvalidGameInputException, IOException{
+        getStarted();
+        ArrayList<String> fileLinesContent = new ArrayList<>();
         Board theBoard = gameStatus.getTheBoard();
-        int roundCounter = gameStatus.getRoundCounter();
-        int y = 0;
-        for (int line = startPieceInfos; line<endBoardSection; line++){
-            if (line<startBoardSection){
-                String[] array = pieceInfoSectionLines.get(line).split(":");
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String lineContent;
+            while ((lineContent = br.readLine()) != null) {
+                fileLinesContent.add(lineContent);
+            }
+
+            boardDimension = Integer.parseInt(fileLinesContent.get(0));
+            numPieces = Integer.parseInt(fileLinesContent.get(1));
+
+            int lineOfBoardSection = numPieces+2;
+
+            for (int i=0; i<lineOfBoardSection; i++){
+                pieceInfoSectionLines.add(fileLinesContent.get(i));
+            }
+            String mais = "DADOS A MAIS (Esperava: ";
+            String menos = "DADOS A MENOS (Esperava: ";
+
+            for (int line = 2; line<lineOfBoardSection; line++){
+                String[] array = fileLinesContent.get(line).split(":");
                 if (array.length>4){
-                    throw new InvalidGameInputException(line+1, inicialMsgMais+"4 ; Obtive: "+array.length+")");
+                    throw new InvalidGameInputException(line+1, mais +"4 ; Obtive: "+array.length+")");
                 } else if(array.length<4){
-                    throw new InvalidGameInputException(line+1, inicialMsgMenos+"4 ; Obtive: "+array.length+")");
+                    throw new InvalidGameInputException(line+1, menos +"4 ; Obtive: "+array.length+")");
                 }
                 String imagePath = array[1]+array[2]+".png";
                 String id = array[0];
@@ -96,95 +106,29 @@ public class GameManager {
                         break;
                     case "7" :{
                         Joker piece = new Joker(id, typeChessPiece, team, name, imagePath, 0, 0);
-                        int indexNameTypePiece = roundCounter % 6;
-                        piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
-                        piece.sendFakeTypePiece(indexNameTypePiece+1+"");
+
                         theBoard.putAllPieces(id, piece);
                     }
                 }
-            } else if (!haveBackUp){
-                String[] array = boardSectionLines.get(y).split(":");
-                //TODO
-                theBoard.addBoardMapLine(array);
+            }
+            for (int line = lineOfBoardSection; line<lineOfBoardSection+boardDimension; line++){
+                String[] array = fileLinesContent.get(line).split(":");
+                theBoard.addBoardMap(array);
                 for (int x = 0 ; x<array.length; x++){
                     if (array.length>boardDimension){
-                        throw new InvalidGameInputException(line+1, inicialMsgMais+boardDimension+" ; Obtive: "+array.length+")");
+                        throw new InvalidGameInputException(line+1, mais+boardDimension+" ; Obtive: "+array.length+")");
                     } else if(array.length<boardDimension){
-                        throw new InvalidGameInputException(line+1, inicialMsgMenos+boardDimension+" ; Obtive: "+array.length+")");
-                    }
-                    Piece piece = theBoard.allPieces.get(array[x]);
-                    if (piece!=null){
-                        piece.setInGame();
-                        piece.setCoordinateX(x);
-                        piece.setCoordinateY(y);
-                    }
-                }
-                y++;
-            } else {
-                break;
-            }
-
-        }
-        if (haveBackUp){
-            theBoard.getBoardMap().clear();
-            for (int y2 = 0; y2<boardDimension; y2++){
-                String[] array = boardSectionLines.get(y2).split(":");
-                theBoard.addBoardMapLine(array);
-                for (int x = 0 ; x<array.length; x++){
-                    Piece piece = theBoard.allPieces.get(array[x]);
-                    if (piece!=null){
-                        piece.setInGame();
-                        piece.setCoordinateX(x);
-                        piece.setCoordinateY(y2);
+                        throw new InvalidGameInputException(line+1, menos+boardDimension+" ; Obtive: "+array.length+")");
                     }
                 }
             }
-        }
-
-
-    }
-    public Map<String,String> customizeBoard(){
-        return new HashMap<>();
-    }
-    public void loadGame(File file) throws InvalidGameInputException, IOException{
-        getStarted();
-        ArrayList<String> allDataLines = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String lineContent;
-
-            while ((lineContent = br.readLine()) != null) {
-                allDataLines.add(lineContent);
+            String status = null;
+            int endBoardSection = lineOfBoardSection+boardDimension;
+            if (fileLinesContent.size() > endBoardSection){
+                status = fileLinesContent.get(endBoardSection);
             }
-            boardDimension = Integer.parseInt(allDataLines.get(0));
-            numPieces = Integer.parseInt(allDataLines.get(1));
-
-            int startBoardSection = numPieces+2;
-            int endBoardSection = startBoardSection+boardDimension;
-
-            for (int l = 0; l<startBoardSection; l++){
-                pieceInfoSectionLines.add(allDataLines.get(l));
-            }
-
-            haveBackUp = allDataLines.size() > endBoardSection;
-
-            if (haveBackUp){
-                String moveDetails = "";
-                for (int i = endBoardSection; i < allDataLines.size(); i++){
-                    moveDetails = allDataLines.get(i);
-                    gameStatus.addAllRoundDetailsFromTxt(moveDetails);
-                }
-                gameStatus.upDateStatus(moveDetails);
-                String[] parts = moveDetails.split("@");
-                String[] map = parts[1].split("-");
-                boardSectionLines.addAll(Arrays.asList(map));
-            } else {
-                for (int l = startBoardSection; l<endBoardSection; l++){
-                    boardSectionLines.add(allDataLines.get(l));
-                }
-            }
-
-            attributingPieces();
-            gameStatus.addRoundDetails();
+            gameStatus.upDateStatus(status);
+            gameStatus.addRoundHistoric();
         }
     }
     public int getBoardSize() {
@@ -192,11 +136,6 @@ public class GameManager {
     }
     public void undo(){
         gameStatus.undoMove();
-        try {
-            attributingPieces();
-        } catch (InvalidGameInputException e) {
-            throw new RuntimeException(e);
-        }
     }
     public List<Comparable> getHints(int x, int y){
         ArrayList<Comparable> cmp = new ArrayList<>();
@@ -219,6 +158,8 @@ public class GameManager {
         }
         return null;
     }
+
+
     public boolean move(int x0, int y0, int x1, int y1) {
         Board theBoard = gameStatus.getTheBoard();
         int current = (gameStatus.getCurrentTeam()/10)-1;
@@ -232,15 +173,13 @@ public class GameManager {
 
         Piece pieceOrigin = theBoard.allPieces.get(theBoard.getBoardMap().get(y0)[x0]);
 
-        if (pieceOrigin!=null){
+        String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
+
+        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
             if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
                 teamStatistics[current].incInvalidMoves();
                 return false;
             }
-        }
-        String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
-
-        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
@@ -255,11 +194,8 @@ public class GameManager {
 
             teamStatistics[current].incValidMoves();
             for (Piece piece : theBoard.allPieces.values()){
-                int indexNameTypePiece = gameStatus.getRoundCounter() % 6;
-
                 if (piece.getPieceNameType().split("/")[0].equals("Joker")){
-                    piece.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
-                    ((Joker)piece).sendFakeTypePiece(indexNameTypePiece+1+"");
+                    gameStatus.jokerFaces((Joker)piece);
                 }
             }
             if(current == 1){
@@ -267,7 +203,7 @@ public class GameManager {
             }else{
                 gameStatus.setCurrentTeam(20);
             }
-            gameStatus.addRoundDetails();
+            gameStatus.addRoundHistoric();
             return true;
         }
         else {

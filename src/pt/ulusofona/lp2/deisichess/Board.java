@@ -13,7 +13,17 @@ public class Board {
         this.allPieces = new HashMap<>();
         draw = false;
     }
-
+    public void changeMapSquare(String str, int x, int y){
+        Piece piece = allPieces.get(str);
+        if (piece!=null){
+            piece.setCoordinateX(x);
+            piece.setCoordinateY(y);
+        }
+        boardMap.get(y)[x] = str;
+    }
+    public void setBoardMap (ArrayList<String[]> boardMap){
+        this.boardMap = boardMap;
+    }
     public ArrayList<String[]> getBoardMap() {
         return boardMap;
     }
@@ -21,10 +31,12 @@ public class Board {
     public HashMap<String, Piece> getAllPieces() {
         return allPieces;
     }
+    public void setCaptured(String pieceId){
+        allPieces.get(pieceId).captured();
+    }
 
-    public ArrayList<String> getBoardMapStr(){
+    public ArrayList<String> getBoardMapForTxt(){
         int size = boardMap.size();
-        System.out.println(size + " size");
         StringBuilder sb = new StringBuilder();
         ArrayList<String> result = new ArrayList<>();
         for (int y = 0; y <size; y++){
@@ -37,25 +49,16 @@ public class Board {
             result.add(sb+"");
             sb.delete(0, sb.length());
         }
-        for (String[] s : boardMap){
-            System.out.println(Arrays.toString(s));
-        }
         return result;
     }
+    void addBoardMap(String[] boardLine){
+        this.boardMap.add(boardLine);
+    }
+
     void putAllPieces(String pieceId, Piece piece){
         this.allPieces.put(pieceId, piece);
     }
-    void setAllCoordinates(){
-        for (int y = 0; y< boardMap.size(); y++){
-            for (int x = 0; x< boardMap.size(); x++){
-                String pieceId = boardMap.get(y)[x];
-                if (!pieceId.equals("0")){
-                    this.allPieces.get(pieceId).setCoordinateX(x);
-                    this.allPieces.get(pieceId).setCoordinateY(y);
-                }
-            }
-        }
-    }
+
     void setDraw(boolean condition){
         draw = condition;
     }
