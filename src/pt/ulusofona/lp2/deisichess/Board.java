@@ -34,6 +34,18 @@ public class Board {
     public void setCaptured(String pieceId){
         allPieces.get(pieceId).captured();
     }
+    public void incPieceValidMoves(String pieceId){
+        allPieces.get(pieceId).incValidMoves();
+    }
+    public void incPieceInvalidMoves(String pieceId){
+        allPieces.get(pieceId).incInvalidMoves();
+    }
+    public void incPieceCaptures(String pieceId){
+        allPieces.get(pieceId).incCaptures();
+    }
+    public void incPieceEarnedPoints(String pieceId, int points){
+        allPieces.get(pieceId).incEarnedPoints(points);
+    }
 
     public ArrayList<String> getBoardMapForTxt(){
         int size = boardMap.size();

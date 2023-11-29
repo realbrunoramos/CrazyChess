@@ -138,15 +138,16 @@ public class GameManager {
         gameStatus.undoMove();
     }
     public List<Comparable> getHints(int x, int y){
+
         ArrayList<Comparable> cmp = new ArrayList<>();
         Board boardMap = gameStatus.getTheBoard();
         Piece movingPiece = boardMap.getAllPieces().get(boardMap.getBoardMap().get(y)[x]);
-        //TODO
+
         if (movingPiece!=null){
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
 
-                    if (movingPiece.validMove(x1, y1)){
+                    if (movingPiece.isValidMove(x1, y1)){
                         int points = gameStatus.movePointsSimulation(x, y, x1, y1);
                         if (points >= 0) {
                             cmp.add(points);
@@ -170,14 +171,16 @@ public class GameManager {
             teamStatistics[current].incInvalidMoves();
             return false;
         }
+        String originSquare = theBoard.getBoardMap().get(y0)[x0];
 
-        Piece pieceOrigin = theBoard.allPieces.get(theBoard.getBoardMap().get(y0)[x0]);
+        Piece pieceOrigin = theBoard.allPieces.get(originSquare);
 
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
-        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.validMove(x1, y1))){
+        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x1, y1))){
             if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
                 teamStatistics[current].incInvalidMoves();
+                theBoard.incPieceInvalidMoves(originSquare);
                 return false;
             }
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);

@@ -14,6 +14,10 @@ public abstract class Piece {
     int coordinatesY;
     String status;
     boolean inGame;
+    int captures;
+    int validMoves;
+    int invalidMoves;
+    int earnedPoints;
     MoveOfTypePiece moveOfTypePiece;
 
 
@@ -25,8 +29,44 @@ public abstract class Piece {
         this.imagePath = imagePath;
         this.coordinatesX = coordinatesX;
         this.coordinatesY = coordinatesY;
-        this.status = capturedMsg;
-        this.inGame = true;
+
+        status = capturedMsg;
+        inGame = true;
+
+        captures = 0;
+        validMoves = 0;
+        invalidMoves = 0;
+        earnedPoints = 0;
+    }
+
+    public void setCaptures(int captures) {
+        this.captures = captures;
+    }
+    public void setValidMoves(int validMoves) {
+        this.validMoves = validMoves;
+    }
+    public void setInvalidMoves(int invalidMoves) {
+        this.invalidMoves = invalidMoves;
+    }
+    public void setEarnedPoints(int earnedPoints) {
+        this.earnedPoints = earnedPoints;
+    }
+
+    public String getPieceStatisticsStr(){
+        return id + "|" + captures + "|" + earnedPoints + "|" + validMoves + "|" + invalidMoves;
+    }
+
+    public void incCaptures() {
+        this.captures++;
+    }
+    public void incValidMoves() {
+        this.validMoves++;
+    }
+    public void incInvalidMoves() {
+        this.invalidMoves++;
+    }
+    public void incEarnedPoints(int points) {
+        this.earnedPoints+=points;
     }
 
     public String getPieceNameType() {
@@ -44,7 +84,6 @@ public abstract class Piece {
     public void setCoordinateX(int x) {
         this.coordinatesX = x;
     }
-
     public void setCoordinateY(int y) {
         this.coordinatesY = y;
     }
@@ -52,15 +91,13 @@ public abstract class Piece {
     public String getId() {
         return id;
     }
-
     public String getTypeChessPiece() {
         return typeChessPiece;
     }
-
     public int getTeam() {
         return team;
     }
-    boolean validMove(int x1, int y1){
+    boolean isValidMove(int x1, int y1){
         return moveOfTypePiece.validMove(coordinatesX, coordinatesY, x1, y1);
     }
     public String getName() {
