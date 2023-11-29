@@ -2,14 +2,11 @@ package pt.ulusofona.lp2.deisichess
 
 
 fun fun1(gameManager: GameManager): List<String> {
-    // Your implementation here
-    return listOf("String1", "String2") // Replace this with your actual implementation
+    return listOf("String1", "String2")
 }
 
-fun getStatsCalculator(a: StatType): (GameManager) -> List<String> {
-    return { gameManager ->
-        fun1(gameManager) // Replace this with the actual creation of StatsCalculator
-    }
+fun getStatsCalculator(a: StatType) {
+
 }
 
 /*
