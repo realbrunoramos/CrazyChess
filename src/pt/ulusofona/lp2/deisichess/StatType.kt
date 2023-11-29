@@ -1,5 +1,6 @@
 package pt.ulusofona.lp2.deisichess
 
+
 enum class StatType {
     TOP_5_CAPTURAS,
     TOP_5_PONTOS,

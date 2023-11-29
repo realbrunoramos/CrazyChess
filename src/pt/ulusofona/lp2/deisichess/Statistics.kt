@@ -1,8 +1,24 @@
 package pt.ulusofona.lp2.deisichess
 
-fun stat (stat : StatType){//:Function1<Int, Int>{
 
+fun fun1(gameManager: GameManager): List<String> {
+    // Your implementation here
+    return listOf("String1", "String2") // Replace this with your actual implementation
 }
+
+fun getStatsCalculator(a: StatType): (GameManager) -> List<String> {
+    return { gameManager ->
+        fun1(gameManager) // Replace this with the actual creation of StatsCalculator
+    }
+}
+
+/*
+fun  getStatsCalculator(stat : StatType){
+    when (stat){
+        StatType.PECAS_MAIS_5_CAPTURAS ->
+    }
+}
+*/
 
 /*
 fun calculaMaximo(numeros: Array<Int>) : Int { … }
