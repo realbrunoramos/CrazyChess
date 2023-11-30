@@ -130,7 +130,6 @@ public class GameStatus {
                     }
                 }
             }
-
             String[] piecesStatus = parts[3].split("-");
             for (String pieceStatus : piecesStatus) {
                 String[] pieceParts = pieceStatus.split("\\|");

@@ -23,12 +23,9 @@ public class GameManager {
     }
 
     public void saveGame(File file) throws IOException{
-        TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
 
         pieceInfoSectionLines.subList(numPieces+2, pieceInfoSectionLines.size()).clear();
-
         ArrayList<String> atualBoard = gameStatus.getTheBoard().getBoardMapForTxt();
-
         String roundDetails = gameStatus.getLastRoundDetails();
 
         int pos = 0;
@@ -251,8 +248,11 @@ public class GameManager {
             }
             case PECAS_MAIS_BARALHADAS -> {
                 for (Piece piece : allPieces.values()){
-                    result.put(piece.getInvalidMoves()/(piece.getInvalidMoves()+piece.getValidMoves()),
-                            piece.getTeam()+":"+piece.getName()+":"+piece.getValidMoves()+":"+piece.getInvalidMoves());
+                    int valid = piece.getValidMoves();
+                    int invalid = piece.getInvalidMoves();
+                    if (invalid>0||valid>0){
+                        result.put(invalid/(invalid+valid), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid);
+                    }
                 }
                 int max = 8;
                 ArrayList<String> rs = new ArrayList<>(result.values());
@@ -269,15 +269,15 @@ public class GameManager {
             }
             case TOP_5_CAPTURAS -> {
                 for (Piece piece : allPieces.values()){
-                    result.put(piece.getCaptures(), piece.getTeam()==10?"PRETA":"BRANCA"+ ":" +piece.getName()+ ":" +piece.getCaptures());
+                    result.put(piece.getCaptures(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") +" fez " +piece.getCaptures() + " capturas");
                 }
-                int max = 5;
+                int max = 4;
                 ArrayList<String> rs = new ArrayList<>(result.values());
                 return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
             }
             case TOP_5_PONTOS -> {
                 for (Piece piece : allPieces.values()){
-                    result.put(piece.getEarnedPoints(), piece.getPieceNameType() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos");
+                    result.put(piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos");
                 }
                 int max = 5;
                 ArrayList<String> rs = new ArrayList<>(result.values());
@@ -292,7 +292,6 @@ public class GameManager {
         Board theBoard = gameStatus.getTheBoard();
         String[] pieceInfo = new String[7];
         Piece piece = theBoard.allPieces.get(id+"");
-
         if (piece!=null){
             pieceInfo[0] = piece.getId();
             pieceInfo[1] = piece.getTypeChessPiece();
@@ -313,7 +312,7 @@ public class GameManager {
             return null;
         }
 
-        if (piece.typeChessPiece.equals("6") && gameStatus.getRoundCounter() % 3 == 0){
+        if (piece.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter() % 3 == 0){
             return "Doh! zzzzzz";
         }
         String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
@@ -376,7 +375,6 @@ public class GameManager {
 
         return gameResult;
     }
-
 
     public JPanel getAuthorsPanel() {
         JPanel panel = new JPanel();
