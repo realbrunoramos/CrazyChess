@@ -31,12 +31,28 @@ public abstract class Piece {
         this.coordinatesY = coordinatesY;
 
         status = capturedMsg;
-        inGame = true;
+        inGame = false;
 
         captures = 0;
         validMoves = 0;
         invalidMoves = 0;
         earnedPoints = 0;
+    }
+
+    public int getCaptures() {
+        return captures;
+    }
+
+    public int getValidMoves() {
+        return validMoves;
+    }
+
+    public int getInvalidMoves() {
+        return invalidMoves;
+    }
+
+    public int getEarnedPoints() {
+        return earnedPoints;
     }
 
     public void setCaptures(int captures) {
@@ -80,6 +96,7 @@ public abstract class Piece {
     }
     public void setInGame(){
         status = inGameMsg;
+        inGame = true;
     }
     public void setCoordinateX(int x) {
         this.coordinatesX = x;

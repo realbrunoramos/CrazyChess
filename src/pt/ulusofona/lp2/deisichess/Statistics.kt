@@ -1,32 +1,29 @@
 package pt.ulusofona.lp2.deisichess
 
 
-fun fun1(gameManager: GameManager): List<String> {
-    return listOf("String1", "String2")
+fun maisDeCinco(gameManager: GameManager): List<String> {
+    return gameManager.statistList(StatType.PECAS_MAIS_5_CAPTURAS)
+}
+fun topCincoCapturas(gameManager: GameManager): List<String> {
+    return gameManager.statistList(StatType.TOP_5_CAPTURAS)
+}
+fun topCincoPontos(gameManager: GameManager): List<String> {
+    return gameManager.statistList(StatType.TOP_5_PONTOS)
+}
+fun maisBaralhadas(gameManager: GameManager): List<String> {
+    return gameManager.statistList(StatType.PECAS_MAIS_BARALHADAS)
+}
+fun tiposCapturados(gameManager: GameManager): List<String> {
+    return gameManager.statistList(StatType.TIPOS_CAPTURADOS)
 }
 
 fun getStatsCalculator(stat: StatType): (GameManager) -> List<String> {
     when (stat){
-        StatType.PECAS_MAIS_5_CAPTURAS -> return ::fun1
-        StatType.TOP_5_CAPTURAS -> TODO()
-        StatType.TOP_5_PONTOS -> TODO()
-        StatType.PECAS_MAIS_BARALHADAS -> TODO()
-        StatType.TIPOS_CAPTURADOS -> TODO()
+        StatType.PECAS_MAIS_5_CAPTURAS -> return ::maisDeCinco
+        StatType.TOP_5_CAPTURAS -> return ::topCincoCapturas
+        StatType.TOP_5_PONTOS -> return ::topCincoPontos
+        StatType.PECAS_MAIS_BARALHADAS -> return ::maisBaralhadas
+        StatType.TIPOS_CAPTURADOS -> return ::tiposCapturados
     }
 }
 
-
-
-/*
-fun calculaMaximo(numeros: Array<Int>) : Int { … }
-fun calculaMinimo(numeros: Array<Int>) : Int { … }
-fun calculaMedia(numeros: Array<Int>) : Int { … }
-
-fun getFuncaoCalculadora(tipo: TipoCalculo): Function1<Array<Int>,Int> {
-    when (tipo) {
-        TipoCalculo.MINIMO -> return ::calculaMinimo
-        TipoCalculo.MAXIMO -> return ::calculaMaximo
-        TipoCalculo.MEDIA -> return ::calculaMedia
-    }
-}
-*/

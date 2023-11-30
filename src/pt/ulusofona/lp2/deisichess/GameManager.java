@@ -234,7 +234,60 @@ public class GameManager {
         }
         return squares;
     }
-
+    public ArrayList<String> statistList(StatType statType){
+        Board theBoard = gameStatus.getTheBoard();
+        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
+        TreeMap<Integer, String> result = new TreeMap<>(Comparator.reverseOrder());
+        switch (statType){
+            case PECAS_MAIS_5_CAPTURAS -> {
+                for (Piece piece : allPieces.values()){
+                    if (piece.getCaptures()>5){
+                        result.put(piece.getCaptures(), piece.getTeam()==10?"PRETA":"BRANCA"+ ":" +piece.getName()+ ":" +piece.getCaptures());
+                    }
+                }
+                int max = 8;
+                ArrayList<String> rs = new ArrayList<>(result.values());
+                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+            }
+            case PECAS_MAIS_BARALHADAS -> {
+                for (Piece piece : allPieces.values()){
+                    result.put(piece.getInvalidMoves()/(piece.getInvalidMoves()+piece.getValidMoves()),
+                            piece.getTeam()+":"+piece.getName()+":"+piece.getValidMoves()+":"+piece.getInvalidMoves());
+                }
+                int max = 8;
+                ArrayList<String> rs = new ArrayList<>(result.values());
+                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+            }
+            case TIPOS_CAPTURADOS -> {
+                HashSet<String> capturedNameTypes = new HashSet<>();
+                for (Piece piece : allPieces.values()){
+                    if (!piece.isInGame()){
+                        capturedNameTypes.add(piece.getPieceNameType());
+                    }
+                }
+                return new ArrayList<>(capturedNameTypes);
+            }
+            case TOP_5_CAPTURAS -> {
+                for (Piece piece : allPieces.values()){
+                    result.put(piece.getCaptures(), piece.getTeam()==10?"PRETA":"BRANCA"+ ":" +piece.getName()+ ":" +piece.getCaptures());
+                }
+                int max = 5;
+                ArrayList<String> rs = new ArrayList<>(result.values());
+                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+            }
+            case TOP_5_PONTOS -> {
+                for (Piece piece : allPieces.values()){
+                    result.put(piece.getEarnedPoints(), piece.getPieceNameType() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos");
+                }
+                int max = 5;
+                ArrayList<String> rs = new ArrayList<>(result.values());
+                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+            }
+            default -> {
+                return new ArrayList<>();
+            }
+        }
+    }
     public String[] getPieceInfo(int id) {
         Board theBoard = gameStatus.getTheBoard();
         String[] pieceInfo = new String[7];
@@ -276,14 +329,15 @@ public class GameManager {
     }
 
     public boolean gameOver() {
-
+        int blacksInGame = gameStatus.theBoard.getNumBlacksInGame();
+        int whitesInGame = gameStatus.theBoard.getNumWhitesInGame();
         Board theBoard = gameStatus.getTheBoard();
         boolean blackKingInGame = theBoard.blackKingInGame();
         boolean whiteKingInGame = theBoard.whiteKingInGame();
         if (!blackKingInGame || !whiteKingInGame){
             return true;
         }
-        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10));
+        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || (blacksInGame==1&&whitesInGame==1&&blackKingInGame&&whiteKingInGame));
         return theBoard.isDraw();
     }
 

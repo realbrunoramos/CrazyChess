@@ -237,13 +237,22 @@ public class GameStatus {
                         }
                     }
                 } else if (horizontal==vertical){
-                    while (x0!=x1-1&&y0!=y1-1){
-                        x0 = x0>x1?x0-1:x0+1;
-                        y0 = y0>y1?y0-1:y0+1;
-                        if(!boardMap.get(y0)[x0].equals("0")){
+                    int x = x0;
+                    int y = y0;
+                    int mX = x0>x1?-1:1;
+                    int mY = y0>y1?-1:1;
+
+                    do{
+                        x += mX;
+                        y += mY;
+                        if (x==x1&&y==y1){
+                            break;
+                        }
+                        if(!boardMap.get(y)[x].equals("0")){
                             return true;
                         }
                     }
+                    while (x!=x1-1 && y!=y1-1);
                 }
                 return false;
             }
@@ -367,10 +376,6 @@ public class GameStatus {
                 return steppedPiece.getPoints();
             }
         }
-    }
-
-    public ArrayList<String> getHistoricRoundDetails() {
-        return historicRoundDetails;
     }
 
     public TeamStatistic[] getTeamStatistics() {
