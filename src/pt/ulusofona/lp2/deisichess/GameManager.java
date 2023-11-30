@@ -135,24 +135,22 @@ public class GameManager {
         gameStatus.undoMove();
     }
     public List<Comparable> getHints(int x, int y){
-
-        ArrayList<Comparable> cmp = new ArrayList<>();
+        TreeMap<Integer, String> tm = new TreeMap<>(Comparator.reverseOrder());
         Board boardMap = gameStatus.getTheBoard();
         Piece movingPiece = boardMap.getAllPieces().get(boardMap.getBoardMap().get(y)[x]);
 
         if (movingPiece!=null){
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
-
                     if (movingPiece.isValidMove(x1, y1)){
                         int points = gameStatus.movePointsSimulation(x, y, x1, y1);
                         if (points >= 0) {
-                            cmp.add(points);
+                            tm.put(points, "("+x1+","+y1+") ->"+points);
                         }
                     }
                 }
             }
-            return cmp;
+            return new ArrayList<>(tm.values());
         }
         return null;
     }
@@ -247,16 +245,15 @@ public class GameManager {
                 return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
             }
             case PECAS_MAIS_BARALHADAS -> {
+                TreeMap<Double, String> tm = new TreeMap<>(Comparator.reverseOrder());
                 for (Piece piece : allPieces.values()){
                     int valid = piece.getValidMoves();
                     int invalid = piece.getInvalidMoves();
                     if (invalid>0||valid>0){
-                        result.put(invalid/(invalid+valid), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid);
+                        tm.put((double) (invalid/(invalid+valid)), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid);
                     }
                 }
-                int max = 8;
-                ArrayList<String> rs = new ArrayList<>(result.values());
-                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+                return new ArrayList<>(tm.values());
             }
             case TIPOS_CAPTURADOS -> {
                 HashSet<String> capturedNameTypes = new HashSet<>();
