@@ -135,22 +135,35 @@ public class GameManager {
         gameStatus.undoMove();
     }
     public List<Comparable> getHints(int x, int y){
-        TreeMap<Integer, String> tm = new TreeMap<>(Comparator.reverseOrder());
-        Board boardMap = gameStatus.getTheBoard();
-        Piece movingPiece = boardMap.getAllPieces().get(boardMap.getBoardMap().get(y)[x]);
 
-        if (movingPiece!=null){
+        Board theBoard = gameStatus.getTheBoard();
+        ArrayList<String[]> boardMap = gameStatus.getTheBoard().getBoardMap();
+        Piece movingPiece = theBoard.getAllPieces().get(boardMap.get(y)[x]);
+        ArrayList<Pair<Integer, String>> pointsAndCoords = new ArrayList<>();
+
+        if (movingPiece!=null && movingPiece.getTeam()==gameStatus.getCurrentTeam()){
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
-                    if (movingPiece.isValidMove(x1, y1)){
-                        int points = gameStatus.movePointsSimulation(x, y, x1, y1);
-                        if (points >= 0) {
-                            tm.put(points, "("+x1+","+y1+") ->"+points);
+                    if (move(x, y, x1, y1)){
+                        Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
+                        if(steppedPiece!=null){
+                            int points = steppedPiece.getPoints();
+                            if (points > 0) {
+                                pointsAndCoords.add(new Pair<>(points, "("+x1+","+y1+") -> "+points));
+                            }
                         }
+                        undo();
                     }
                 }
             }
-            return new ArrayList<>(tm.values());
+
+            Collections.sort(pointsAndCoords,  Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+            ArrayList<Comparable> result = new ArrayList<>();
+            for (Pair<Integer, String> par : pointsAndCoords) {
+                result.add(par.getSecond());
+            }
+
+            return result;
         }
         return null;
     }

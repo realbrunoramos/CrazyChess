@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +13,7 @@ public class TestGameManager {
 
 
     @Test
-    public void gameOverAndMove_ExhaustiveGame() throws IOException, InvalidGameInputException {
+    public void gameOverAndMove_exhaustiveGame() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/8x8.txt"));
 
@@ -125,7 +125,7 @@ public class TestGameManager {
         assertTrue(gm.gameOver());
     }
     @Test
-    public void gameOver_VictoryFile() throws IOException, InvalidGameInputException {
+    public void gameOver_victoryFile() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/8x8-jaVemVitoria.txt"));
         String[] pieceInfo = gm.getPieceInfo(5);
@@ -136,6 +136,13 @@ public class TestGameManager {
             assertEquals(exp[x], pieceInfo[x]);
         }
         assertTrue(gm.gameOver());
+    }
+    @Test
+    public void getHints_suggests() throws IOException, InvalidGameInputException {
+        GameManager gm = new GameManager();
+        gm.loadGame(new File("test-files/points.txt"));
+        List<Comparable> cmps = gm.getHints(4,3);
+        //System.out.println(cmps);
     }
 
 

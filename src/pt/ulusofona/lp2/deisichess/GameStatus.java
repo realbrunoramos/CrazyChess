@@ -352,30 +352,6 @@ public class GameStatus {
             }
         }
     }
-    int movePointsSimulation(int x0, int y0, int x1, int y1){
-        ArrayList<String[]> boardMap = theBoard.getBoardMap();
-        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
-        String originSquare = boardMap.get(y0)[x0];
-        String destinSquare = boardMap.get(y1)[x1];
-        Piece movingPiece = allPieces.get(originSquare);
-        Piece steppedPiece = allPieces.get(destinSquare);
-
-        if (pieceOnTheWay(movingPiece.getTypeChessPiece(), x0, y0, x1, y1)){
-            return -1;
-        }
-        if (steppedPiece == null){
-            return 0;
-        } else {
-            if (steppedPiece.getTeam() == currentTeam){
-                return -1;
-            } else {
-                if (steppedPiece.getTypeChessPiece().equals("1") && movingPiece.getTypeChessPiece().equals("1")){
-                    return -1;
-                }
-                return steppedPiece.getPoints();
-            }
-        }
-    }
 
     public TeamStatistic[] getTeamStatistics() {
         return teamStatistics;
