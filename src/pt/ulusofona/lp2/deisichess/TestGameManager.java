@@ -1,17 +1,12 @@
 package pt.ulusofona.lp2.deisichess;
 
-
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameManager {
-
-
     @Test
     public void gameOverAndMove_exhaustiveGame() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
@@ -142,7 +137,10 @@ public class TestGameManager {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/points.txt"));
         List<Comparable> cmps = gm.getHints(4,3);
-        //System.out.println(cmps);
+        String[] arr = {"(0,7) -> 1000", "(1,0) -> 8", "(5,2) -> 3", "(7,3) -> 3", "(4,7) -> 3"};
+        for (int i =0; i<5; i++){
+            assertEquals(arr[i], cmps.get(i));
+        }
     }
 
 

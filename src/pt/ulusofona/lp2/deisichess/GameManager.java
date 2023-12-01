@@ -148,16 +148,13 @@ public class GameManager {
                         Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
                         if(steppedPiece!=null){
                             int points = steppedPiece.getPoints();
-                            if (points > 0) {
-                                pointsAndCoords.add(new Pair<>(points, "("+x1+","+y1+") -> "+points));
-                            }
+                            pointsAndCoords.add(new Pair<>(points, "("+x1+","+y1+") -> "+points));
                         }
                         undo();
                     }
                 }
             }
-
-            Collections.sort(pointsAndCoords,  Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+            pointsAndCoords.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
             ArrayList<Comparable> result = new ArrayList<>();
             for (Pair<Integer, String> par : pointsAndCoords) {
                 result.add(par.getSecond());
@@ -245,28 +242,37 @@ public class GameManager {
     public ArrayList<String> statistList(StatType statType){
         Board theBoard = gameStatus.getTheBoard();
         HashMap<String, Piece> allPieces = theBoard.getAllPieces();
-        TreeMap<Integer, String> result = new TreeMap<>(Comparator.reverseOrder());
+        ArrayList<Pair<Double, String>> pairList = new ArrayList<>();
         switch (statType){
             case PECAS_MAIS_5_CAPTURAS -> {
                 for (Piece piece : allPieces.values()){
                     if (piece.getCaptures()>5){
-                        result.put(piece.getCaptures(), piece.getTeam()==10?"PRETA":"BRANCA"+ ":" +piece.getName()+ ":" +piece.getCaptures());
+                        pairList.add(new Pair<>((double)piece.getCaptures(), piece.getTeam()==10?"PRETA":"BRANCA"+ ":" +piece.getName()+ ":" +piece.getCaptures()));
+
                     }
                 }
-                int max = 8;
-                ArrayList<String> rs = new ArrayList<>(result.values());
-                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+                ArrayList<String> result = new ArrayList<>();
+                for (int i = 0; i<pairList.size(); i++) {
+                    result.add(pairList.get(i).getSecond());
+                }
+                return result;
             }
             case PECAS_MAIS_BARALHADAS -> {
-                TreeMap<Double, String> tm = new TreeMap<>(Comparator.reverseOrder());
+
                 for (Piece piece : allPieces.values()){
                     int valid = piece.getValidMoves();
                     int invalid = piece.getInvalidMoves();
                     if (invalid>0||valid>0){
-                        tm.put((double) (invalid/(invalid+valid)), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid);
+                        pairList.add(new Pair<>((double)(invalid/(invalid+valid)), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid));
                     }
                 }
-                return new ArrayList<>(tm.values());
+                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+                ArrayList<String> result = new ArrayList<>();
+                for (int i = 0; i<pairList.size(); i++) {
+                    result.add(pairList.get(i).getSecond());
+                }
+                return result;
             }
             case TIPOS_CAPTURADOS -> {
                 HashSet<String> capturedNameTypes = new HashSet<>();
@@ -275,23 +281,30 @@ public class GameManager {
                         capturedNameTypes.add(piece.getPieceNameType());
                     }
                 }
+
                 return new ArrayList<>(capturedNameTypes);
             }
             case TOP_5_CAPTURAS -> {
                 for (Piece piece : allPieces.values()){
-                    result.put(piece.getCaptures(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") +" fez " +piece.getCaptures() + " capturas");
+                    pairList.add(new Pair<>((double)piece.getCaptures(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") +" fez " +piece.getCaptures() + " capturas"));
                 }
-                int max = 4;
-                ArrayList<String> rs = new ArrayList<>(result.values());
-                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+                ArrayList<String> result = new ArrayList<>();
+                for (int i = 0; i<(Math.min((pairList.size()), 5)); i++) {
+                    result.add(pairList.get(i).getSecond());
+                }
+                return result;
             }
             case TOP_5_PONTOS -> {
                 for (Piece piece : allPieces.values()){
-                    result.put(piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos");
+                    pairList.add(new Pair<>((double)piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos"));
                 }
-                int max = 5;
-                ArrayList<String> rs = new ArrayList<>(result.values());
-                return rs.size()>max? (ArrayList<String>) rs.subList(0, max) :rs;
+                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+                ArrayList<String> result = new ArrayList<>();
+                for (int i = 0; i<(Math.min((pairList.size()), 5)); i++) {
+                    result.add(pairList.get(i).getSecond());
+                }
+                return result;
             }
             default -> {
                 return new ArrayList<>();
