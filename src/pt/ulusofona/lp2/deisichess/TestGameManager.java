@@ -7,6 +7,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestGameManager {
+    private pt.ulusofona.lp2.deisichess.StatisticsKt StatisticsKt;
+
     @Test
     public void gameOverAndMove_exhaustiveGame() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
@@ -114,6 +116,68 @@ public class TestGameManager {
         assertFalse(gm.gameOver());
     }
     @Test
+    public void undo() throws IOException, InvalidGameInputException {
+        GameManager gm = new GameManager();
+        gm.loadGame(new File("test-files/8x8.txt"));
+        int x0;
+        int y0;
+        int x1;
+        int y1;
+
+        assertEquals("Rainha",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(0, gm.gameStatus.getRoundCounter());
+        x0 = 0;
+        y0 = 0;
+        x1 = 0;
+        y1 = 1;
+
+        assertTrue(gm.move(x0, y0, x1, y1));
+
+        gm.undo();
+        System.out.println(gm.gameStatus.getRoundCounter());
+        assertEquals("Rainha",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(0, gm.gameStatus.getRoundCounter());
+
+        x0 = 7;
+        y0 = 7;
+        x1 = 5;
+        y1 = 5;
+
+        assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals("Ponei Mágico",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(1, gm.gameStatus.getRoundCounter());
+
+        gm.undo();
+
+        assertEquals("Rainha",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(0, gm.gameStatus.getRoundCounter());
+
+        assertTrue(gm.move(x0, y0, x1, y1));
+        x0 = 0;
+        y0 = 0;
+        x1 = 0;
+        y1 = 1;
+
+        assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals("Ponei Mágico",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(1, gm.gameStatus.getRoundCounter());
+
+        x0 = 2;
+        y0 = 0;
+        x1 = 0;
+        y1 = 2;
+
+        assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals("Padre da Vila",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(2, gm.gameStatus.getRoundCounter());
+
+        gm.undo();
+        assertEquals("Ponei Mágico",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
+        assertEquals(1, gm.gameStatus.getRoundCounter());
+
+        assertFalse(gm.gameOver());
+    }
+    @Test
     public void gameOver_empateTwoPieces() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/8x8-empate.txt"));
@@ -142,6 +206,15 @@ public class TestGameManager {
             assertEquals(arr[i], cmps.get(i));
         }
     }
+    @Test
+    public void statisticsList() throws IOException, InvalidGameInputException {
+        GameManager gm = new GameManager();
+        gm.loadGame(new File("test-files/8x8-jaVemVitoria.txt"));
+        StatisticsKt stats = StatisticsKt;
+        System.out.println(stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.TIPOS_CAPTURADOS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm));
 
+    }
 
 }

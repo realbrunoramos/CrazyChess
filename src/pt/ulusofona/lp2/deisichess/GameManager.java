@@ -103,7 +103,6 @@ public class GameManager {
                         break;
                     case "7" :{
                         Joker piece = new Joker(id, typeChessPiece, team, name, imagePath, 0, 0);
-
                         theBoard.putAllPieces(id, piece);
                     }
                 }
@@ -135,7 +134,6 @@ public class GameManager {
         gameStatus.undoMove();
     }
     public List<Comparable> getHints(int x, int y){
-
         Board theBoard = gameStatus.getTheBoard();
         ArrayList<String[]> boardMap = gameStatus.getTheBoard().getBoardMap();
         Piece movingPiece = theBoard.getAllPieces().get(boardMap.get(y)[x]);
@@ -164,9 +162,8 @@ public class GameManager {
         }
         return null;
     }
-
-
     public boolean move(int x0, int y0, int x1, int y1) {
+
         Board theBoard = gameStatus.getTheBoard();
         int current = (gameStatus.getCurrentTeam()/10)-1;
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
@@ -183,11 +180,13 @@ public class GameManager {
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
         if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x1, y1))){
+
             if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
                 teamStatistics[current].incInvalidMoves();
                 theBoard.incPieceInvalidMoves(originSquare);
                 return false;
             }
+
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
@@ -199,19 +198,14 @@ public class GameManager {
             }
             gameStatus.incConsecutivePlays();
             gameStatus.incRoundCounter();
-
             teamStatistics[current].incValidMoves();
-            for (Piece piece : theBoard.allPieces.values()){
-                if (piece.getPieceNameType().split("/")[0].equals("Joker")){
-                    gameStatus.jokerFaces((Joker)piece);
-                }
-            }
             if(current == 1){
                 gameStatus.setCurrentTeam(10);
             }else{
                 gameStatus.setCurrentTeam(20);
             }
             gameStatus.addRoundHistoric();
+            gameStatus.jokerFaces();
             return true;
         }
         else {
@@ -259,12 +253,11 @@ public class GameManager {
                 return result;
             }
             case PECAS_MAIS_BARALHADAS -> {
-
                 for (Piece piece : allPieces.values()){
                     int valid = piece.getValidMoves();
                     int invalid = piece.getInvalidMoves();
                     if (invalid>0||valid>0){
-                        pairList.add(new Pair<>((double)(invalid/(invalid+valid)), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid));
+                        pairList.add(new Pair<>((double)(invalid-valid), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid));
                     }
                 }
                 pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
@@ -281,12 +274,13 @@ public class GameManager {
                         capturedNameTypes.add(piece.getPieceNameType());
                     }
                 }
-
                 return new ArrayList<>(capturedNameTypes);
             }
             case TOP_5_CAPTURAS -> {
                 for (Piece piece : allPieces.values()){
-                    pairList.add(new Pair<>((double)piece.getCaptures(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") +" fez " +piece.getCaptures() + " capturas"));
+                    if (piece.getCaptures()>0){
+                        pairList.add(new Pair<>((double)piece.getCaptures(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") +" fez " +piece.getCaptures() + " capturas"));
+                    }
                 }
                 pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
                 ArrayList<String> result = new ArrayList<>();
@@ -297,7 +291,9 @@ public class GameManager {
             }
             case TOP_5_PONTOS -> {
                 for (Piece piece : allPieces.values()){
-                    pairList.add(new Pair<>((double)piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos"));
+                    if (piece.getEarnedPoints()>0){
+                        pairList.add(new Pair<>((double)piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos"));
+                    }
                 }
                 pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
                 ArrayList<String> result = new ArrayList<>();
@@ -338,6 +334,7 @@ public class GameManager {
         if (piece.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter() % 3 == 0){
             return "Doh! zzzzzz";
         }
+
         String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
         if (piece.isInGame()){
             return  base + " @ (" + piece.getX() + ", " + piece.getY() + ")";

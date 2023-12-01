@@ -6,7 +6,6 @@ import java.util.HashMap;
 import static pt.ulusofona.lp2.deisichess.MoveAction.*;
 
 public class GameStatus {
-    public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
     public ArrayList<String> historicRoundDetails;
     public ArrayList<String> historicRoundMap;
     public TeamStatistic[] teamStatistics;
@@ -19,7 +18,6 @@ public class GameStatus {
     public String getLastRoundDetails(){
         return historicRoundDetails.get(historicRoundDetails.size()-1);
     }
-
 
     public GameStatus() {
         teamStatistics = new TeamStatistic[2];
@@ -64,10 +62,14 @@ public class GameStatus {
         return roundCounter;
     }
 
-    public void jokerFaces(Joker joker){
-        int indexNameTypePiece = roundCounter % 6;
-        joker.setPieceNameType("Joker/"+nameTypePieces[indexNameTypePiece]);
-        joker.changeMoveOfTypePiece(indexNameTypePiece+1+"");
+    public void jokerFaces(){
+        int index = roundCounter%6;
+        HashMap<String, Piece> pieces = theBoard.getAllPieces();
+        for (Piece piece : pieces.values()){
+            if (piece.getTypeChessPiece().equals("7")){
+                ((Joker)piece).changeMoveOfTypePiece(index+1+"");
+            }
+        }
     }
     public void upDateStatus(String status) {
         //status:  currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+teamStatistics[0]+"@"+teamStatistics[1]
@@ -78,9 +80,6 @@ public class GameStatus {
             for (int x=0; x<board.size(); x++){
                 Piece piece = theBoard.allPieces.get(board.get(y)[x]);
                 if (piece!=null){
-                    if (piece.getTypeChessPiece().equals("7")){
-                        jokerFaces((Joker)piece);
-                    }
                     piece.setInGame();
                     piece.setCoordinateX(x);
                     piece.setCoordinateY(y);
@@ -88,15 +87,15 @@ public class GameStatus {
             }
         }
         if(status!=null){
+            jokerFaces(); //TODO
+
             String[] parts = status.split("@");
             String[] subParts = parts[0].split("\\|");
 
             currentTeam = Integer.parseInt(subParts[0]);
             roundCounter = Integer.parseInt(subParts[1]);
             consecutivePlays = Integer.parseInt(subParts[2]);
-
             //------------------------
-
             String[] blackStatistics = parts[1].split("\\|");
             String[] whiteStatistics = parts[2].split("\\|");
 
@@ -143,11 +142,8 @@ public class GameStatus {
                 theBoard.getAllPieces().get(id).setValidMoves(validMoves);
                 theBoard.getAllPieces().get(id).setInvalidMoves(invalidMoves);
             }
-
-
         }
-
-
+        jokerFaces(); //TODO
     }
 
     public void addRoundHistoric(){
@@ -205,6 +201,7 @@ public class GameStatus {
             theBoard.setBoardMap(pastBoard);
             upDateStatus(pastMove);
         }
+        jokerFaces(); //TODO
     }
 
     private boolean pieceOnTheWay(String typePiece, int x0, int y0, int x1, int y1){
@@ -317,9 +314,15 @@ public class GameStatus {
         String destinSquare = boardMap.get(y1)[x1];
 
         Piece movingPiece = allPieces.get(originSquare);
+
+        String movingPieceType = movingPiece.getTypeChessPiece();
         Piece steppedPiece = allPieces.get(destinSquare);
 
-        if (pieceOnTheWay(movingPiece.getTypeChessPiece(), x0, y0, x1, y1)){
+        if(movingPieceType.equals("7")){
+            movingPieceType = ((Joker)movingPiece).getFakeTypePiece();
+        }
+
+        if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
             return PIECE_ON_THE_WAY;
         }
         if (steppedPiece == null){
@@ -329,11 +332,15 @@ public class GameStatus {
 
             return TO_FREE_SQUARE;
         } else {
+            String steppedPieceType = steppedPiece.getTypeChessPiece();
+            if(steppedPieceType.equals("7")){
+                steppedPieceType = ((Joker)movingPiece).getFakeTypePiece();
+            }
             if (steppedPiece.getTeam() == currentTeam){
                 theBoard.incPieceInvalidMoves(originSquare);
                 return TO_OWN_TEAM_PIECE_SQUARE;
             } else {
-                if (steppedPiece.getTypeChessPiece().equals("1") && movingPiece.getTypeChessPiece().equals("1")){
+                if (steppedPieceType.equals("1") && movingPieceType.equals("1")){
                     theBoard.incPieceInvalidMoves(originSquare);
                     return QUEEN_KILLS_QUEEN;
                 }
