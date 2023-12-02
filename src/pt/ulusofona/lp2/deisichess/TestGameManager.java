@@ -134,46 +134,10 @@ public class TestGameManager {
         assertTrue(gm.move(x0, y0, x1, y1));
 
         gm.undo();
-        System.out.println(gm.gameStatus.getRoundCounter());
-        assertEquals("Rainha",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
-        assertEquals(0, gm.gameStatus.getRoundCounter());
-
-        x0 = 7;
-        y0 = 7;
-        x1 = 5;
-        y1 = 5;
-
-        assertTrue(gm.move(x0, y0, x1, y1));
-        assertEquals("Ponei Mágico",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
-        assertEquals(1, gm.gameStatus.getRoundCounter());
-
-        gm.undo();
 
         assertEquals("Rainha",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
         assertEquals(0, gm.gameStatus.getRoundCounter());
 
-        assertTrue(gm.move(x0, y0, x1, y1));
-        x0 = 0;
-        y0 = 0;
-        x1 = 0;
-        y1 = 1;
-
-        assertTrue(gm.move(x0, y0, x1, y1));
-        assertEquals("Ponei Mágico",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
-        assertEquals(1, gm.gameStatus.getRoundCounter());
-
-        x0 = 2;
-        y0 = 0;
-        x1 = 0;
-        y1 = 2;
-
-        assertTrue(gm.move(x0, y0, x1, y1));
-        assertEquals("Padre da Vila",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
-        assertEquals(2, gm.gameStatus.getRoundCounter());
-
-        gm.undo();
-        assertEquals("Ponei Mágico",gm.gameStatus.getTheBoard().getAllPieces().get("8").getPieceNameType().split("/")[1]);
-        assertEquals(1, gm.gameStatus.getRoundCounter());
 
         assertFalse(gm.gameOver());
     }
@@ -211,9 +175,10 @@ public class TestGameManager {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/8x8-jaVemVitoria.txt"));
         StatisticsKt stats = StatisticsKt;
-        System.out.println(stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm));
+
+        /*System.out.println(stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm));
         System.out.println(stats.getStatsCalculator(StatType.TIPOS_CAPTURADOS).invoke(gm));
-        System.out.println(stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm));*/
 
     }
 

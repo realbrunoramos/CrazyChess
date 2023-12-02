@@ -88,7 +88,6 @@ public class GameStatus {
         }
         if(status!=null){
             jokerFaces(); //TODO
-
             String[] parts = status.split("@");
             String[] subParts = parts[0].split("\\|");
 
@@ -334,7 +333,7 @@ public class GameStatus {
         } else {
             String steppedPieceType = steppedPiece.getTypeChessPiece();
             if(steppedPieceType.equals("7")){
-                steppedPieceType = ((Joker)movingPiece).getFakeTypePiece();
+                steppedPieceType = ((Joker)steppedPiece).getFakeTypePiece();
             }
             if (steppedPiece.getTeam() == currentTeam){
                 theBoard.incPieceInvalidMoves(originSquare);
