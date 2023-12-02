@@ -62,7 +62,7 @@ public class GameStatus {
         return roundCounter;
     }
 
-    public void jokerFaces(){
+    public void changeJokerBehavior(){
         int index = roundCounter%6;
         HashMap<String, Piece> pieces = theBoard.getAllPieces();
         for (Piece piece : pieces.values()){
@@ -87,7 +87,6 @@ public class GameStatus {
             }
         }
         if(status!=null){
-            jokerFaces(); //TODO
             String[] parts = status.split("@");
             String[] subParts = parts[0].split("\\|");
 
@@ -142,7 +141,7 @@ public class GameStatus {
                 theBoard.getAllPieces().get(id).setInvalidMoves(invalidMoves);
             }
         }
-        jokerFaces(); //TODO
+        changeJokerBehavior(); //TODO
     }
 
     public void addRoundHistoric(){
@@ -200,7 +199,7 @@ public class GameStatus {
             theBoard.setBoardMap(pastBoard);
             upDateStatus(pastMove);
         }
-        jokerFaces(); //TODO
+        changeJokerBehavior(); //TODO
     }
 
     private boolean pieceOnTheWay(String typePiece, int x0, int y0, int x1, int y1){

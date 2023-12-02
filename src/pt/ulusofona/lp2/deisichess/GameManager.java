@@ -138,13 +138,16 @@ public class GameManager {
         ArrayList<String[]> boardMap = gameStatus.getTheBoard().getBoardMap();
         Piece movingPiece = theBoard.getAllPieces().get(boardMap.get(y)[x]);
         ArrayList<Pair<Integer, String>> pointsAndCoords = new ArrayList<>();
-
-        if (movingPiece!=null && movingPiece.getTeam()==gameStatus.getCurrentTeam()){
+        int current = gameStatus.getCurrentTeam();
+        /*for (String[] s : boardMap){
+            System.out.println(Arrays.toString(s));
+        }*/
+        if (movingPiece!=null && movingPiece.getTeam()==current){
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
                     if (move(x, y, x1, y1)){
                         Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
-                        if(steppedPiece!=null){
+                        if(steppedPiece!=null && steppedPiece.getTeam()!=current){
                             int points = steppedPiece.getPoints();
                             pointsAndCoords.add(new Pair<>(points, "("+x1+","+y1+") -> "+points));
                         }
@@ -205,7 +208,7 @@ public class GameManager {
                 gameStatus.setCurrentTeam(20);
             }
             gameStatus.addRoundHistoric();
-            gameStatus.jokerFaces();
+            gameStatus.changeJokerBehavior();
             return true;
         }
         else {
