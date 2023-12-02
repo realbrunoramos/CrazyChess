@@ -137,31 +137,22 @@ public class GameManager {
         Board theBoard = gameStatus.getTheBoard();
         ArrayList<String[]> boardMap = gameStatus.getTheBoard().getBoardMap();
         Piece movingPiece = theBoard.getAllPieces().get(boardMap.get(y)[x]);
-        ArrayList<Pair<Integer, String>> pointsAndCoords = new ArrayList<>();
         int current = gameStatus.getCurrentTeam();
-        /*for (String[] s : boardMap){
-            System.out.println(Arrays.toString(s));
-        }*/
+        ArrayList<Comparable> finalResult = new ArrayList<>();
         if (movingPiece!=null && movingPiece.getTeam()==current){
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
                     if (move(x, y, x1, y1)){
                         Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
                         if(steppedPiece!=null && steppedPiece.getTeam()!=current){
-                            int points = steppedPiece.getPoints();
-                            pointsAndCoords.add(new Pair<>(points, "("+x1+","+y1+") -> "+points));
+                            finalResult.add(steppedPiece);
                         }
                         undo();
                     }
                 }
             }
-            pointsAndCoords.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
-            ArrayList<Comparable> result = new ArrayList<>();
-            for (Pair<Integer, String> par : pointsAndCoords) {
-                result.add(par.getSecond());
-            }
-
-            return result;
+            Collections.sort(finalResult);
+            return finalResult;
         }
         return null;
     }

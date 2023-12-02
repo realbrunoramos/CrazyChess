@@ -1,6 +1,6 @@
 package pt.ulusofona.lp2.deisichess;
 
-public abstract class Piece {
+public abstract class Piece implements Comparable<Piece>{
     protected int points;
     protected String pieceNameType;
     final String capturedMsg = "capturado";
@@ -20,6 +20,9 @@ public abstract class Piece {
     int earnedPoints;
     MoveOfTypePiece moveOfTypePiece;
 
+    public int compareTo(Piece nextPiece){
+        return Integer.compare(nextPiece.getPoints(), this.getPoints());
+    }
 
     Piece(String id, String typeChessPiece, int team, String name, String imagePath, int coordinatesX, int coordinatesY) {
         this.id = id;
@@ -140,6 +143,11 @@ public abstract class Piece {
 
     public boolean isInGame() {
         return inGame;
+    }
+
+    @Override
+    public String toString() {
+        return  "(" + coordinatesX + "," + coordinatesY + ") -> " + points;
     }
 
 }

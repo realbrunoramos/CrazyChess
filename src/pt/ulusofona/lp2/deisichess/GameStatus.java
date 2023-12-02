@@ -70,6 +70,7 @@ public class GameStatus {
                 ((Joker)piece).changeMoveOfTypePiece(index+1+"");
             }
         }
+        
     }
     public void upDateStatus(String status) {
         //status:  currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+teamStatistics[0]+"@"+teamStatistics[1]
