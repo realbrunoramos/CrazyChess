@@ -1,6 +1,7 @@
 package pt.ulusofona.lp2.deisichess;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 import static pt.ulusofona.lp2.deisichess.MoveAction.*;
@@ -70,7 +71,7 @@ public class GameStatus {
                 ((Joker)piece).changeMoveOfTypePiece(index+1+"");
             }
         }
-        
+
     }
     public void upDateStatus(String status) {
         //status:  currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+teamStatistics[0]+"@"+teamStatistics[1]
@@ -238,11 +239,11 @@ public class GameStatus {
                     int mY = y0>y1?-1:1;
 
                     do{
-                        x += mX;
-                        y += mY;
                         if (x==x1&&y==y1){
                             break;
                         }
+                        x += mX;
+                        y += mY;
                         if(!boardMap.get(y)[x].equals("0")){
                             return true;
                         }
@@ -273,11 +274,11 @@ public class GameStatus {
                 int mY = y0>y1?-1:1;
 
                 do{
-                    x += mX;
-                    y += mY;
                     if (x==x1&&y==y1){
                         break;
                     }
+                    x += mX;
+                    y += mY;
                     if(!boardMap.get(y)[x].equals("0")){
                         return true;
                     }
@@ -354,6 +355,45 @@ public class GameStatus {
                 theBoard.incPieceEarnedPoints(originSquare, opponentPoints);
 
                 teamStatistics[currentTeam/10-1].addPoints(opponentPoints);
+                return TO_OPPONENT_PIECE_SQUARE;
+            }
+        }
+    }
+    MoveAction moveSituationSimulation(int x0, int y0, int x1, int y1, int currentTeam){
+        ArrayList<String[]> boardMap = theBoard.getBoardMap();
+
+        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
+
+        String originSquare = boardMap.get(y0)[x0];
+        String destinSquare = boardMap.get(y1)[x1];
+
+        Piece movingPiece = allPieces.get(originSquare);
+
+        String movingPieceType = movingPiece.getTypeChessPiece();
+        Piece steppedPiece = allPieces.get(destinSquare);
+
+        if(movingPieceType.equals("7")){
+            movingPieceType = ((Joker)movingPiece).getFakeTypePiece();
+        }
+
+        if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
+            return PIECE_ON_THE_WAY;
+        }
+        if (steppedPiece == null){
+
+            return TO_FREE_SQUARE;
+        } else {
+            String steppedPieceType = steppedPiece.getTypeChessPiece();
+            if(steppedPieceType.equals("7")){
+                steppedPieceType = ((Joker)steppedPiece).getFakeTypePiece();
+            }
+            if (steppedPiece.getTeam() == currentTeam){
+
+                return TO_OWN_TEAM_PIECE_SQUARE;
+            } else {
+                if (steppedPieceType.equals("1") && movingPieceType.equals("1")){
+                    return QUEEN_KILLS_QUEEN;
+                }
                 return TO_OPPONENT_PIECE_SQUARE;
             }
         }

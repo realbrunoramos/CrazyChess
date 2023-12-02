@@ -133,25 +133,60 @@ public class GameManager {
     public void undo(){
         gameStatus.undoMove();
     }
+    public boolean moveSimulation(int x0, int y0, int x1, int y1, int currentTeam) {
+
+        Board theBoard = gameStatus.getTheBoard();
+
+        MoveAction moveSituation;
+
+        String originSquare = theBoard.getBoardMap().get(y0)[x0];
+
+        Piece pieceOrigin = theBoard.allPieces.get(originSquare);
+
+        String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
+
+        if (originSquareTeam.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x1, y1))){
+
+            if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
+                return false;
+            }
+            moveSituation = gameStatus.moveSituationSimulation(x0, y0, x1, y1, currentTeam);
+            if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
+                return true;
+            } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
+
+                return false;
+            }
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
     public List<Comparable> getHints(int x, int y){
         Board theBoard = gameStatus.getTheBoard();
         ArrayList<String[]> boardMap = gameStatus.getTheBoard().getBoardMap();
+
         Piece movingPiece = theBoard.getAllPieces().get(boardMap.get(y)[x]);
-        int current = gameStatus.getCurrentTeam();
+
         ArrayList<Comparable> finalResult = new ArrayList<>();
         if (movingPiece!=null){
+            if (movingPiece.getTeam()!=gameStatus.getCurrentTeam()){
+                return null;
+            }
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
-                    if (move(x, y, x1, y1)){
+                    if (moveSimulation(x, y, x1, y1, movingPiece.getTeam())) {
                         Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
-                        if(steppedPiece!=null){
+                        if (steppedPiece != null) {
                             finalResult.add(steppedPiece);
-                        }else {
-                            Piece empty = new Piece("0", "", 0, "", "",x1, y1);
+                        } else {
+                            Piece empty = new Piece("0", "", 0, "", "", x1, y1);
                             empty.setPoints(0);
                             finalResult.add(empty);
                         }
-                        undo();
                     }
                 }
             }
