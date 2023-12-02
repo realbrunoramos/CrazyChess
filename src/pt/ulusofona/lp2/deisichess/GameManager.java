@@ -139,12 +139,12 @@ public class GameManager {
         Piece movingPiece = theBoard.getAllPieces().get(boardMap.get(y)[x]);
         int current = gameStatus.getCurrentTeam();
         ArrayList<Comparable> finalResult = new ArrayList<>();
-        if (movingPiece!=null && movingPiece.getTeam()==current){
+        if (movingPiece!=null){
             for (int y1 = 0; y1 < boardDimension; y1++) {
                 for (int x1 = 0; x1 < boardDimension; x1++) {
                     if (move(x, y, x1, y1)){
                         Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
-                        if(steppedPiece!=null && steppedPiece.getTeam()!=current){
+                        if(steppedPiece!=null){
                             finalResult.add(steppedPiece);
                         }else {
                             Piece empty = new Piece("0", "", 0, "", "",x1, y1);
