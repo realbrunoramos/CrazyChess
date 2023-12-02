@@ -1,6 +1,6 @@
 package pt.ulusofona.lp2.deisichess;
 
-public abstract class Piece implements Comparable<Piece>{
+public class Piece implements Comparable<Piece>{
     protected int points;
     protected String pieceNameType;
     final String capturedMsg = "capturado";
@@ -21,6 +21,7 @@ public abstract class Piece implements Comparable<Piece>{
     MoveOfTypePiece moveOfTypePiece;
 
     public int compareTo(Piece nextPiece){
+
         return Integer.compare(nextPiece.getPoints(), this.getPoints());
     }
 
@@ -56,6 +57,10 @@ public abstract class Piece implements Comparable<Piece>{
 
     public int getEarnedPoints() {
         return earnedPoints;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
     }
 
     public void setCaptures(int captures) {

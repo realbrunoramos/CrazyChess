@@ -146,6 +146,10 @@ public class GameManager {
                         Piece steppedPiece = theBoard.getAllPieces().get(boardMap.get(y1)[x1]);
                         if(steppedPiece!=null && steppedPiece.getTeam()!=current){
                             finalResult.add(steppedPiece);
+                        }else {
+                            Piece empty = new Piece("0", "", 0, "", "",x1, y1);
+                            empty.setPoints(0);
+                            finalResult.add(empty);
                         }
                         undo();
                     }
