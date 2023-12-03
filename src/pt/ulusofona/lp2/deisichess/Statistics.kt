@@ -2,19 +2,19 @@ package pt.ulusofona.lp2.deisichess
 
 
 fun maisDeCinco(gameManager: GameManager): List<String> {
-    return gameManager.statistList(StatType.PECAS_MAIS_5_CAPTURAS)
+    return gameManager.statisticLists(StatType.PECAS_MAIS_5_CAPTURAS)
 }
 fun topCincoCapturas(gameManager: GameManager): List<String> {
-    return gameManager.statistList(StatType.TOP_5_CAPTURAS)
+    return gameManager.statisticLists(StatType.TOP_5_CAPTURAS)
 }
 fun topCincoPontos(gameManager: GameManager): List<String> {
-    return gameManager.statistList(StatType.TOP_5_PONTOS)
+    return gameManager.statisticLists(StatType.TOP_5_PONTOS)
 }
 fun maisBaralhadas(gameManager: GameManager): List<String> {
-    return gameManager.statistList(StatType.PECAS_MAIS_BARALHADAS)
+    return gameManager.statisticLists(StatType.PECAS_MAIS_BARALHADAS)
 }
 fun tiposCapturados(gameManager: GameManager): List<String> {
-    return gameManager.statistList(StatType.TIPOS_CAPTURADOS)
+    return gameManager.statisticLists(StatType.TIPOS_CAPTURADOS)
 }
 
 fun getStatsCalculator(stat: StatType): (GameManager) -> List<String> {

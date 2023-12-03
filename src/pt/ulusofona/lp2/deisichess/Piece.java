@@ -21,7 +21,6 @@ public class Piece implements Comparable<Piece>{
     MoveOfTypePiece moveOfTypePiece;
 
     public int compareTo(Piece nextPiece){
-
         return Integer.compare(nextPiece.getPoints(), this.getPoints());
     }
 

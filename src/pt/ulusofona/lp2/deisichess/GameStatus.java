@@ -306,9 +306,7 @@ public class GameStatus {
     }
     MoveAction moveSituation(int x0, int y0, int x1, int y1){
         ArrayList<String[]> boardMap = theBoard.getBoardMap();
-
         HashMap<String, Piece> allPieces = theBoard.getAllPieces();
-
         String originSquare = boardMap.get(y0)[x0];
         String destinSquare = boardMap.get(y1)[x1];
 

@@ -266,7 +266,7 @@ public class GameManager {
         }
         return squares;
     }
-    public ArrayList<String> statistList(StatType statType){
+    public ArrayList<String> statisticLists(StatType statType){
         Board theBoard = gameStatus.getTheBoard();
         HashMap<String, Piece> allPieces = theBoard.getAllPieces();
         ArrayList<Pair<Double, String>> pairList = new ArrayList<>();
@@ -289,7 +289,7 @@ public class GameManager {
                 for (Piece piece : allPieces.values()){
                     int valid = piece.getValidMoves();
                     int invalid = piece.getInvalidMoves();
-                    if (invalid>0||valid>0){
+                    if (invalid>0){
                         pairList.add(new Pair<>((double)(invalid-valid), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid));
                     }
                 }
@@ -301,13 +301,14 @@ public class GameManager {
                 return result;
             }
             case TIPOS_CAPTURADOS -> {
-                HashSet<String> capturedNameTypes = new HashSet<>();
+                ArrayList<String> capturedNameTypes = new ArrayList<>();
                 for (Piece piece : allPieces.values()){
-                    if (!piece.isInGame()){
+                    if (!piece.isInGame() && !capturedNameTypes.contains(piece.getPieceNameType())){
                         capturedNameTypes.add(piece.getPieceNameType());
                     }
                 }
-                return new ArrayList<>(capturedNameTypes);
+                Collections.sort(capturedNameTypes);
+                return capturedNameTypes;
             }
             case TOP_5_CAPTURAS -> {
                 for (Piece piece : allPieces.values()){
@@ -328,7 +329,14 @@ public class GameManager {
                         pairList.add(new Pair<>((double)piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos"));
                     }
                 }
-                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
+                pairList.sort((p1, p2) -> {
+                    int compareDouble = Double.compare(p2.getFirst(), p1.getFirst());
+                    if (compareDouble == 0) {
+                        return p1.getSecond().compareTo(p2.getSecond());
+                    }
+                    return compareDouble;
+                });
+
                 ArrayList<String> result = new ArrayList<>();
                 for (int i = 0; i<(Math.min((pairList.size()), 5)); i++) {
                     result.add(pairList.get(i).getSecond());
