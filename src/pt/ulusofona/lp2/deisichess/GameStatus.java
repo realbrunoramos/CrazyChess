@@ -239,7 +239,7 @@ public class GameStatus {
                     int mY = y0>y1?-1:1;
 
                     do{
-                        if (x==x1&&y==y1){
+                        if ((x+mX==x1) && (y+mY==y1)){
                             break;
                         }
                         x += mX;
@@ -248,7 +248,7 @@ public class GameStatus {
                             return true;
                         }
                     }
-                    while (x!=x1-1 && y!=y1-1);
+                    while (x+mX!=x1 && y+mY!=y1);
                 }
                 return false;
             }
@@ -272,9 +272,8 @@ public class GameStatus {
                 int y = y0;
                 int mX = x0>x1?-1:1;
                 int mY = y0>y1?-1:1;
-
                 do{
-                    if (x==x1&&y==y1){
+                    if ((x+mX==x1) && (y+mY==y1)){
                         break;
                     }
                     x += mX;
@@ -283,7 +282,7 @@ public class GameStatus {
                         return true;
                     }
                 }
-                while (x!=x1-1 && y!=y1-1);
+                while (x+mX!=x1 && y+mY!=y1);
                 return false;
             }
             case "4" : {
