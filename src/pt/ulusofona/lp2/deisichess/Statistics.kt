@@ -1,6 +1,5 @@
 package pt.ulusofona.lp2.deisichess
 
-
 fun maisDeCincoCapturas(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getCaptures()>5 }
@@ -17,20 +16,25 @@ fun topCincoCapturas(gameManager: GameManager): List<String> {
 fun topCincoPontos(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getEarnedPoints()>0 }
-    val sortedPieces = filtered.sortedByDescending { it.getEarnedPoints() }
+
+    val sortedPieces = filtered.sortedWith(
+        compareByDescending<Piece> { it.getEarnedPoints() }
+            .thenBy { it.getName() }
+    )
+
     val listResult = sortedPieces.map { "${it.getName()} ${if (it.getTeam() == 20) "(BRANCA)" else "(PRETA)"} tem ${it.getEarnedPoints()} pontos" }
+
     return listResult.take(5)
 }
 fun maisBaralhadas(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getInvalidMoves() > 0 }
-    val sortedPieces =
-        filtered.sortedByDescending { it.getInvalidMoves() / (it.getInvalidMoves() + it.getValidMoves()) }
+    val sortedPieces = filtered.sortedByDescending { it.getInvalidMoves() / (it.getInvalidMoves() + it.getValidMoves()) }
     return sortedPieces.map { "${it.getTeam()}:${it.getName()}:${it.getValidMoves()}:${it.getInvalidMoves()}" }
 }
 fun tiposCapturados(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
-    val filtered = pieces.values.filter { it.isInGame() }
+    val filtered = pieces.values.filter { !it.isInGame() }
     val sortedPieces = filtered.sortedByDescending { it.getPieceNameType() }
     var listResult = sortedPieces.map { it.getPieceNameType() }
     listResult = listResult.distinct()
