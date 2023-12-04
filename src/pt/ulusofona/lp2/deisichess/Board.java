@@ -77,9 +77,6 @@ public class Board {
     boolean isDraw(){
         return draw;
     }
-    void addBoardMapLine(String[] boardLine){
-        this.boardMap.add(boardLine);
-    }
     int getNumBlacksInGame(){
         int sizeBoard = boardMap.size();
         int count = 0;

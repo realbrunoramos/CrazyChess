@@ -224,10 +224,12 @@ public class GameManager {
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
+                theBoard.incPieceValidMoves(originSquare);
                 gameStatus.setConsecutivePlays(0);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
                      || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
                 teamStatistics[current].incInvalidMoves();
+                theBoard.incPieceInvalidMoves(originSquare);
                 return false;
             }
             gameStatus.incConsecutivePlays();
@@ -244,6 +246,7 @@ public class GameManager {
         }
         else {
             teamStatistics[current].incInvalidMoves();
+            theBoard.incPieceInvalidMoves(originSquare);
             return false;
         }
     }

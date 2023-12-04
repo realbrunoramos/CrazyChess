@@ -286,6 +286,9 @@ public class GameStatus {
                 return false;
             }
             case "4" : {
+                if (horizontal == 1){
+                    return false;
+                }
                 for (int x = minX+1; x<maxX; x++){
                     if(!boardMap.get(y0)[x].equals("0")){
                         return true;
@@ -294,6 +297,9 @@ public class GameStatus {
                 return false;
             }
             case "5" : {
+                if (vertical == 1){
+                    return false;
+                }
                 for (int y = minY+1; y<maxY; y++){
                     if(!boardMap.get(y)[x0].equals("0")){
                         return true;
@@ -320,13 +326,11 @@ public class GameStatus {
         }
 
         if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
-            theBoard.incPieceInvalidMoves(originSquare);
             return PIECE_ON_THE_WAY;
         }
         if (steppedPiece == null){
             theBoard.changeMapSquare(originSquare, x1, y1);
             theBoard.changeMapSquare("0", x0, y0);
-            theBoard.incPieceValidMoves(originSquare);
 
             return TO_FREE_SQUARE;
         } else {
@@ -335,11 +339,10 @@ public class GameStatus {
                 steppedPieceType = ((Joker)steppedPiece).getFakeTypePiece();
             }
             if (steppedPiece.getTeam() == currentTeam){
-                theBoard.incPieceInvalidMoves(originSquare);
+
                 return TO_OWN_TEAM_PIECE_SQUARE;
             } else {
                 if (steppedPieceType.equals("1") && movingPieceType.equals("1")){
-                    theBoard.incPieceInvalidMoves(originSquare);
                     return QUEEN_KILLS_QUEEN;
                 }
                 int opponentPoints = steppedPiece.getPoints();
@@ -347,7 +350,7 @@ public class GameStatus {
                 theBoard.changeMapSquare("0", x0, y0);
                 theBoard.setCaptured(destinSquare);
 
-                theBoard.incPieceValidMoves(originSquare);
+
                 theBoard.incPieceCaptures(originSquare);
 
                 theBoard.incPieceEarnedPoints(originSquare, opponentPoints);
