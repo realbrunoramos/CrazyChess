@@ -267,88 +267,7 @@ public class GameManager {
         }
         return squares;
     }
-    public ArrayList<String> statisticLists(StatType statType){
-        Board theBoard = gameStatus.getTheBoard();
-        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
-        ArrayList<Pair<Double, String>> pairList = new ArrayList<>();
-        switch (statType){
-            case PECAS_MAIS_5_CAPTURAS -> {
-                for (Piece piece : allPieces.values()){
-                    if (piece.getCaptures()>5){
-                        pairList.add(new Pair<>((double)piece.getCaptures(), piece.getTeam()==10?"PRETA":"BRANCA"+ ":" +piece.getName()+ ":" +piece.getCaptures()));
 
-                    }
-                }
-                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
-                ArrayList<String> result = new ArrayList<>();
-                for (int i = 0; i<pairList.size(); i++) {
-                    result.add(pairList.get(i).getSecond());
-                }
-                return result;
-            }
-            case PECAS_MAIS_BARALHADAS -> {
-                for (Piece piece : allPieces.values()){
-                    int valid = piece.getValidMoves();
-                    int invalid = piece.getInvalidMoves();
-                    if (invalid>0) {
-                        pairList.add(new Pair<>((double) (invalid - valid), piece.getTeam() + ":" + piece.getName() + ":" + valid + ":" + invalid));
-                    }
-                }
-                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
-                ArrayList<String> result = new ArrayList<>();
-                for (int i = 0; i<pairList.size(); i++) {
-                    result.add(pairList.get(i).getSecond());
-                }
-                return result;
-            }
-            case TIPOS_CAPTURADOS -> {
-                ArrayList<String> capturedNameTypes = new ArrayList<>();
-                for (Piece piece : allPieces.values()){
-                    if (!piece.isInGame() && !capturedNameTypes.contains(piece.getPieceNameType())){
-                        capturedNameTypes.add(piece.getPieceNameType());
-                    }
-                }
-                Collections.sort(capturedNameTypes);
-                return capturedNameTypes;
-            }
-            case TOP_5_CAPTURAS -> {
-                for (Piece piece : allPieces.values()){
-                    if (piece.getCaptures()>0){
-                        pairList.add(new Pair<>((double)piece.getCaptures(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") +" fez " +piece.getCaptures() + " capturas"));
-                    }
-                }
-                pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));
-                ArrayList<String> result = new ArrayList<>();
-                for (int i = 0; i<(Math.min((pairList.size()), 5)); i++) {
-                    result.add(pairList.get(i).getSecond());
-                }
-                return result;
-            }
-            case TOP_5_PONTOS -> {
-                for (Piece piece : allPieces.values()){
-                    if (piece.getEarnedPoints()>0){
-                        pairList.add(new Pair<>((double)piece.getEarnedPoints(), piece.getName() + (piece.getTeam()==10?" (PRETA)":" (BRANCA)") + " tem " +piece.getEarnedPoints() + " pontos"));
-                    }
-                }
-                pairList.sort((p1, p2) -> {
-                    int compareDouble = Double.compare(p2.getFirst(), p1.getFirst());
-                    if (compareDouble == 0) {
-                        return p1.getSecond().compareTo(p2.getSecond());
-                    }
-                    return compareDouble;
-                });
-
-                ArrayList<String> result = new ArrayList<>();
-                for (int i = 0; i<(Math.min((pairList.size()), 5)); i++) {
-                    result.add(pairList.get(i).getSecond());
-                }
-                return result;
-            }
-            default -> {
-                return new ArrayList<>();
-            }
-        }
-    }
     public String[] getPieceInfo(int id) {
         Board theBoard = gameStatus.getTheBoard();
         String[] pieceInfo = new String[7];
@@ -400,6 +319,10 @@ public class GameManager {
         }
         theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || (blacksInGame==1&&whitesInGame==1&&blackKingInGame&&whiteKingInGame));
         return theBoard.isDraw();
+    }
+
+    public GameStatus getGameStatus() {
+        return gameStatus;
     }
 
     public ArrayList<String> getGameResults() {
