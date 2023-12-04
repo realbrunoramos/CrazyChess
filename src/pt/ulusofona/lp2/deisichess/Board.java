@@ -32,19 +32,34 @@ public class Board {
         return allPieces;
     }
     public void setCaptured(String pieceId){
-        allPieces.get(pieceId).captured();
+        Piece piece = allPieces.get(pieceId);
+        if (piece!=null){
+            piece.captured();
+        }
     }
     public void incPieceValidMoves(String pieceId){
-        allPieces.get(pieceId).incValidMoves();
+        Piece piece = allPieces.get(pieceId);
+        if (piece!=null){
+            piece.incValidMoves();
+        }
     }
     public void incPieceInvalidMoves(String pieceId){
-        allPieces.get(pieceId).incInvalidMoves();
+        Piece piece = allPieces.get(pieceId);
+        if (piece!=null){
+            piece.incInvalidMoves();
+        }
     }
     public void incPieceCaptures(String pieceId){
-        allPieces.get(pieceId).incCaptures();
+        Piece piece = allPieces.get(pieceId);
+        if (piece!=null){
+            piece.incCaptures();
+        }
     }
     public void incPieceEarnedPoints(String pieceId, int points){
-        allPieces.get(pieceId).incEarnedPoints(points);
+        Piece piece = allPieces.get(pieceId);
+        if (piece!=null){
+            piece.incEarnedPoints(points);
+        }
     }
 
     public ArrayList<String> getBoardMapForTxt(){
