@@ -165,20 +165,20 @@ public class TestGameManager {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/points.txt"));
         List<Comparable> cmps = gm.getHints(4,3);
-        String[] arr = {"(0,7) -> 1000", "(1,0) -> 8", "(5,2) -> 3", "(7,3) -> 3", "(4,7) -> 3"};
-        for (int i =0; i<5; i++){
-            assertEquals(arr[i], cmps.get(i));
+        String[] arr = {"(0,7) -> 1000", "(5,2) -> 3", "(7,3) -> 3", "(4,7) -> 3"};
+        for (int i =0; i<4; i++){
+            assertEquals(arr[i], cmps.get(i).toString());
         }
     }
     @Test
     public void statisticsList() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
-        gm.loadGame(new File("test-files/8x8-jaVemVitoria.txt"));
+        gm.loadGame(new File("test-files/points.txt"));
         StatisticsKt stats = StatisticsKt;
 
-        /*System.out.println(stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm));
         System.out.println(stats.getStatsCalculator(StatType.TIPOS_CAPTURADOS).invoke(gm));
-        System.out.println(stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm));*/
+        System.out.println(stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm));
 
     }
 

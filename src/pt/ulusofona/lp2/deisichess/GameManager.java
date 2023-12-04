@@ -50,7 +50,8 @@ public class GameManager {
     }
 
     public Map<String,String> customizeBoard(){
-        return new HashMap<>();
+        HashMap<String, String> rs = new HashMap<>();
+        return rs;
     }
 
     public void loadGame(File file) throws InvalidGameInputException, IOException{
@@ -289,8 +290,8 @@ public class GameManager {
                 for (Piece piece : allPieces.values()){
                     int valid = piece.getValidMoves();
                     int invalid = piece.getInvalidMoves();
-                    if (invalid>0){
-                        pairList.add(new Pair<>((double)(invalid-valid), piece.getTeam()+":"+piece.getName()+":"+valid+":"+invalid));
+                    if (invalid>0) {
+                        pairList.add(new Pair<>((double) (invalid - valid), piece.getTeam() + ":" + piece.getName() + ":" + valid + ":" + invalid));
                     }
                 }
                 pairList.sort(Comparator.comparing(Pair::getFirst, Comparator.reverseOrder()));

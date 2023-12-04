@@ -320,6 +320,7 @@ public class GameStatus {
         }
 
         if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
+            theBoard.incPieceInvalidMoves(originSquare);
             return PIECE_ON_THE_WAY;
         }
         if (steppedPiece == null){
