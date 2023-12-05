@@ -184,12 +184,9 @@ public class GameStatus {
                 String[] arr = line.split(":");
                 pastBoard.add(arr);
             }
-
             String pastMove = historicRoundDetails.get(historicPos);
-
             theBoard.setBoardMap(pastBoard);
             upDateStatus(pastMove);
-
         } else {
             String pastMove = historicRoundDetails.get(0);
             String[] lines = historicRoundMap.get(0).split("-");
@@ -201,7 +198,7 @@ public class GameStatus {
             theBoard.setBoardMap(pastBoard);
             upDateStatus(pastMove);
         }
-        changeJokerBehavior(); //TODO
+        changeJokerBehavior();
     }
 
     private boolean pieceOnTheWay(String typePiece, int x0, int y0, int x1, int y1){
@@ -325,6 +322,10 @@ public class GameStatus {
             movingPieceType = ((Joker)movingPiece).getFakeTypePiece();
         }
 
+        if (movingPiece.getTypeChessPiece().equals("6") && roundCounter%3==0){
+            return HOMER_SLEEPING;
+        }
+
         if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
             return PIECE_ON_THE_WAY;
         }
@@ -377,6 +378,9 @@ public class GameStatus {
             movingPieceType = ((Joker)movingPiece).getFakeTypePiece();
         }
 
+        if (movingPiece.getTypeChessPiece().equals("6") && roundCounter%3==0){
+            return HOMER_SLEEPING;
+        }
         if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
             return PIECE_ON_THE_WAY;
         }

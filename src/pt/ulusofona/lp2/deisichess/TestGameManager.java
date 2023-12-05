@@ -68,6 +68,7 @@ public class TestGameManager {
         assertEquals(0, gm.gameStatus.getConsecutivePlays());
         assertEquals("Joker/Homer Simpson",pieces.get("8").getPieceNameType());
 
+
         x0 = 2;
         y0 = 7;
         x1 = 0;
@@ -157,6 +158,13 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertTrue(gm.gameOver());
+
+        StatisticsKt stats = StatisticsKt;
+
+        System.out.println(stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.TIPOS_CAPTURADOS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm));
+        System.out.println(stats.getStatsCalculator(StatType.TOP_5_CAPTURAS).invoke(gm));
 
         assertEquals(11, gm.gameStatus.getConsecutivePlays());
 

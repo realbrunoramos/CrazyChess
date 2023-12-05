@@ -148,18 +148,13 @@ public class GameManager {
 
         if (originSquareTeam.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
 
-            if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
-                return false;
-            }
             moveSituation = gameStatus.moveSituationSimulation(x0, y0, x1, y1, currentTeam);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 return true;
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                    || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
-
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING) {
                 return false;
             }
-
             return true;
         }
         else {
@@ -197,7 +192,9 @@ public class GameManager {
         return null;
     }
     public boolean move(int x0, int y0, int x1, int y1) {
-
+        if (gameOver()){
+            return false;
+        }
         Board theBoard = gameStatus.getTheBoard();
         int current = (gameStatus.getCurrentTeam()/10)-1;
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
@@ -215,19 +212,13 @@ public class GameManager {
 
         if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
 
-            if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
-                teamStatistics[current].incInvalidMoves();
-                theBoard.incPieceInvalidMoves(originSquare);
-                return false;
-            }
-
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
                 theBoard.incPieceValidMoves(originSquare);
                 gameStatus.setConsecutivePlays(0);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                     || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
+                     || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING) {
                 teamStatistics[current].incInvalidMoves();
                 theBoard.incPieceInvalidMoves(originSquare);
                 return false;
