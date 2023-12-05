@@ -199,8 +199,8 @@ public class GameManager {
         int current = (gameStatus.getCurrentTeam()/10)-1;
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
         MoveAction moveSituation;
-        if (x1 > boardDimension || x1 < 0 || y1 > boardDimension || y1 < 0 ||
-                x0 > boardDimension || x0 < 0 || y0 > boardDimension || y0 < 0){
+        if (x1 >= boardDimension || x1 < 0 || y1 >= boardDimension || y1 < 0 ||
+                x0 >= boardDimension || x0 < 0 || y0 >= boardDimension || y0 < 0){
             teamStatistics[current].incInvalidMoves();
             return false;
         }
@@ -212,9 +212,7 @@ public class GameManager {
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
         if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
-            if (((x0>boardMap.get(0).length) || (x1>boardMap.get(0).length)) || ((y0>boardMap.size()) || (y1>boardMap.size()))){
-                return false;
-            }
+
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
