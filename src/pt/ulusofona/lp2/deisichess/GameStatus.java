@@ -15,6 +15,11 @@ public class GameStatus {
     int consecutivePlays;
     int roundCounter;
     int historicPos;
+    int boardSize;
+
+    public void setBoardSize(int boardSize) {
+        this.boardSize = boardSize;
+    }
 
     public String getLastRoundDetails(){
         return historicRoundDetails.get(historicRoundDetails.size()-1);
@@ -78,10 +83,10 @@ public class GameStatus {
         // +"@"+id + "|" + captures + "|" + earnedPoints + "|" + validMoves + "|" + invalidMoves ...
 
         ArrayList<String[]> board = theBoard.getBoardMap();
-
-        for (int y=0; y<board.size(); y++){
-            for (int x=0; x<board.size(); x++){
-                Piece piece = theBoard.allPieces.get(board.get(y)[x]);
+        for (int y=0; y<boardSize; y++){
+            for (int x=0; x<boardSize; x++){
+                String pieceId = board.get(y)[x];
+                Piece piece = theBoard.allPieces.get(pieceId);
                 if (piece!=null){
                     piece.setInGame();
                     piece.setCoordinateX(x);
@@ -144,7 +149,7 @@ public class GameStatus {
                 theBoard.getAllPieces().get(id).setInvalidMoves(invalidMoves);
             }
         }
-        changeJokerBehavior(); //TODO
+        changeJokerBehavior();
     }
 
     public void addRoundHistoric(){

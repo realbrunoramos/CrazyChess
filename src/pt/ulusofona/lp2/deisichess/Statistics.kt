@@ -27,7 +27,7 @@ fun topCincoPontos(gameManager: GameManager): List<String> {
 
     return listResult.take(5)
 }
-fun maisBaralhadas(gameManager: GameManager): List<String> {
+fun top3MaisBaralhadas(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getInvalidMoves() > 0 }
     val sortedPieces = filtered.sortedWith(
@@ -38,11 +38,10 @@ fun maisBaralhadas(gameManager: GameManager): List<String> {
 }
 fun tiposCapturados(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
-    val filtered = pieces.values.filter { !it.isInGame() }
+    val filtered = pieces.values.filter { !it.isInGame }
     val sortedPieces = filtered.sortedBy { it.getPieceNameType() }
     var listResult = sortedPieces.map { it.getPieceNameType() }
     listResult = listResult.distinct()
-
     return listResult
 }
 
@@ -51,7 +50,7 @@ fun getStatsCalculator(stat: StatType): (GameManager) -> List<String> {
         StatType.PECAS_MAIS_5_CAPTURAS -> return ::maisDeCincoCapturas
         StatType.TOP_5_CAPTURAS -> return ::topCincoCapturas
         StatType.TOP_5_PONTOS -> return ::topCincoPontos
-        StatType.PECAS_MAIS_BARALHADAS -> return ::maisBaralhadas
+        StatType.PECAS_MAIS_BARALHADAS -> return ::top3MaisBaralhadas
         StatType.TIPOS_CAPTURADOS -> return ::tiposCapturados
     }
 }

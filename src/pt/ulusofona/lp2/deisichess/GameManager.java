@@ -36,7 +36,7 @@ public class GameManager {
                 } else {
                     writer.write(roundDetails);
                 }
-                if (i< numPieces+boardDimension+2){
+                if (i < numPieces+boardDimension+2){
                     writer.newLine();
                 }
             }
@@ -63,7 +63,7 @@ public class GameManager {
 
             boardDimension = Integer.parseInt(fileLinesContent.get(0));
             numPieces = Integer.parseInt(fileLinesContent.get(1));
-
+            gameStatus.setBoardSize(boardDimension);
             int lineOfBoardSection = numPieces+2;
 
             for (int i=0; i<lineOfBoardSection; i++){
