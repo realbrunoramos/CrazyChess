@@ -225,7 +225,7 @@ public class GameManager {
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
                 theBoard.incPieceValidMoves(originSquare);
-                gameStatus.setConsecutivePlays(1);
+                gameStatus.setConsecutivePlays(0);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
                      || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
                 teamStatistics[current].incInvalidMoves();
@@ -321,7 +321,9 @@ public class GameManager {
         if (!blackKingInGame || !whiteKingInGame){
             return true;
         }
-        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || ((blacksInGame==1&&whitesInGame==1)&&(blackKingInGame&&whiteKingInGame)));
+        boolean exhaust = (theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10);
+        boolean onlyKings = ((blacksInGame==1&&whitesInGame==1)&&(blackKingInGame&&whiteKingInGame));
+        theBoard.setDraw(exhaust|| onlyKings);
         return theBoard.isDraw();
     }
 
