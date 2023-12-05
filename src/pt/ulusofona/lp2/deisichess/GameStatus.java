@@ -78,6 +78,7 @@ public class GameStatus {
         // +"@"+id + "|" + captures + "|" + earnedPoints + "|" + validMoves + "|" + invalidMoves ...
 
         ArrayList<String[]> board = theBoard.getBoardMap();
+
         for (int y=0; y<board.size(); y++){
             for (int x=0; x<board.size(); x++){
                 Piece piece = theBoard.allPieces.get(board.get(y)[x]);

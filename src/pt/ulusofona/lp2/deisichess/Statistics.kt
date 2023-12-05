@@ -30,7 +30,9 @@ fun topCincoPontos(gameManager: GameManager): List<String> {
 fun maisBaralhadas(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getInvalidMoves() > 0 }
-    val sortedPieces = filtered.sortedByDescending { it.getInvalidMoves() / (it.getInvalidMoves() + it.getValidMoves()) }
+    val sortedPieces = filtered.sortedWith(
+        compareByDescending<Piece> { it.getInvalidMoves() / (it.getInvalidMoves() + it.getValidMoves()) } .thenBy { it.getName() }
+    )
     val listResult = sortedPieces.map { "${it.getTeam()}:${it.getName()}:${it.getInvalidMoves()}:${it.getValidMoves()}" }
     return listResult.take(3)
 }

@@ -52,6 +52,7 @@ public class GameManager {
     }
 
     public void loadGame(File file) throws InvalidGameInputException, IOException{
+
         ArrayList<String> fileLinesContent = new ArrayList<>();
         Board theBoard = gameStatus.getTheBoard();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
