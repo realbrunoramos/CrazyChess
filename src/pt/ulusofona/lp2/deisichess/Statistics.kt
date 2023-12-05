@@ -31,7 +31,8 @@ fun maisBaralhadas(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getInvalidMoves() > 0 }
     val sortedPieces = filtered.sortedByDescending { it.getInvalidMoves() / (it.getInvalidMoves() + it.getValidMoves()) }
-    return sortedPieces.map { "${it.getTeam()}:${it.getName()}:${it.getInvalidMoves()}:${it.getValidMoves()}" }
+    val listResult = sortedPieces.map { "${it.getTeam()}:${it.getName()}:${it.getInvalidMoves()}:${it.getValidMoves()}" }
+    return listResult.take(3)
 }
 fun tiposCapturados(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()

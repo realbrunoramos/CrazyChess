@@ -12,14 +12,11 @@ public class GameManager {
     GameStatus gameStatus;
     public ArrayList<String> pieceInfoSectionLines;
 
-    public void getStarted(){
+    public GameManager() {
         boardDimension = 0;
         numPieces = 0;
         gameStatus = new GameStatus();
         pieceInfoSectionLines = new ArrayList<>();
-    }
-
-    public GameManager() {
     }
 
     public void saveGame(File file) throws IOException{
@@ -55,7 +52,6 @@ public class GameManager {
     }
 
     public void loadGame(File file) throws InvalidGameInputException, IOException{
-        getStarted();
         ArrayList<String> fileLinesContent = new ArrayList<>();
         Board theBoard = gameStatus.getTheBoard();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {

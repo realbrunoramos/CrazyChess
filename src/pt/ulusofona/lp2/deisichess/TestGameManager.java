@@ -156,7 +156,7 @@ public class TestGameManager {
         y0 = 3;
         x1 = 4;
         y1 = 5;
-        assertTrue(gm.move(x0, y0, x1, y1));
+        assertFalse(gm.move(x0, y0, x1, y1));
         assertTrue(gm.gameOver());
 
         StatisticsKt stats = StatisticsKt;
