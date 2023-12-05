@@ -204,14 +204,17 @@ public class GameManager {
             teamStatistics[current].incInvalidMoves();
             return false;
         }
-        String originSquare = theBoard.getBoardMap().get(y0)[x0];
+        ArrayList<String[]> boardMap = theBoard.getBoardMap();
+        String originSquare = boardMap.get(y0)[x0];
 
         Piece pieceOrigin = theBoard.allPieces.get(originSquare);
 
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
         if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
-
+            if (((x0>boardMap.get(0).length) || (x1>boardMap.get(0).length)) || ((y0>boardMap.size()) || (y1>boardMap.size()))){
+                return false;
+            }
             moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
