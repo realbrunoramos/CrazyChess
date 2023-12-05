@@ -3,6 +3,7 @@ package pt.ulusofona.lp2.deisichess;
 import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +14,9 @@ public class TestGameManager {
     public void gameOverAndMove_exhaustiveGame() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         gm.loadGame(new File("test-files/8x8.txt"));
+        HashMap<String, Piece> pieces = gm.getGameStatus().getTheBoard().getAllPieces();
 
+        assertEquals("Joker/Rainha",pieces.get("8").getPieceNameType());
         assertEquals(0, gm.gameStatus.getConsecutivePlays());
         int x0 = 0;
         int y0 = 0;
@@ -21,6 +24,7 @@ public class TestGameManager {
         int y1 = 1;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(1, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Ponei Mágico",pieces.get("8").getPieceNameType());
 
         x0 = 7;
         y0 = 7;
@@ -28,6 +32,8 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(2, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Padre da Vila",pieces.get("8").getPieceNameType());
+
 
         x0 = 2;
         y0 = 0;
@@ -35,6 +41,7 @@ public class TestGameManager {
         y1 = 2;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(3, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/TorreHor",pieces.get("8").getPieceNameType());
 
         x0 = 1;
         y0 = 7;
@@ -42,6 +49,8 @@ public class TestGameManager {
         y1 = 1;
         assertFalse(gm.move(x0, y0, x1, y1));
         assertEquals(3, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/TorreHor",pieces.get("8").getPieceNameType());
+
 
         x0 = 1;
         y0 = 7;
@@ -49,6 +58,7 @@ public class TestGameManager {
         y1 = 2;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(4, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/TorreVert",pieces.get("8").getPieceNameType());
 
         x0 = 5;
         y0 = 0;
@@ -56,6 +66,7 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(0, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Homer Simpson",pieces.get("8").getPieceNameType());
 
         x0 = 2;
         y0 = 7;
@@ -63,6 +74,7 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(1, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Rainha",pieces.get("8").getPieceNameType());
 
         x0 = 3;
         y0 = 0;
@@ -70,6 +82,7 @@ public class TestGameManager {
         y1 = 3;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(2, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Ponei Mágico",pieces.get("8").getPieceNameType());
 
         x0 = 3;
         y0 = 7;
@@ -77,6 +90,7 @@ public class TestGameManager {
         y1 = 6;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(3, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Padre da Vila",pieces.get("8").getPieceNameType());
 
         x0 = 1;
         y0 = 0;
@@ -84,6 +98,8 @@ public class TestGameManager {
         y1 = 3;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(4, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/TorreHor",pieces.get("8").getPieceNameType());
+
 
         x0 = 0;
         y0 = 5;
@@ -91,6 +107,7 @@ public class TestGameManager {
         y1 = 3;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(5, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/TorreVert",pieces.get("8").getPieceNameType());
 
         x0 = 0;
         y0 = 2;
@@ -98,6 +115,7 @@ public class TestGameManager {
         y1 = 4;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(6, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Homer Simpson",pieces.get("8").getPieceNameType());
 
         x0 = 6;
         y0 = 7;
@@ -105,6 +123,7 @@ public class TestGameManager {
         y1 = 6;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(7, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Rainha",pieces.get("8").getPieceNameType());
 
         x0 = 2;
         y0 = 4;
@@ -112,6 +131,7 @@ public class TestGameManager {
         y1 = 2;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(8, gm.gameStatus.getConsecutivePlays());
+        assertEquals("Joker/Ponei Mágico",pieces.get("8").getPieceNameType());
 
         x0 = 2;
         y0 = 6;
@@ -119,6 +139,7 @@ public class TestGameManager {
         y1 = 4;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertEquals(9, gm.gameStatus.getConsecutivePlays());
+
         assertFalse(gm.gameOver());
 
         x0 = 1;
@@ -136,6 +157,7 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertTrue(gm.gameOver());
+
         assertEquals(11, gm.gameStatus.getConsecutivePlays());
 
     }

@@ -231,7 +231,8 @@ public class GameManager {
                 teamStatistics[current].incInvalidMoves();
                 theBoard.incPieceInvalidMoves(originSquare);
                 return false;
-            } else if (moveSituation == MoveAction.TO_FREE_SQUARE) {
+            }
+            if (moveSituation == MoveAction.TO_FREE_SQUARE) {
                 gameStatus.incConsecutivePlays();
             }
             if(current == 1){
@@ -239,11 +240,11 @@ public class GameManager {
             }else{
                 gameStatus.setCurrentTeam(20);
             }
-            gameStatus.addRoundHistoric();
-            gameStatus.changeJokerBehavior();
             gameStatus.incRoundCounter();
+            gameStatus.changeJokerBehavior();
             teamStatistics[current].incValidMoves();
 
+            gameStatus.addRoundHistoric();
             return true;
         }
         else {
