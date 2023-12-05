@@ -146,7 +146,7 @@ public class GameManager {
 
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
-        if (originSquareTeam.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x1, y1))){
+        if (originSquareTeam.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
 
             if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
                 return false;
@@ -213,7 +213,7 @@ public class GameManager {
 
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
-        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x1, y1))){
+        if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
 
             if (pieceOrigin.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter()%3==0){
                 teamStatistics[current].incInvalidMoves();
@@ -225,7 +225,7 @@ public class GameManager {
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
                 theBoard.incPieceValidMoves(originSquare);
-                gameStatus.setConsecutivePlays(0);
+                gameStatus.setConsecutivePlays(1);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
                      || moveSituation == MoveAction.PIECE_ON_THE_WAY) {
                 teamStatistics[current].incInvalidMoves();
@@ -242,6 +242,7 @@ public class GameManager {
             }
             gameStatus.addRoundHistoric();
             gameStatus.changeJokerBehavior();
+
             return true;
         }
         else {
@@ -320,7 +321,7 @@ public class GameManager {
         if (!blackKingInGame || !whiteKingInGame){
             return true;
         }
-        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || (blacksInGame==1&&whitesInGame==1&&blackKingInGame&&whiteKingInGame));
+        theBoard.setDraw((theBoard.captureOccurred(numPieces) && gameStatus.getConsecutivePlays() == 10) || ((blacksInGame==1&&whitesInGame==1)&&(blackKingInGame&&whiteKingInGame)));
         return theBoard.isDraw();
     }
 

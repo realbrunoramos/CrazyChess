@@ -27,7 +27,6 @@ public class Board {
     public ArrayList<String[]> getBoardMap() {
         return boardMap;
     }
-
     public HashMap<String, Piece> getAllPieces() {
         return allPieces;
     }

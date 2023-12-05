@@ -121,8 +121,8 @@ public class Piece implements Comparable<Piece>{
     public int getTeam() {
         return team;
     }
-    boolean isValidMove(int x1, int y1){
-        return moveOfTypePiece.validMove(coordinatesX, coordinatesY, x1, y1);
+    boolean isValidMove(int x0, int y0, int x1, int y1){
+        return moveOfTypePiece.validMove(x0, y0, x1, y1);
     }
     public String getName() {
         return name;

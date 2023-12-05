@@ -286,7 +286,7 @@ public class GameStatus {
                 return false;
             }
             case "4" : {
-                if (horizontal == 1){
+                if (horizontal <= 1){
                     return false;
                 }
                 for (int x = minX+1; x<maxX; x++){
@@ -297,7 +297,7 @@ public class GameStatus {
                 return false;
             }
             case "5" : {
-                if (vertical == 1){
+                if (vertical <= 1){
                     return false;
                 }
                 for (int y = minY+1; y<maxY; y++){
