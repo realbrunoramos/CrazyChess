@@ -9,7 +9,9 @@ fun maisDeCincoCapturas(gameManager: GameManager): List<String> {
 fun topCincoCapturas(gameManager: GameManager): List<String> {
     val pieces = gameManager.getGameStatus().getTheBoard().getAllPieces()
     val filtered = pieces.values.filter { it.getCaptures()>=0 }
-    val sortedPieces = filtered.sortedByDescending { it.getCaptures() }
+    val sortedPieces = filtered.sortedWith(
+        compareByDescending<Piece> { it.getCaptures() }.thenByDescending { it.getName() }
+    )
     val listResult = sortedPieces.map { "${it.getName()} ${if (it.getTeam() == 20) "(BRANCA)" else "(PRETA)"} fez ${it.getCaptures()} capturas" }
     return listResult.take(5)
 }
@@ -18,8 +20,7 @@ fun topCincoPontos(gameManager: GameManager): List<String> {
     val filtered = pieces.values.filter { it.getEarnedPoints()>0 }
 
     val sortedPieces = filtered.sortedWith(
-        compareByDescending<Piece> { it.getEarnedPoints() }
-            .thenBy { it.getName() }
+        compareByDescending<Piece> { it.getEarnedPoints() } .thenBy { it.getName() }
     )
 
     val listResult = sortedPieces.map { "${it.getName()} ${if (it.getTeam() == 20) "(BRANCA)" else "(PRETA)"} tem ${it.getEarnedPoints()} pontos" }
