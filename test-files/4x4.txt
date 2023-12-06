@@ -1,0 +1,15 @@
+4
+8
+1:0:10:O Poderoso Chefao
+2:1:10:A Dama Selvagem
+3:2:10:O Grande Artista
+4:3:10:Amante de Praia
+9:0:20:Chefe dos Indios
+10:1:20:A Barulhenta do Bairro
+11:2:20:My Little Pony
+12:3:20:Padreco
+1:2:3:4
+0:0:0:0
+0:0:0:0
+9:10:11:12
+10|0|0@10|0|0|0|0@20|0|0|0|0@11|0|0|0|0-1|0|0|0|0-12|0|0|0|0-2|0|0|0|0-3|0|0|0|0-4|0|0|0|0-9|0|0|0|0-10|0|0|0|0

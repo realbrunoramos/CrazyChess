@@ -1,8 +1,8 @@
 package pt.ulusofona.lp2.deisichess;
 
 public class Joker extends Piece {
-    public String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
-    public String fakeTypePiece;
+    private String[] nameTypePieces = {"Rainha", "Ponei Mágico", "Padre da Vila", "TorreHor", "TorreVert", "Homer Simpson"};
+    private String fakeTypePiece;
     Joker(String id, String typeChessPiece, int team, String name, String imagePath, int coordinatesX, int coordinatesY) {
         super(id, typeChessPiece, team, name, imagePath, coordinatesX, coordinatesY);
         this.points = 4;

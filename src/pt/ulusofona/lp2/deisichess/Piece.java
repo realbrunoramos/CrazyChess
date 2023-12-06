@@ -1,27 +1,32 @@
 package pt.ulusofona.lp2.deisichess;
 
 public class Piece implements Comparable<Piece>{
-    protected int points;
     protected String pieceNameType;
-    final String capturedMsg = "capturado";
-    final String inGameMsg = "em jogo";
-    String id;
-    String typeChessPiece;
-    int team;
-    String name;
-    String imagePath;
-    int coordinatesX;
-    int coordinatesY;
-    String status;
-    boolean inGame;
-    int captures;
-    int validMoves;
-    int invalidMoves;
-    int earnedPoints;
-    MoveOfTypePiece moveOfTypePiece;
+    private final String capturedMsg = "capturado";
+    private final String inGameMsg = "em jogo";
+    private String id;
+    private String typeChessPiece;
+    private int team;
+    private String name;
+    private String imagePath;
+
+    protected int points;
+    private int coordinatesX;
+    private int coordinatesY;
+    private String status;
+    private boolean inGame;
+    private int captures;
+    private int validMoves;
+    private int invalidMoves;
+    private int earnedPoints;
+    protected MoveOfTypePiece moveOfTypePiece;
 
     public int compareTo(Piece nextPiece){
         return Integer.compare(nextPiece.getPoints(), this.getPoints());
+    }
+
+    public MoveOfTypePiece getMoveOfTypePiece() {
+        return moveOfTypePiece;
     }
 
     Piece(String id, String typeChessPiece, int team, String name, String imagePath, int coordinatesX, int coordinatesY) {
@@ -124,6 +129,7 @@ public class Piece implements Comparable<Piece>{
     boolean isValidMove(int x0, int y0, int x1, int y1){
         return moveOfTypePiece.validMove(x0, y0, x1, y1);
     }
+
     public String getName() {
         return name;
     }

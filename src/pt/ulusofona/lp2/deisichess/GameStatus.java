@@ -7,19 +7,15 @@ import java.util.HashMap;
 import static pt.ulusofona.lp2.deisichess.MoveAction.*;
 
 public class GameStatus {
-    public ArrayList<String> historicRoundDetails;
-    public ArrayList<String> historicRoundMap;
-    public TeamStatistic[] teamStatistics;
-    Board theBoard;
-    int currentTeam;
-    int consecutivePlays;
-    int roundCounter;
-    int historicPos;
-    int boardSize;
+    private ArrayList<String> historicRoundDetails;
+    private ArrayList<String> historicRoundMap;
+    private TeamStatistic[] teamStatistics;
+    private Board theBoard;
+    private int currentTeam;
+    private int consecutivePlays;
+    private int roundCounter;
+    private int historicPos;
 
-    public void setBoardSize(int boardSize) {
-        this.boardSize = boardSize;
-    }
 
     public String getLastRoundDetails(){
         return historicRoundDetails.get(historicRoundDetails.size()-1);
@@ -80,11 +76,11 @@ public class GameStatus {
     }
     public void upDateStatus(String status) {
         //status:  currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+teamStatistics[0]+"@"+teamStatistics[1]
-        // +"@"+id + "|" + captures + "|" + earnedPoints + "|" + validMoves + "|" + invalidMoves ...
+        // +"@"+id+"|"+captures+"|"+earnedPoints+"|"+validMoves+"|"+invalidMoves ...
 
         ArrayList<String[]> board = theBoard.getBoardMap();
-        for (int y=0; y<boardSize; y++){
-            for (int x=0; x<boardSize; x++){
+        for (int y=0; y<board.size(); y++){
+            for (int x=0; x<board.size(); x++){
                 String pieceId = board.get(y)[x];
                 Piece piece = theBoard.allPieces.get(pieceId);
                 if (piece!=null){

@@ -7,10 +7,10 @@ import java.io.*;
 import java.util.*;
 
 public class GameManager {
-    int boardDimension;
-    int numPieces;
-    GameStatus gameStatus;
-    public ArrayList<String> pieceInfoSectionLines;
+    private int boardDimension;
+    private int numPieces;
+    private GameStatus gameStatus;
+    private ArrayList<String> pieceInfoSectionLines;
 
     public GameManager() {
         boardDimension = 0;
@@ -63,7 +63,7 @@ public class GameManager {
 
             boardDimension = Integer.parseInt(fileLinesContent.get(0));
             numPieces = Integer.parseInt(fileLinesContent.get(1));
-            gameStatus.setBoardSize(boardDimension);
+
             int lineOfBoardSection = numPieces+2;
 
             for (int i=0; i<lineOfBoardSection; i++){
@@ -303,8 +303,8 @@ public class GameManager {
     }
 
     public boolean gameOver() {
-        int blacksInGame = gameStatus.theBoard.getNumBlacksInGame();
-        int whitesInGame = gameStatus.theBoard.getNumWhitesInGame();
+        int blacksInGame = gameStatus.getTheBoard().getNumBlacksInGame();
+        int whitesInGame = gameStatus.getTheBoard().getNumWhitesInGame();
         Board theBoard = gameStatus.getTheBoard();
         boolean blackKingInGame = theBoard.blackKingInGame();
         boolean whiteKingInGame = theBoard.whiteKingInGame();
