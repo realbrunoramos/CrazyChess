@@ -251,14 +251,12 @@ public class TestGameManager {
         gm.undo();
         gm.saveGame(file);
         file = new File("test-files/6x6.txt");
-        GameManager gm2 = new GameManager();
-        gm2.loadGame(file);
-        gm2.move(0, 0, 0,1);
-        gm2.move(0, 9, 0,8);
-        gm2.undo();
-        gm2.undo();
-        gm2.saveGame(file);
-
+        gm.loadGame(file);
+        gm.move(0, 0, 0,1);
+        gm.move(0, 9, 0,8);
+        gm.undo();
+        gm.undo();
+        gm.saveGame(file);
     }
 
 }

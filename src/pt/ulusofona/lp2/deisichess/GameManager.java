@@ -13,6 +13,9 @@ public class GameManager {
     private ArrayList<String> pieceInfoSectionLines;
 
     public GameManager() {
+
+    }
+    public void getStarted(){
         boardDimension = 0;
         numPieces = 0;
         gameStatus = new GameStatus();
@@ -52,7 +55,7 @@ public class GameManager {
     }
 
     public void loadGame(File file) throws InvalidGameInputException, IOException{
-
+        getStarted();
         ArrayList<String> fileLinesContent = new ArrayList<>();
         Board theBoard = gameStatus.getTheBoard();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
