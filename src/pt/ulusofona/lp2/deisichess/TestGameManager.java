@@ -17,7 +17,7 @@ public class TestGameManager {
         int pos = 0;
         gm.loadGame(new File("test-files/8x8.txt"));
         HashMap<String, Piece> pieces = gm.getGameStatus().getTheBoard().getAllPieces();
-        
+
         assertEquals(10, gm.getCurrentTeamID());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -28,6 +28,7 @@ public class TestGameManager {
         int x1 = 0;
         int y1 = 1;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(1, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;;
@@ -37,6 +38,7 @@ public class TestGameManager {
         x1 = 5;
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(2, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -46,6 +48,7 @@ public class TestGameManager {
         x1 = 0;
         y1 = 2;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(3, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
 
@@ -55,6 +58,7 @@ public class TestGameManager {
         x1 = 7;
         y1 = 1;
         assertFalse(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(3, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -66,6 +70,7 @@ public class TestGameManager {
         x1 = 6;
         y1 = 2;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(4, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -75,6 +80,7 @@ public class TestGameManager {
         x1 = 5;
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(0, gm.getGameStatus().getConsecutivePlays());
         assertEquals("[O Maior Grande (PRETA) fez 1 capturas, Torre Trapalhona (BRANCA) fez 0 capturas, Torre Poderosa (BRANCA) fez 0 capturas, Padreco (BRANCA) fez 0 capturas, O Poderoso Chefao (PRETA) fez 0 capturas]", (stats.getStatsCalculator(StatType.TOP_5_CAPTURAS).invoke(gm)).toString());
         assertEquals("[O Maior Grande (PRETA) tem 4 pontos]", (stats.getStatsCalculator(StatType.TOP_5_PONTOS).invoke(gm)).toString());
@@ -88,6 +94,7 @@ public class TestGameManager {
         x1 = 0;
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(1, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -97,6 +104,7 @@ public class TestGameManager {
         x1 = 6;
         y1 = 3;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(2, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -106,6 +114,7 @@ public class TestGameManager {
         x1 = 2;
         y1 = 6;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(3, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -115,6 +124,7 @@ public class TestGameManager {
         x1 = 1;
         y1 = 3;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(4, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -125,6 +135,7 @@ public class TestGameManager {
         x1 = 2;
         y1 = 3;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(5, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;;
@@ -134,6 +145,7 @@ public class TestGameManager {
         x1 = 2;
         y1 = 4;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(6, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -143,6 +155,7 @@ public class TestGameManager {
         x1 = 7;
         y1 = 6;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(7, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -152,6 +165,7 @@ public class TestGameManager {
         x1 = 4;
         y1 = 2;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(8, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -161,6 +175,7 @@ public class TestGameManager {
         x1 = 0;
         y1 = 4;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals(9, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
@@ -172,6 +187,7 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertTrue(gm.gameOver());
+        assertEquals(20, gm.getCurrentTeamID());
         assertEquals(10, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
 

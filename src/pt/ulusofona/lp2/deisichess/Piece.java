@@ -1,24 +1,24 @@
 package pt.ulusofona.lp2.deisichess;
 
-public class Piece implements Comparable<Piece>{
+abstract public class Piece implements Comparable<Piece>{
     protected String pieceNameType;
     private final String capturedMsg = "capturado";
     private final String inGameMsg = "em jogo";
-    private String id;
-    private String typeChessPiece;
-    private int team;
-    private String name;
+    protected String id;
+    protected String typeChessPiece;
+    protected int team;
+    protected String name;
     private String imagePath;
 
     protected int points;
-    private int coordinatesX;
-    private int coordinatesY;
+    protected int coordinatesX;
+    protected int coordinatesY;
     private String status;
-    private boolean inGame;
-    private int captures;
-    private int validMoves;
-    private int invalidMoves;
-    private int earnedPoints;
+    protected boolean inGame;
+    protected int captures;
+    protected int validMoves;
+    protected int invalidMoves;
+    protected int earnedPoints;
     protected MoveOfTypePiece moveOfTypePiece;
 
     public int compareTo(Piece nextPiece){
@@ -46,6 +46,7 @@ public class Piece implements Comparable<Piece>{
         invalidMoves = 0;
         earnedPoints = 0;
     }
+    abstract protected String pieceInfoStr();
 
     public int getCaptures() {
         return captures;
@@ -62,11 +63,6 @@ public class Piece implements Comparable<Piece>{
     public int getEarnedPoints() {
         return earnedPoints;
     }
-
-    public void setPoints(int points) {
-        this.points = points;
-    }
-
     public void setCaptures(int captures) {
         this.captures = captures;
     }
@@ -159,5 +155,6 @@ public class Piece implements Comparable<Piece>{
     public String toString() {
         return  "(" + coordinatesX + "," + coordinatesY + ") -> " + points;
     }
+
 
 }

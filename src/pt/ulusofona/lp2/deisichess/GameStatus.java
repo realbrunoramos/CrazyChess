@@ -1,7 +1,6 @@
 package pt.ulusofona.lp2.deisichess;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import static pt.ulusofona.lp2.deisichess.MoveAction.*;
@@ -20,7 +19,6 @@ public class GameStatus {
     public String getLastRoundDetails(){
         return historicRoundDetails.get(historicRoundDetails.size()-1);
     }
-
     public GameStatus() {
         teamStatistics = new TeamStatistic[2];
         teamStatistics[0] = new TeamStatistic("10");
@@ -33,7 +31,16 @@ public class GameStatus {
         theBoard = new Board();
         historicPos=-1;
     }
+    public String pieceInfoAsStr(int id){
 
+        Piece piece = theBoard.getAllPieces().get(id+"");
+
+        if (piece==null){
+            return null;
+        }
+        return piece.pieceInfoStr();
+
+    }
     public void incConsecutivePlays() {
         this.consecutivePlays++;
     }
@@ -64,15 +71,17 @@ public class GameStatus {
         return roundCounter;
     }
 
-    public void changeJokerBehavior(){
+    public void updateJokerAndHomerBehavior(){
         int index = roundCounter%6;
         HashMap<String, Piece> pieces = theBoard.getAllPieces();
         for (Piece piece : pieces.values()){
             if (piece.getTypeChessPiece().equals("7")){
                 ((Joker)piece).changeMoveOfTypePiece(index+1+"");
             }
+            if (piece.getTypeChessPiece().equals("6")){
+                ((HomerSimpson)piece).setSleep(roundCounter%3==0);
+            }
         }
-
     }
     public void upDateStatus(String status) {
         //status:  currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+teamStatistics[0]+"@"+teamStatistics[1]
@@ -145,7 +154,7 @@ public class GameStatus {
                 theBoard.getAllPieces().get(id).setInvalidMoves(invalidMoves);
             }
         }
-        changeJokerBehavior();
+        updateJokerAndHomerBehavior();
     }
 
     public void addRoundHistoric(){
@@ -200,7 +209,7 @@ public class GameStatus {
             theBoard.setBoardMap(pastBoard);
             upDateStatus(pastMove);
         }
-        changeJokerBehavior();
+        updateJokerAndHomerBehavior();
     }
 
     private boolean pieceOnTheWay(String typePiece, int x0, int y0, int x1, int y1){

@@ -8,6 +8,20 @@ public class Joker extends Piece {
         this.points = 4;
         this.pieceNameType = "Joker";
     }
+
+
+
+    @Override
+    public String pieceInfoStr() {
+        String base = id + " | " + pieceNameType + " | " + (points==1000?"(infinito)":points) + " | " + team + " | " + name;
+        if (inGame){
+            return  base + " @ (" + coordinatesX + ", " + coordinatesY + ")";
+        } else {
+            return base + " @ (n/a)";
+        }
+    }
+
+
     public void changeMoveOfTypePiece(String fakeTypePiece) {
         moveOfTypePiece = new MoveOfTypePiece(fakeTypePiece);
         this.fakeTypePiece = fakeTypePiece;

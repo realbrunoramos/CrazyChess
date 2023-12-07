@@ -179,8 +179,7 @@ public class GameManager {
                         if (steppedPiece != null) {
                             finalResult.add(steppedPiece);
                         } else {
-                            Piece empty = new Piece("0", "", 0, "", "", x1, y1);
-                            empty.setPoints(0);
+                            Empty empty = new Empty("0", "", 0, "", "", x1, y1);
                             finalResult.add(empty);
                         }
                     }
@@ -232,7 +231,7 @@ public class GameManager {
                 gameStatus.setCurrentTeam(20);
             }
             gameStatus.incRoundCounter();
-            gameStatus.changeJokerBehavior();
+            gameStatus.updateJokerAndHomerBehavior();
             teamStatistics[current].incValidMoves();
 
             gameStatus.addRoundHistoric();
@@ -282,23 +281,7 @@ public class GameManager {
     }
 
     public String getPieceInfoAsString(int id) {
-        Board theBoard = gameStatus.getTheBoard();
-        Piece piece = theBoard.getAllPieces().get(id+"");
-
-        if (piece==null){
-            return null;
-        }
-
-        if (piece.getTypeChessPiece().equals("6") && gameStatus.getRoundCounter() % 3 == 0){
-            return "Doh! zzzzzz";
-        }
-
-        String base = id + " | " + piece.getPieceNameType() + " | " + (piece.getPoints()==1000?"(infinito)":piece.getPoints()) + " | " + piece.getTeam() + " | " + piece.getName();
-        if (piece.isInGame()){
-            return  base + " @ (" + piece.getX() + ", " + piece.getY() + ")";
-        } else {
-            return base + " @ (n/a)";
-        }
+        return gameStatus.pieceInfoAsStr(id);
     }
 
     public int getCurrentTeamID() {

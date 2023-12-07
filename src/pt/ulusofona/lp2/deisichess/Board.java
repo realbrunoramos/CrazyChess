@@ -36,6 +36,7 @@ public class Board {
             piece.captured();
         }
     }
+
     public void incPieceValidMoves(String pieceId){
         Piece piece = allPieces.get(pieceId);
         if (piece!=null){
