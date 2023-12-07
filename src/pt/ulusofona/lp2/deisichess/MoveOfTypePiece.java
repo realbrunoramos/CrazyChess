@@ -3,8 +3,7 @@ package pt.ulusofona.lp2.deisichess;
 //0- Rei
 
 public class MoveOfTypePiece {
-    String typePiece;
-
+    private String typePiece;
     public MoveOfTypePiece(String typePiece) {
         this.typePiece = typePiece;
     }

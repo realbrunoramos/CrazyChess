@@ -17,11 +17,12 @@ public class TestGameManager {
         int pos = 0;
         gm.loadGame(new File("test-files/8x8.txt"));
         HashMap<String, Piece> pieces = gm.getGameStatus().getTheBoard().getAllPieces();
-
-
+        
+        assertEquals(10, gm.getCurrentTeamID());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
         assertEquals(0, gm.getGameStatus().getConsecutivePlays());
+
         int x0 = 0;
         int y0 = 0;
         int x1 = 0;
@@ -39,7 +40,6 @@ public class TestGameManager {
         assertEquals(2, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
         pos = (pos==5)?0:pos+1;
-
 
         x0 = 2;
         y0 = 0;

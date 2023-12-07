@@ -142,7 +142,7 @@ public class GameManager {
 
         String originSquare = theBoard.getBoardMap().get(y0)[x0];
 
-        Piece pieceOrigin = theBoard.allPieces.get(originSquare);
+        Piece pieceOrigin = theBoard.getAllPieces().get(originSquare);
 
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
@@ -207,7 +207,7 @@ public class GameManager {
         ArrayList<String[]> boardMap = theBoard.getBoardMap();
         String originSquare = boardMap.get(y0)[x0];
 
-        Piece pieceOrigin = theBoard.allPieces.get(originSquare);
+        Piece pieceOrigin = theBoard.getAllPieces().get(originSquare);
 
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
@@ -218,7 +218,7 @@ public class GameManager {
                 theBoard.incPieceValidMoves(originSquare);
                 gameStatus.setConsecutivePlays(0);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                     || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING) {
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING) {
                 teamStatistics[current].incInvalidMoves();
                 theBoard.incPieceInvalidMoves(originSquare);
                 return false;
@@ -253,7 +253,7 @@ public class GameManager {
         }
         String square = theBoard.getBoardMap().get(y)[x];
         if (!square.equals("0")){
-            Piece piece = theBoard.allPieces.get(square);
+            Piece piece = theBoard.getAllPieces().get(square);
             squares[0] = piece.getId();
             squares[1] = piece.getTypeChessPiece();
             squares[2] = piece.getTeam()+"";
@@ -268,7 +268,7 @@ public class GameManager {
     public String[] getPieceInfo(int id) {
         Board theBoard = gameStatus.getTheBoard();
         String[] pieceInfo = new String[7];
-        Piece piece = theBoard.allPieces.get(id+"");
+        Piece piece = theBoard.getAllPieces().get(id+"");
         if (piece!=null){
             pieceInfo[0] = piece.getId();
             pieceInfo[1] = piece.getTypeChessPiece();
@@ -283,7 +283,7 @@ public class GameManager {
 
     public String getPieceInfoAsString(int id) {
         Board theBoard = gameStatus.getTheBoard();
-        Piece piece = theBoard.allPieces.get(id+"");
+        Piece piece = theBoard.getAllPieces().get(id+"");
 
         if (piece==null){
             return null;

@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class Board {
-    HashMap<String, Piece> allPieces;
-    ArrayList<String[]> boardMap;
-    boolean draw;
+    private HashMap<String, Piece> allPieces;
+    private ArrayList<String[]> boardMap;
+    private boolean draw;
     public Board() {
         this.boardMap = new ArrayList<>();
         this.allPieces = new HashMap<>();

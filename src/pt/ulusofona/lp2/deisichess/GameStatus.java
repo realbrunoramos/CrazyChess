@@ -82,7 +82,7 @@ public class GameStatus {
         for (int y=0; y<board.size(); y++){
             for (int x=0; x<board.size(); x++){
                 String pieceId = board.get(y)[x];
-                Piece piece = theBoard.allPieces.get(pieceId);
+                Piece piece = theBoard.getAllPieces().get(pieceId);
                 if (piece!=null){
                     piece.setInGame();
                     piece.setCoordinateX(x);
