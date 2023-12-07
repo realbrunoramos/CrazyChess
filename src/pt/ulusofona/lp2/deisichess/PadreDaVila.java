@@ -5,7 +5,12 @@ public class PadreDaVila extends Piece {
         super(id, typeChessPiece, team, name, imagePath, coordinatesX, coordinatesY);
         this.points = 3;
         this.pieceNameType = "Padre da Vila";
-        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
+    }
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        int vertical = Math.abs(y0 - y1);
+        int horizontal = Math.abs(x0 - x1);
+        return (vertical == horizontal && vertical < 4);
     }
     @Override
     public String pieceInfoStr() {

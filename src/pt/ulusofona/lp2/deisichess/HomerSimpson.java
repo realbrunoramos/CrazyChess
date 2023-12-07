@@ -6,7 +6,6 @@ public class HomerSimpson extends Piece {
         super(id, typeChessPiece, team, name, imagePath, coordinatesX, coordinatesY);
         this.points = 2;
         this.pieceNameType = "Homer Simpson";
-        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
         sleep = true;
     }
 
@@ -25,5 +24,12 @@ public class HomerSimpson extends Piece {
         } else {
             return base + " @ (n/a)";
         }
+    }
+
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        int vertical = Math.abs(y0 - y1);
+        int horizontal = Math.abs(x0 - x1);
+        return (vertical == horizontal && vertical < 2);
     }
 }

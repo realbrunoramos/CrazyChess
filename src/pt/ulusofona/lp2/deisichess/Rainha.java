@@ -5,7 +5,6 @@ public class Rainha extends Piece {
         super(id, typeChessPiece, team, name, imagePath, coordinatesX, coordinatesY);
         this.points = 8;
         this.pieceNameType = "Rainha";
-        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
     }
 
     @Override
@@ -16,5 +15,12 @@ public class Rainha extends Piece {
         } else {
             return base + " @ (n/a)";
         }
+    }
+
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        int vertical = Math.abs(y0 - y1);
+        int horizontal = Math.abs(x0 - x1);
+        return (horizontal == 0 && vertical <= 5) || (vertical == 0 && horizontal <= 5) || (horizontal == vertical && vertical <= 5);
     }
 }

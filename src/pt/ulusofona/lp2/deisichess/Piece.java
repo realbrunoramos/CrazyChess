@@ -19,14 +19,9 @@ abstract public class Piece implements Comparable<Piece>{
     protected int validMoves;
     protected int invalidMoves;
     protected int earnedPoints;
-    protected MoveOfTypePiece moveOfTypePiece;
 
     public int compareTo(Piece nextPiece){
         return Integer.compare(nextPiece.getPoints(), this.getPoints());
-    }
-
-    public MoveOfTypePiece getMoveOfTypePiece() {
-        return moveOfTypePiece;
     }
 
     Piece(String id, String typeChessPiece, int team, String name, String imagePath, int coordinatesX, int coordinatesY) {
@@ -96,9 +91,7 @@ abstract public class Piece implements Comparable<Piece>{
     public String getPieceNameType() {
         return pieceNameType;
     }
-    public void setPieceNameType(String pieceNameType) {
-        this.pieceNameType = pieceNameType;
-    }
+
     public int getPoints() {
         return points;
     }
@@ -122,9 +115,7 @@ abstract public class Piece implements Comparable<Piece>{
     public int getTeam() {
         return team;
     }
-    boolean isValidMove(int x0, int y0, int x1, int y1){
-        return moveOfTypePiece.validMove(x0, y0, x1, y1);
-    }
+    abstract boolean isValidMove(int x0, int y0, int x1, int y1);
 
     public String getName() {
         return name;

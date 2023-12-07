@@ -16,6 +16,7 @@ public class TestGameManager {
         StatisticsKt stats = StatisticsKt;
         int pos = 0;
         gm.loadGame(new File("test-files/8x8.txt"));
+        assertEquals(8, gm.getBoardSize());
         HashMap<String, Piece> pieces = gm.getGameStatus().getTheBoard().getAllPieces();
 
         assertEquals(10, gm.getCurrentTeamID());
@@ -28,6 +29,8 @@ public class TestGameManager {
         int x1 = 0;
         int y1 = 1;
         assertTrue(gm.move(x0, y0, x1, y1));
+        assertEquals("1", gm.getSquareInfo(0, 1)[0]);
+        assertEquals("1 | Rei | (infinito) | 10 | O Poderoso Chefao @ (0, 1)", gm.getPieceInfoAsString(1));
         assertEquals(20, gm.getCurrentTeamID());
         assertEquals(1, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());
@@ -187,6 +190,7 @@ public class TestGameManager {
         y1 = 5;
         assertTrue(gm.move(x0, y0, x1, y1));
         assertTrue(gm.gameOver());
+        assertEquals("Resultado: EMPATE", gm.getGameResults().get(1));
         assertEquals(20, gm.getCurrentTeamID());
         assertEquals(10, gm.getGameStatus().getConsecutivePlays());
         assertEquals("Joker/"+nameTypePieces[pos],pieces.get("8").getPieceNameType());

@@ -5,7 +5,12 @@ public class PoneiMagico extends Piece {
         super(id, typeChessPiece, team, name, imagePath, coordinatesX, coordinatesY);
         this.points = 5;
         this.pieceNameType = "Ponei Mágico";
-        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
+    }
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        int vertical = Math.abs(y0 - y1);
+        int horizontal = Math.abs(x0 - x1);
+        return (vertical == 2 && horizontal == 2);
     }
     @Override
     public String pieceInfoStr() {

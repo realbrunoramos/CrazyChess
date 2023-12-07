@@ -11,4 +11,9 @@ public class Empty extends Piece{
     public String pieceInfoStr() {
         return "";
     }
+
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        return false;
+    }
 }

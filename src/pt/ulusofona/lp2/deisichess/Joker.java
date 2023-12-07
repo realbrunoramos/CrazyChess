@@ -9,8 +9,6 @@ public class Joker extends Piece {
         this.pieceNameType = "Joker";
     }
 
-
-
     @Override
     public String pieceInfoStr() {
         String base = id + " | " + pieceNameType + " | " + (points==1000?"(infinito)":points) + " | " + team + " | " + name;
@@ -21,9 +19,23 @@ public class Joker extends Piece {
         }
     }
 
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        int vertical = Math.abs(y0 - y1);
+        int horizontal = Math.abs(x0 - x1);
+        return switch (fakeTypePiece) {
+            case "0" -> (horizontal < 2 && vertical < 2);
+            case "1" -> (horizontal == 0 && vertical <= 5) || (vertical == 0 && horizontal <= 5) || (horizontal == vertical && vertical <= 5);
+            case "2" -> (vertical == 2 && horizontal == 2);
+            case "3" -> (vertical == horizontal && vertical < 4);
+            case "4" -> (vertical == 0);
+            case "5" -> (horizontal == 0);
+            case "6" -> (vertical == horizontal && vertical < 2);
+            default -> false;
+        };
+    }
 
     public void changeMoveOfTypePiece(String fakeTypePiece) {
-        moveOfTypePiece = new MoveOfTypePiece(fakeTypePiece);
         this.fakeTypePiece = fakeTypePiece;
         pieceNameType = "Joker/"+nameTypePieces[Integer.parseInt(fakeTypePiece)-1];
     }

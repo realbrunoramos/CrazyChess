@@ -5,7 +5,6 @@ public class TorreVert extends Piece {
         super(id, typeChessPiece, team, name, imagePath, coordinatesX, coordinatesY);
         this.points = 3;
         this.pieceNameType = "TorreVert";
-        this.moveOfTypePiece = new MoveOfTypePiece(typeChessPiece);
     }
     @Override
     public String pieceInfoStr() {
@@ -15,5 +14,11 @@ public class TorreVert extends Piece {
         } else {
             return base + " @ (n/a)";
         }
+    }
+
+    @Override
+    boolean isValidMove(int x0, int y0, int x1, int y1) {
+        int horizontal = Math.abs(x0 - x1);
+        return (horizontal == 0);
     }
 }
