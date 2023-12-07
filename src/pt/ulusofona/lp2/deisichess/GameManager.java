@@ -111,12 +111,10 @@ public class GameManager {
             for (int line = lineOfBoardSection; line<lineOfBoardSection+boardDimension; line++){
                 String[] array = fileLinesContent.get(line).split(":");
                 theBoard.addBoardMap(array);
-                for (int x = 0 ; x<array.length; x++){
-                    if (array.length>boardDimension){
-                        throw new InvalidGameInputException(line+1, mais+boardDimension+" ; Obtive: "+array.length+")");
-                    } else if(array.length<boardDimension){
-                        throw new InvalidGameInputException(line+1, menos+boardDimension+" ; Obtive: "+array.length+")");
-                    }
+                if (array.length>boardDimension){
+                    throw new InvalidGameInputException(line+1, mais+boardDimension+" ; Obtive: "+array.length+")");
+                } else if(array.length<boardDimension){
+                    throw new InvalidGameInputException(line+1, menos+boardDimension+" ; Obtive: "+array.length+")");
                 }
             }
             String status = null;

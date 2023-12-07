@@ -7,5 +7,4 @@ public enum MoveAction {
     PIECE_ON_THE_WAY,
     QUEEN_KILLS_QUEEN,
     HOMER_SLEEPING
-
 }
