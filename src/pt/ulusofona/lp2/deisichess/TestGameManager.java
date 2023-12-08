@@ -278,7 +278,6 @@ public class TestGameManager {
         gm.move(0,6,0,7); //Chefe dos Indios move-se. Invalida: 0, Valida: 4
         gm.move(1,3,7,4); //A Dama Selvagem não se move. Invalida: 1, Valida: 3
         assertEquals("[20:Torre Poderosa:1:0, 10:Artolas:2:1, 10:A Dama Selvagem:1:3]", (stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm)).toString());
-
     }
     @Test
     public void readAndSaveFiles() throws IOException, InvalidGameInputException {
