@@ -362,7 +362,6 @@ public class GameStatus {
                 theBoard.changeMapSquare("0", x0, y0);
                 theBoard.setCaptured(destinSquare);
 
-
                 theBoard.incPieceCaptures(originSquare);
 
                 theBoard.incPieceEarnedPoints(originSquare, opponentPoints);

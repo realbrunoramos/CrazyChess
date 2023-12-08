@@ -8,7 +8,7 @@ public class Rei extends Piece {
     }
     @Override
     public String pieceInfoStr() {
-        String base = id + " | " + pieceNameType + " | " + (points==1000?"(infinito)":points) + " | " + team + " | " + name;
+        String base = id + " | " + pieceNameType + " | " + "(infinito)" + " | " + team + " | " + name;
         if (inGame){
             return  base + " @ (" + coordinatesX + ", " + coordinatesY + ")";
         } else {

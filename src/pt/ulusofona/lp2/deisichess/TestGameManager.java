@@ -261,6 +261,26 @@ public class TestGameManager {
         }
     }
     @Test
+    public void pecasBaralhadas() throws IOException, InvalidGameInputException {
+        GameManager gm = new GameManager();
+        StatisticsKt stats = StatisticsKt;
+        gm.loadGame(new File("test-files/8x8(2).txt"));
+        gm.move(1,0,1,1); //A Dama Selvagem move-se. Invalida: 0, Valida: 1
+        gm.move(4,7,5,6); //Torre Poderosa não se move. Invalida: 1, Valida: 0
+        gm.move(0,7,0,6); //Chefe dos Indios move-se. Invalida: 0, Valida: 1
+        gm.move(4,0,5,1); //Artolas não se move. Invalida: 1, Valida: 0
+        gm.move(4,0,5,1); //Artolas não se move. Invalida: 2, Valida: 0
+        gm.move(1,1,1,2); //A Dama Selvagem move-se. Invalida: 0, Valida: 2
+        gm.move(0,6,0,7); //Chefe dos Indios move-se. Invalida: 0, Valida: 2
+        gm.move(1,2,1,3); //A Dama Selvagem move-se. Invalida: 0, Valida: 3
+        gm.move(0,7,0,6); //Chefe dos Indios move-se. Invalida: 0, Valida: 3
+        gm.move(4,0,5,0); //Artolas move-se. Invalida: 2, Valida: 1
+        gm.move(0,6,0,7); //Chefe dos Indios move-se. Invalida: 0, Valida: 4
+        gm.move(1,3,7,4); //A Dama Selvagem não se move. Invalida: 1, Valida: 3
+        assertEquals("[20:Torre Poderosa:1:0, 10:A Dama Selvagem:1:3, 10:Artolas:2:1]", (stats.getStatsCalculator(StatType.PECAS_MAIS_BARALHADAS).invoke(gm)).toString());
+
+    }
+    @Test
     public void readAndSaveFiles() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
         File file = new File("test-files/4x4.txt");
