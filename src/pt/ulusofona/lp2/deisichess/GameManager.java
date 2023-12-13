@@ -50,6 +50,12 @@ public class GameManager {
 
     public Map<String,String> customizeBoard(){
         HashMap<String, String> rs = new HashMap<>();
+        rs.put("title", "CrazyChess by GodOfJava");
+        rs.put("imageBlackSquare", "black-box.png");
+        rs.put("imageWhiteSquare", "white-box.png");
+        rs.put("imageBackground", "background.png");
+        rs.put("boardMarginTop", "100");
+        rs.put("boardMarginBottom", "50");
         return rs;
     }
 
@@ -62,7 +68,6 @@ public class GameManager {
             while ((lineContent = br.readLine()) != null) {
                 fileLinesContent.add(lineContent);
             }
-
             boardSize = Integer.parseInt(fileLinesContent.get(0));
             numPieces = Integer.parseInt(fileLinesContent.get(1));
 
@@ -176,7 +181,8 @@ public class GameManager {
                         if (steppedPiece != null) {
                             finalResult.add(steppedPiece);
                         } else {
-                            Empty empty = new Empty("0", "", 0, "", "", x1, y1);
+                            Rei empty = new Rei("0", "", 0, "", "", x1, y1);
+                            empty.setPoints(0);
                             finalResult.add(empty);
                         }
                     }

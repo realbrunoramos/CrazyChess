@@ -18,7 +18,6 @@ public class Joker extends Piece {
             return base + " @ (n/a)";
         }
     }
-
     @Override
     boolean isValidMove(int x0, int y0, int x1, int y1) {
         int vertical = Math.abs(y0 - y1);
@@ -34,12 +33,10 @@ public class Joker extends Piece {
             default -> false;
         };
     }
-
     public void changeMoveOfTypePiece(String fakeTypePiece) {
         this.fakeTypePiece = fakeTypePiece;
         pieceNameType = "Joker/"+nameTypePieces[Integer.parseInt(fakeTypePiece)-1];
     }
-
     public String getFakeTypePiece() {
         return fakeTypePiece;
     }

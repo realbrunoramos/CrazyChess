@@ -1,2 +1,2 @@
 # CrazyChess
-[Diagrama.pdf](Diagrama.pdf)
+![diagrama.png](src%2Fimages%2Fdiagrama.png)
