@@ -47,7 +47,6 @@ public class GameManager {
         }
 
     }
-
     public Map<String,String> customizeBoard(){
         HashMap<String, String> rs = new HashMap<>();
         rs.put("title", "Olympus Chess");
@@ -58,7 +57,6 @@ public class GameManager {
         rs.put("boardMarginBottom", "50");
         return rs;
     }
-
     public void loadGame(File file) throws InvalidGameInputException, IOException{
         getStarted();
         ArrayList<String> fileLinesContent = new ArrayList<>();
@@ -137,7 +135,6 @@ public class GameManager {
         gameStatus.undoMove();
     }
     public boolean moveSimulation(int x0, int y0, int x1, int y1, int currentTeam) {
-
         Board theBoard = gameStatus.getTheBoard();
 
         MoveAction moveSituation;
@@ -154,7 +151,7 @@ public class GameManager {
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 return true;
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING || moveSituation == MoveAction.ESCUDEIRO_DEFENSE) {
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING || moveSituation == MoveAction.UNDER_ESCUDEIRO_DEFENSE) {
                 return false;
             }
             return true;
@@ -220,7 +217,7 @@ public class GameManager {
                 theBoard.incPieceValidMoves(originSquare);
                 gameStatus.setConsecutivePlays(0);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING || moveSituation == MoveAction.ESCUDEIRO_DEFENSE) {
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING || moveSituation == MoveAction.UNDER_ESCUDEIRO_DEFENSE) {
                 teamStatistics[current].incInvalidMoves();
                 theBoard.incPieceInvalidMoves(originSquare);
                 return false;
@@ -247,7 +244,6 @@ public class GameManager {
             return false;
         }
     }
-
     public String[] getSquareInfo(int x, int y) {
         Board theBoard = gameStatus.getTheBoard();
         String[] squares = new String[5];
@@ -267,7 +263,6 @@ public class GameManager {
         }
         return squares;
     }
-
     public String[] getPieceInfo(int id) {
         Board theBoard = gameStatus.getTheBoard();
         String[] pieceInfo = new String[7];
@@ -283,15 +278,12 @@ public class GameManager {
         }
         return pieceInfo;
     }
-
     public String getPieceInfoAsString(int id) {
         return gameStatus.pieceInfoAsStr(id);
     }
-
     public int getCurrentTeamID() {
         return gameStatus.getCurrentTeam();
     }
-
     public boolean gameOver() {
         int blacksInGame = gameStatus.getTheBoard().getNumBlacksInGame();
         int whitesInGame = gameStatus.getTheBoard().getNumWhitesInGame();
@@ -306,11 +298,9 @@ public class GameManager {
         theBoard.setDraw(exhaust || onlyKings);
         return theBoard.isDraw();
     }
-
     public GameStatus getGameStatus() {
         return gameStatus;
     }
-
     public ArrayList<String> getGameResults() {
         Board theBoard = gameStatus.getTheBoard();
         TeamStatistic[] teamStatistics = gameStatus.getTeamStatistics();
@@ -346,11 +336,9 @@ public class GameManager {
 
         return gameResult;
     }
-
     public JPanel getAuthorsPanel() {
         JPanel panel = new JPanel();
         try {
-
             BufferedImage image = ImageIO.read(new File("src/images/crazy_Chess_credits.png"));
             JLabel label = new JLabel(new ImageIcon(image));
             panel.add(label);

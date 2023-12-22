@@ -368,7 +368,7 @@ public class GameStatus {
                         if (((horizontal == 0 && vertical == 1) || (vertical == 0 && horizontal == 1) || (horizontal == vertical && vertical == 1)) && (p!=null)){
                             if (p.getTypeChessPiece().equals("8") && p.getTeam()!=currentTeam){
                                 if(!movingPiece.getTypeChessPiece().equals("2")){
-                                    return ESCUDEIRO_DEFENSE;
+                                    return UNDER_ESCUDEIRO_DEFENSE;
                                 }
                             }
                         }
