@@ -50,7 +50,7 @@ public class GameManager {
 
     public Map<String,String> customizeBoard(){
         HashMap<String, String> rs = new HashMap<>();
-        rs.put("title", "CrazyChess by GodOfJava");
+        rs.put("title", "Olympus Chess");
         rs.put("imageBlackSquare", "black-box.png");
         rs.put("imageWhiteSquare", "white-box.png");
         rs.put("imageBackground", "background.png");
@@ -106,10 +106,10 @@ public class GameManager {
                         break;
                     case "6" : theBoard.putAllPieces(id, new HomerSimpson(id, typeChessPiece, team, name, imagePath, 0, 0));
                         break;
-                    case "7" :{
-                        Joker piece = new Joker(id, typeChessPiece, team, name, imagePath, 0, 0);
-                        theBoard.putAllPieces(id, piece);
-                    }
+                    case "7" : theBoard.putAllPieces(id, new Joker(id, typeChessPiece, team, name, imagePath, 0, 0));
+                        break;
+                    case "8" : theBoard.putAllPieces(id, new Escudeiro(id, typeChessPiece, team, name, imagePath, 0, 0));
+
                 }
             }
             for (int line = lineOfBoardSection; line<lineOfBoardSection+ boardSize; line++){
@@ -150,11 +150,11 @@ public class GameManager {
 
         if (originSquareTeam.equals(currentTeam+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
 
-            moveSituation = gameStatus.moveSituationSimulation(x0, y0, x1, y1, currentTeam);
+            moveSituation = gameStatus.moveSituation(x0, y0, x1, y1, currentTeam, true);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 return true;
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING) {
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING || moveSituation == MoveAction.ESCUDEIRO_DEFENSE) {
                 return false;
             }
             return true;
@@ -214,13 +214,13 @@ public class GameManager {
         String originSquareTeam = pieceOrigin==null?"":pieceOrigin.getTeam()+"";//retorna "" se o quadrado estiver vazio
 
         if (originSquareTeam.equals(gameStatus.getCurrentTeam()+"") && (pieceOrigin != null && pieceOrigin.isValidMove(x0, y0, x1, y1))){
-            moveSituation = gameStatus.moveSituation(x0, y0, x1, y1);
+            moveSituation = gameStatus.moveSituation(x0, y0, x1, y1, 0, false);
             if (moveSituation == MoveAction.TO_OPPONENT_PIECE_SQUARE) {
                 teamStatistics[current].incCaptures();
                 theBoard.incPieceValidMoves(originSquare);
                 gameStatus.setConsecutivePlays(0);
             } else if (moveSituation == MoveAction.TO_OWN_TEAM_PIECE_SQUARE || moveSituation == MoveAction.QUEEN_KILLS_QUEEN
-                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING) {
+                    || moveSituation == MoveAction.PIECE_ON_THE_WAY || moveSituation == MoveAction.HOMER_SLEEPING || moveSituation == MoveAction.ESCUDEIRO_DEFENSE) {
                 teamStatistics[current].incInvalidMoves();
                 theBoard.incPieceInvalidMoves(originSquare);
                 return false;

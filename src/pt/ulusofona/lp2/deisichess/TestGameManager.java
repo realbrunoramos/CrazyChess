@@ -282,6 +282,11 @@ public class TestGameManager {
     @Test
     public void readAndSaveFiles() throws IOException, InvalidGameInputException {
         GameManager gm = new GameManager();
+        int customizeBoardSize = gm.customizeBoard().size();
+        boolean bool = customizeBoardSize==6 || customizeBoardSize==0;
+        boolean bool2 = gm.getAuthorsPanel()!=null;
+        assertTrue(bool);
+        assertTrue(bool2);
         File file = new File("test-files/4x4.txt");
         gm.loadGame(file);
         gm.move(0, 0, 0,1);
@@ -291,7 +296,7 @@ public class TestGameManager {
         gm.saveGame(file);
         file = new File("test-files/6x6.txt");
         gm.loadGame(file);
-        gm.move(0, 0, 0,1);
+        gm.move(0, 1, 0,2);
         gm.move(0, 9, 0,8);
         gm.undo();
         gm.undo();

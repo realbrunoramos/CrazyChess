@@ -58,15 +58,12 @@ public class GameStatus {
     public Board getTheBoard() {
         return theBoard;
     }
-
     public int getCurrentTeam() {
         return currentTeam;
     }
-
     public int getConsecutivePlays() {
         return consecutivePlays;
     }
-
     public int getRoundCounter() {
         return roundCounter;
     }
@@ -86,7 +83,6 @@ public class GameStatus {
     public void upDateStatus(String status) {
         //status:  currentTeam+"|"+roundCounter +"|"+ consecutivePlays +"@"+teamStatistics[0]+"@"+teamStatistics[1]
         // +"@"+id+"|"+captures+"|"+earnedPoints+"|"+validMoves+"|"+invalidMoves ...
-
         ArrayList<String[]> board = theBoard.getBoardMap();
         for (int y=0; y<board.size(); y++){
             for (int x=0; x<board.size(); x++){
@@ -227,7 +223,7 @@ public class GameStatus {
 
         ArrayList<String[]> boardMap = theBoard.getBoardMap();
         switch (typePiece){
-            case "1" : {
+            case "1", "8" : {
                 if (horizontal==0){
                     for (int y = minY+1; y<maxY; y++){
                         if(!boardMap.get(y)[x0].equals("0")){
@@ -286,6 +282,9 @@ public class GameStatus {
                     }
                     x += mX;
                     y += mY;
+                    if (y >= boardMap.size() || x>= boardMap.size()){
+                        break;
+                    }
                     if(!boardMap.get(y)[x].equals("0")){
                         return true;
                     }
@@ -318,7 +317,9 @@ public class GameStatus {
             default: return false;
         }
     }
-    MoveAction moveSituation(int x0, int y0, int x1, int y1){
+    MoveAction moveSituation(int x0, int y0, int x1, int y1, int current, boolean simulate){
+        boolean bool = !simulate;
+        int currentTeam = current==0?this.currentTeam:current;
         ArrayList<String[]> boardMap = theBoard.getBoardMap();
         HashMap<String, Piece> allPieces = theBoard.getAllPieces();
         String originSquare = boardMap.get(y0)[x0];
@@ -341,9 +342,10 @@ public class GameStatus {
             return PIECE_ON_THE_WAY;
         }
         if (steppedPiece == null){
-            theBoard.changeMapSquare(originSquare, x1, y1);
-            theBoard.changeMapSquare("0", x0, y0);
-
+            if (bool){
+                theBoard.changeMapSquare(originSquare, x1, y1);
+                theBoard.changeMapSquare("0", x0, y0);
+            }
             return TO_FREE_SQUARE;
         } else {
             String steppedPieceType = steppedPiece.getTypeChessPiece();
@@ -351,63 +353,35 @@ public class GameStatus {
                 steppedPieceType = ((Joker)steppedPiece).getFakeTypePiece();
             }
             if (steppedPiece.getTeam() == currentTeam){
-
                 return TO_OWN_TEAM_PIECE_SQUARE;
             } else {
                 if (steppedPieceType.equals("1") && movingPieceType.equals("1")){
                     return QUEEN_KILLS_QUEEN;
                 }
+                int xs = steppedPiece.getX();
+                int ys = steppedPiece.getY();
+                for (int y=0; y< boardMap.size(); y++){
+                    for (int x=0; x< boardMap.size(); x++){
+                        int vertical = Math.abs(ys - y);
+                        int horizontal = Math.abs(xs - x);
+                        Piece p = allPieces.get(boardMap.get(y)[x]);
+                        if (((horizontal == 0 && vertical == 1) || (vertical == 0 && horizontal == 1) || (horizontal == vertical && vertical == 1)) && (p!=null)){
+                            if (p.getTypeChessPiece().equals("8") && p.getTeam()!=currentTeam){
+                                if(!movingPiece.getTypeChessPiece().equals("2")){
+                                    return ESCUDEIRO_DEFENSE;
+                                }
+                            }
+                        }
+                    }
+                }
                 int opponentPoints = steppedPiece.getPoints();
-                theBoard.changeMapSquare(originSquare, x1, y1);
-                theBoard.changeMapSquare("0", x0, y0);
-                theBoard.setCaptured(destinSquare);
-
-                theBoard.incPieceCaptures(originSquare);
-
-                theBoard.incPieceEarnedPoints(originSquare, opponentPoints);
-
-                teamStatistics[currentTeam/10-1].addPoints(opponentPoints);
-                return TO_OPPONENT_PIECE_SQUARE;
-            }
-        }
-    }
-    MoveAction moveSituationSimulation(int x0, int y0, int x1, int y1, int currentTeam){
-        ArrayList<String[]> boardMap = theBoard.getBoardMap();
-
-        HashMap<String, Piece> allPieces = theBoard.getAllPieces();
-
-        String originSquare = boardMap.get(y0)[x0];
-        String destinSquare = boardMap.get(y1)[x1];
-
-        Piece movingPiece = allPieces.get(originSquare);
-
-        String movingPieceType = movingPiece.getTypeChessPiece();
-        Piece steppedPiece = allPieces.get(destinSquare);
-
-        if(movingPieceType.equals("7")){
-            movingPieceType = ((Joker)movingPiece).getFakeTypePiece();
-        }
-
-        if (movingPiece.getTypeChessPiece().equals("6") && roundCounter%3==0){
-            return HOMER_SLEEPING;
-        }
-        if (pieceOnTheWay(movingPieceType, x0, y0, x1, y1)){
-            return PIECE_ON_THE_WAY;
-        }
-        if (steppedPiece == null){
-
-            return TO_FREE_SQUARE;
-        } else {
-            String steppedPieceType = steppedPiece.getTypeChessPiece();
-            if(steppedPieceType.equals("7")){
-                steppedPieceType = ((Joker)steppedPiece).getFakeTypePiece();
-            }
-            if (steppedPiece.getTeam() == currentTeam){
-
-                return TO_OWN_TEAM_PIECE_SQUARE;
-            } else {
-                if (steppedPieceType.equals("1") && movingPieceType.equals("1")){
-                    return QUEEN_KILLS_QUEEN;
+                if (bool){
+                    theBoard.changeMapSquare(originSquare, x1, y1);
+                    theBoard.changeMapSquare("0", x0, y0);
+                    theBoard.setCaptured(destinSquare);
+                    theBoard.incPieceCaptures(originSquare);
+                    theBoard.incPieceEarnedPoints(originSquare, opponentPoints);
+                    teamStatistics[currentTeam / 10 - 1].addPoints(opponentPoints);
                 }
                 return TO_OPPONENT_PIECE_SQUARE;
             }
