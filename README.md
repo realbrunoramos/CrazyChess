@@ -17,4 +17,4 @@ Exceto quando se trata do incrível Pónei Mágico. Nesse cenário excecional, o
 ![escudeiroDefesa2.png](src%2Fimages%2FescudeiroDefesa2.png)
 ___
 # Vídeo do projeto OlympusChess
-https://www.youtube.com/watch?v=ABhFSjvyGaw
+https://www.youtube.com/watch?v=WHWDnz8yLGA
