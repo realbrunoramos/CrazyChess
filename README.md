@@ -7,6 +7,8 @@ ___
 Adicionei ao jogo uma nova peça do tipo Escudeiro.
  Esta peça vale 4 pontos e move-se até duas casas em qualquer direção.
 
+![escudeiro.png](src%2Fimages%2Fescudeiro.png)
+
 O Escudeiro desempenha um papel crucial no campo de batalha, atuando como o guardião implacável das peças aliadas. A sua habilidade única de proteção é acionada quando posicionado a um quadrado de distância, em qualquer direção, da(s) peça(s) que pretende resguardar.
 A ousadia de uma peça adversária ao tentar capturar uma peça próxima protegida pelo Escudeiro será considerada uma jogada inválida.
 
@@ -17,4 +19,4 @@ Exceto quando se trata do incrível Pónei Mágico. Nesse cenário excecional, o
 ![escudeiroDefesa2.png](src%2Fimages%2FescudeiroDefesa2.png)
 ___
 # Vídeo do projeto OlympusChess
-https://www.youtube.com/watch?v=WHWDnz8yLGA
+https://youtu.be/zYmKJNkdYIc
